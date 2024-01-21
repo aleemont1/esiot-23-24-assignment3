@@ -7,8 +7,8 @@
  */
 
 plugins {
-    // Apply the application plugin to add support for building a CLI application in Java.
     application
+    `java-library`
 }
 
 repositories {
@@ -17,7 +17,9 @@ repositories {
 }
 
 dependencies {
-    implementation("io.vertx:vertx-mqtt:4.5.1")
+    implementation("io.vertx:vertx-mqtt:4.5.1") //for mqtt vertx server
+    implementation("com.google.code.gson:gson:2.8.8") //for json
+    implementation("io.github.java-native:jssc:2.9.6") //for serial communication
 }
 
 application {

@@ -1,1 +1,0 @@
-this folder contains all policy in order to retrieve the correct response. 
