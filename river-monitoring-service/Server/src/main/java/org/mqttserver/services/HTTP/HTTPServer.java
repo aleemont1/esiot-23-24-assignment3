@@ -1,2 +1,4 @@
-package org.mqttserver.services.HTTP;public interface HTTPServer {
+package org.mqttserver.services.HTTP;
+public interface HTTPServer {
+
 }

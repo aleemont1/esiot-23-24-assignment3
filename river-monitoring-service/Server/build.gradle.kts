@@ -20,6 +20,10 @@ dependencies {
     implementation("io.vertx:vertx-mqtt:4.5.1") //for mqtt vertx server
     implementation("com.google.code.gson:gson:2.8.8") //for json
     implementation("io.github.java-native:jssc:2.9.6") //for serial communication
+    implementation("org.slf4j:slf4j-api:1.7.32")
+    implementation("org.slf4j:slf4j-simple:1.7.32")
+    implementation("org.json:json:20210307")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.0")
 }
 
 application {
