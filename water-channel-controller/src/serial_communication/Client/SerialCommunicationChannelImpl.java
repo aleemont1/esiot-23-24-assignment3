@@ -1,24 +1,41 @@
 package serial_communication.Client;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import javax.naming.CommunicationException;
-import java.util.concurrent.*;
-import jssc.*;
+
+import jssc.SerialPort;
+import jssc.SerialPortEvent;
+import jssc.SerialPortEventListener;
+import jssc.SerialPortException;
 
 /**
- * Implementation of the communication channel between client and server on the
- * serial port.
+ * This class implementation represents a communication channel between a client
+ * and a server over a serial port.
+ * It uses the jSSC (Java Simple Serial Connector) library to handle the serial
+ * communication.
  */
 public class SerialCommunicationChannelImpl implements SerialCommunicationChannel, SerialPortEventListener {
 
+    /**
+     * The serial port used for the communication.
+     */
     private SerialPort serialPort;
+    /**
+     * The queue of messages received from the server.
+     */
     private BlockingQueue<String> messageQueue;
+    /**
+     * The current message being received from the server.
+     */
     private StringBuffer currentMessage = new StringBuffer("");
 
     /**
-     * Constructor of the class SerialCommunicationChannelImpl.
+     * Constructs a new with the specified serial port and rate.
      * 
      * @param serialPort The serial port to use for the communication.
-     * @param rate       The rate of the serial port.
+     * @param rate       The baud rate of the serial port.
      * @throws CommunicationException If the communication channel cannot be opened.
      * @throws SerialPortException    If the serial port cannot be opened.
      */
@@ -32,11 +49,29 @@ public class SerialCommunicationChannelImpl implements SerialCommunicationChanne
         this.serialPort.addEventListener(this);
     }
 
+    /**
+     * Processes a message received from the server.
+     * This method should be called by the client when a message is received from
+     * the server.
+     * 
+     * @param messageToProcess the message received from the server.
+     * @return the processed message received from the server.
+     * @throws InterruptedException if the thread is interrupted while processing
+     *                              the message.
+     */
     @Override
     public String processReceivedMessage(String messageToProcess) throws InterruptedException {
         return messageQueue.take();
     }
 
+    /**
+     * Sends a message to the server.
+     * This method should be called by the client to send a message to the server.
+     * 
+     * @param messageToSend the message to send to the server.
+     * @throws CommunicationException if there is a problem sending the message to
+     *                                the server.
+     */
     @Override
     public void sendMessage(String messageToSend) throws CommunicationException {
         char[] message = (messageToSend + "\n").toCharArray();
@@ -54,11 +89,23 @@ public class SerialCommunicationChannelImpl implements SerialCommunicationChanne
         }
     }
 
+    /**
+     * Checks if a message is available on the serial port to be read by the client.
+     * This method should be called by the client to check if a message is available
+     * on the serial port.
+     * 
+     * @return true if a message is available, {@code false} otherwise.
+     */
     @Override
     public boolean isMessageAvailable() {
         return !messageQueue.isEmpty();
     }
 
+    /**
+     * Closes the communication channel.
+     * This method should be called by the client to close the communication channel
+     * with the server.
+     */
     @Override
     public void close() {
         try {
@@ -71,6 +118,13 @@ public class SerialCommunicationChannelImpl implements SerialCommunicationChanne
         }
     }
 
+    /**
+     * Handles a serial port event.
+     * This method is called by the jSSC library when a serial port event occurs,
+     * such as receiving data.
+     * 
+     * @param event the serial port event.
+     */
     @Override
     public void serialEvent(SerialPortEvent event) {
         if (event.isRXCHAR()) {
