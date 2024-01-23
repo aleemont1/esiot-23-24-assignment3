@@ -3,19 +3,22 @@ package serial_communication.Client;
 import javax.naming.CommunicationException;
 
 /**
- * Interface for communication channel between client and server on the
- * serial port.
+ * This is an interface that represents a communication channel between a client
+ * and a server over a serial port.
+ * It defines methods for processing received messages, sending messages,
+ * checking if a message is available, and closing the communication channel.
  */
 public interface SerialCommunicationChannel {
 
     /**
-     * Processes the received message from the server.
+     * Processes a message received from the server.
      * This method should be called by the client when a message is received from
      * the server.
      * 
      * @param messageToProcess the message received from the server.
-     * @throws InterruptedException if the thread is interrupted while processing.
-     * @return the message received from the server, processed.
+     * @return the processed message received from the server.
+     * @throws InterruptedException if the thread is interrupted while processing
+     *                              the message.
      */
     public String processReceivedMessage(String messageToProcess) throws InterruptedException;
 
