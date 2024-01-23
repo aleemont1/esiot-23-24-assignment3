@@ -1,0 +1,6 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "c:\\Users\\23ema\\Downloads\\jSSC-2.7.0-Release\\jssc.jar"
+    ]
+}
