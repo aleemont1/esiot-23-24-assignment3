@@ -8,7 +8,7 @@ import org.mqttserver.presentation.JSONUtils;
 import org.mqttserver.presentation.SerialMessage;
 
 
-public class ReaderImpl implements Runnable { //builded as new Runnable thread
+public class SerialReaderImpl implements Runnable { //builded as new Runnable thread
 
     private static SerialPort serialPort;
 

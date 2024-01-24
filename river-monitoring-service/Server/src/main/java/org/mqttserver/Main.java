@@ -3,13 +3,8 @@ package org.mqttserver;
 
 import org.mqttserver.policy.ChannelControllerManager;
 import org.mqttserver.policy.ChannelControllerManagerImpl;
-import org.mqttserver.serial.ReaderImpl;
-import org.mqttserver.serial.Writer;
-import org.mqttserver.serial.WriterImpl;
 import org.mqttserver.services.MQTT.Broker;
 import org.mqttserver.services.MQTT.BrokerImpl;
-
-import java.io.UnsupportedEncodingException;
 
 public class Main {
     public static void main(String[] args) {

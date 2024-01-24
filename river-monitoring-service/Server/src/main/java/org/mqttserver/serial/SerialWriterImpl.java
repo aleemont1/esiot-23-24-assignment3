@@ -3,10 +3,10 @@ package org.mqttserver.serial;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 
-public class WriterImpl implements Writer {
+public class SerialWriterImpl implements SerialWriter {
 
     private SerialPort serialPort;
-    public WriterImpl() {
+    public SerialWriterImpl() {
         SerialScanner serialScanner = new SerialScannerImpl();
         String connectedPort = serialScanner.getConnectedPort();
         //ReaderImpl.closePort();
@@ -24,7 +24,7 @@ public class WriterImpl implements Writer {
     @Override
     public void writeDataOnSerial(String message) {
         try {
-            System.out.println("SONO QUI DOVREI SCRIVERE " + message );
+            System.out.println("SCRIVO SULLA SERIALE: " + message );
             serialPort.writeBytes(message.getBytes());
         } catch (SerialPortException e) {
             System.err.println("Error in WRITING Serial Line");

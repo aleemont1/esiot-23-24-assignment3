@@ -17,5 +17,11 @@ public interface ChannelControllerManager extends Runnable {
 
     void receiveDataFromArduino();
 
+    boolean receivedEndOfMessage(); //valid for serial line
+
+    boolean sendEndOfMessage(); //valid for serial line
+
+
+
 
 }

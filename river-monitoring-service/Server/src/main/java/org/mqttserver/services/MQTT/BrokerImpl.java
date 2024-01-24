@@ -140,10 +140,6 @@ public class BrokerImpl implements Broker {
                 System.err.println("Error on starting the server" + ar.cause().getMessage());
             }
         });
-
-
-
-
     }
 
     @Override
