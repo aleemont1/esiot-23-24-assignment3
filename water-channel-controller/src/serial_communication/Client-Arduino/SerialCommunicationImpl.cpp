@@ -8,6 +8,11 @@ SerialCommunicationChannel::SerialCommunicationChannel()
     getReceivedContent();
 }
 
+SerialCommunicationChannel::~SerialCommunicationChannel()
+{
+    Serial.end();
+}
+
 void SerialCommunicationChannel::initializeSerialCommunication()
 {
     Serial.begin(9600);
