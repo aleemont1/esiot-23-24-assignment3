@@ -83,3 +83,33 @@ void SerialCommunicationChannel::receivedEndMessage()
 {
     sendMessage("status : " + status + " valveValue : " + valveValue);
 }
+
+void SerialCommunicationChannel::receivedEndMessage()
+{
+    if (isValidStatus(status) && isValidValveValue(valveValue))
+    {
+        String message = formatMessage(status, valveValue);
+        sendMessage(message);
+    }
+}
+
+bool SerialCommunicationChannel::isValidStatus(String status)
+{
+    // Assuming status can be "OK" or "ERROR"
+    return status == "NORMAL" || status == "ALARM-TOO-LOW" ||
+           status == "PRE-ALARM-TOO-HIGH" || status == "ALARM-TOO-HIGH" ||
+           status == "ALARM-TOO-HIGH-CRITIC";
+}
+
+bool SerialCommunicationChannel::isValidValveValue(String valveValue)
+{
+    // Assuming valveValue is a number between 0 and 100
+    int value = valveValue.toInt();
+    return value >= 0 && value <= 100;
+}
+
+String SerialCommunicationChannel::formatMessage(String status, String valveValue)
+{
+    // Format the message as a JSON string
+    return "{\"status\":\"" + status + "\",\"valveValue\":\"" + valveValue + "\"}";
+}
