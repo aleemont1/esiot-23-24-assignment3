@@ -23,6 +23,11 @@ public:
     SerialCommunicationChannel();
 
     /**
+     * @brief Uses RAII to automatically close the serial port when the object is destroyed.
+     */
+    ~SerialCommunicationChannel();
+
+    /**
      * @brief Retrieves the content of the most recently received message.
      *
      * @return String The content of the message received from the server.
