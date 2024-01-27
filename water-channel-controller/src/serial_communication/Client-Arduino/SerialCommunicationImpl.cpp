@@ -69,6 +69,15 @@ void SerialCommunicationChannel::setMessageDelivered(bool messageDelivered)
     this->messageDelivered = messageDelivered;
 }
 
+void SerialCommunicationChannel::receivedEndMessage()
+{
+    if (isValidStatus(status) && isValidValveValue(valveValue))
+    {
+        String message = formatMessage(status, valveValue);
+        sendMessage(message);
+    }
+}
+
 String SerialCommunicationChannel::processReceivedContent(String receivedContent)
 {
     if (receivedContent == "end")
@@ -77,20 +86,6 @@ String SerialCommunicationChannel::processReceivedContent(String receivedContent
         receivedContent = "";
     }
     return receivedContent;
-}
-
-void SerialCommunicationChannel::receivedEndMessage()
-{
-    sendMessage("status : " + status + " valveValue : " + valveValue);
-}
-
-void SerialCommunicationChannel::receivedEndMessage()
-{
-    if (isValidStatus(status) && isValidValveValue(valveValue))
-    {
-        String message = formatMessage(status, valveValue);
-        sendMessage(message);
-    }
 }
 
 bool SerialCommunicationChannel::isValidStatus(String status)
