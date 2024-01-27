@@ -2,6 +2,7 @@
 #include "SerialCommunication.h"
 
 SerialCommunicationChannel::SerialCommunicationChannel()
+    : messageAvailable(false), messageDelivered(false)
 {
     initializeSerialCommunication();
     checkMessageAvailability();
@@ -16,8 +17,6 @@ SerialCommunicationChannel::~SerialCommunicationChannel()
 void SerialCommunicationChannel::initializeSerialCommunication()
 {
     Serial.begin(9600);
-    messageAvailable = false;
-    messageDelivered = false;
 }
 
 void SerialCommunicationChannel::sendMessage(String message)
@@ -44,11 +43,12 @@ bool SerialCommunicationChannel::checkMessageAvailability()
 
 String SerialCommunicationChannel::getReceivedContent()
 {
+    delay(500);
     String receivedContent = "";
     if (checkMessageAvailability())
     {
-        setMessageAvailable(true);
-        receivedContent = Serial.readStringUntil('\n'); // >TODO: test this
+        // setMessageAvailable(true);
+        receivedContent = Serial.readStringUntil('\n');
         receivedContent = processReceivedContent(receivedContent);
     }
     return receivedContent;
@@ -69,9 +69,18 @@ void SerialCommunicationChannel::setMessageDelivered(bool messageDelivered)
     this->messageDelivered = messageDelivered;
 }
 
+void SerialCommunicationChannel::receivedEndMessage()
+{
+    if (isValidStatus(status) || isValidValveValue(valveValue)) // TODO: change the || condition to &&
+    {
+        String message = formatMessage(status, valveValue);
+        sendMessage(message);
+    }
+}
+
 String SerialCommunicationChannel::processReceivedContent(String receivedContent)
 {
-    if (receivedContent == "end")
+    if (receivedContent == "ping")
     {
         receivedEndMessage();
         receivedContent = "";
@@ -79,7 +88,23 @@ String SerialCommunicationChannel::processReceivedContent(String receivedContent
     return receivedContent;
 }
 
-void SerialCommunicationChannel::receivedEndMessage()
+bool SerialCommunicationChannel::isValidStatus(String status)
 {
-    sendMessage("status : " + status + " valveValue : " + valveValue);
+    // Assuming status can be "OK" or "ERROR"
+    return status == "NORMAL" || status == "ALARM-TOO-LOW" ||
+           status == "PRE-ALARM-TOO-HIGH" || status == "ALARM-TOO-HIGH" ||
+           status == "ALARM-TOO-HIGH-CRITIC" || status == "ping";
+}
+
+bool SerialCommunicationChannel::isValidValveValue(String valveValue)
+{
+    // Assuming valveValue is a number between 0 and 100
+    int value = valveValue.toInt();
+    return value >= 0 && value <= 100;
+}
+
+String SerialCommunicationChannel::formatMessage(String status, String valveValue)
+{
+    // Format the message as a JSON string
+    return "{\"status\":\"" + status + "\",\"valveValue\":\"" + valveValue + "\"}";
 }

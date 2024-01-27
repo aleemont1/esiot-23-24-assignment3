@@ -64,6 +64,20 @@ public:
      */
     bool isMessageDelivered();
 
+    /**
+     * @brief Sends a message to the server.
+     *
+     * @param message The message to send to the server.
+     */
+    void sendMessage(String message);
+
+    /**
+     * @brief Checks if a message is available on the serial port to be read by the client.
+     *
+     * @return bool True if a message is available, false otherwise.
+     */
+    bool checkMessageAvailability();
+
 private:
     /**
      * @brief The status of the valve received from the server.
@@ -111,11 +125,45 @@ private:
     void receivedEndMessage();
 
     /**
-     * @brief Sends a message to the server.
+     * Formats the status and valve value into a structured message for transmission.
      *
-     * @param message The message to send to the server.
+     * This method takes the status of the water channel and the valve value as inputs,
+     * and formats them into a structured message (e.g., a JSON string).
+     * This formatted message can then be sent over the serial communication channel
+     * to the Arduino.
+     *
+     * @param status A string representing the status of the water channel.
+     * @param valveValue A string representing the value of the valve.
+     * This should be a numeric value between 0 and 100, inclusive,
+     * where 0 represents a fully closed valve
+     * and 100 represents a fully open valve.
+     * @return String A String containing the formatted message.
+     * The format of this message could be a JSON string like
+     * `{"status":"NORMAL","valveValue":"25"}`.
      */
-    void sendMessage(String message);
+    String formatMessage(String status, String valveValue);
+
+    /**
+     * @brief Checks if the valve value is valid.
+     *
+     * @param valveValue A string representing the valve value.
+     * This should be a numeric value between 0 and 100, inclusive,
+     * where 0 represents a fully closed valve
+     * and 100 represents a fully open valve.
+     * @return bool True if the valve value is valid, false otherwise.
+     */
+    bool isValidValveValue(String valveValue);
+
+    /**
+     * @brief Checks if the provided status is valid.
+     *
+     * This method takes a status string as input and checks if it is a valid status.
+     * For example, a status could be valid if it is either "NORMAL" or "ALARM-TOO-LOW".
+     *
+     * @param status A string representing the status to be checked.
+     * @return bool true If the provided status is considered valid, false otherwise.
+     */
+    bool isValidStatus(String status);
 
     /**
      * @brief Sends a specific end message to the server to close
@@ -124,13 +172,6 @@ private:
      * @param endMessage The message to send to the server to end the communication.
      */
     void sendEndMessage(String endMessage);
-
-    /**
-     * @brief Checks if a message is available on the serial port to be read by the client.
-     *
-     * @return bool True if a message is available, false otherwise.
-     */
-    bool checkMessageAvailability();
 
     /**
      * @brief Initializes the serial communication channel.
