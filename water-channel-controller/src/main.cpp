@@ -1,18 +1,25 @@
-#include <Arduino.h>
+#include "serial_communication/Client-Arduino/SerialCommunication.h"
+#include "Arduino.h"
 
-// put function declarations here:
-int myFunction(int, int);
+void setup()
+{
+  Serial.begin(9600);
 
-void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+  // SerialCommunicationChannel commChannel;
+
+  // // Test sending a message
+  // commChannel.sendMessage("Hello from Arduino!");
+
+  // // Test checking message availability
+  // bool isAvailable = commChannel.checkMessageAvailability();
+  // Serial.println(isAvailable ? "Message is available" : "No message available");
+
+  // // Test getting received content
+  // String content = commChannel.getReceivedContent();
+  // Serial.println("Received content: " + content);
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+void loop()
+{
+  Serial.println("Hello from Arduino!");
 }
