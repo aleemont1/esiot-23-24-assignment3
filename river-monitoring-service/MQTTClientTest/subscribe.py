@@ -36,7 +36,11 @@ def subscribe(client: mqtt_client):
 def run():
     client = connect_mqtt()
     subscribe(client)
-    client.loop_forever()
+    client.loop_start()
+    
+    # Mantenere il programma in esecuzione in modo da consentire la ricezione dei messaggi
+    while True:
+        pass
 
 
 if __name__ == '__main__':

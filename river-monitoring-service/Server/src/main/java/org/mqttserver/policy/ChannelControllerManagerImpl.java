@@ -1,6 +1,10 @@
 package org.mqttserver.policy;
 
+import com.google.gson.Gson;
 import org.mqttserver.presentation.EndOfMessage;
+import org.mqttserver.presentation.JSONUtils;
+import org.mqttserver.presentation.MessageToArduino;
+import org.mqttserver.presentation.Status;
 import org.mqttserver.serial.SerialCommChannel;
 import org.mqttserver.serial.SerialCommChannelImpl;
 import org.mqttserver.serial.SerialScanner;
@@ -11,10 +15,12 @@ import org.mqttserver.services.MQTT.Broker;
 public class ChannelControllerManagerImpl implements ChannelControllerManager {
 
     private Broker broker;
-    private HTTPServer httpServer = null;
+
+    private HTTPServer httpServer;
 
     private SerialCommChannel serialCommChannel;
     private SerialScanner serialScanner = new SerialScannerImpl();
+
 
     public ChannelControllerManagerImpl(Broker broker, HTTPServer httpServer) throws Exception {
         //Init broker and http server
@@ -23,24 +29,31 @@ public class ChannelControllerManagerImpl implements ChannelControllerManager {
 
         //init serial communication
         this.serialCommChannel = new SerialCommChannelImpl(this.serialScanner.getConnectedPort(), 9600 );
-
-
-    }
-
-    private void startController() {
-        //TODO: here the implementation of starting
-        System.out.println("Started CHANNEL CONTROLLER " + "\nChannel Controller Control MQTTServer: " +
+        System.out.println("Started CHANNEL CONTROLLER " + "\nChannel Controller Controls MQTTServer: " +
                 this.broker.getMqttServer().toString() + " ON PORT: "  + this.broker.getMqttServer().actualPort());
+
     }
+
 
     @Override
-    public void sendMessageToArduino(String message) { //USE SERIAL LINE
+    public void sendMessageToArduino() { //USE SERIAL LINE
+
+        Status actualStatus;
+
+        this.broker.getMqttServer();
 
 
-       /* MessageToArduino messageToArduino = new MessageToArduino();
-        messageToArduino.setStatus(this);*/
 
-        this.serialCommChannel.sendMessageToArduino(message);
+
+
+
+
+
+
+        MessageToArduino messageToArduino = new MessageToArduino(Status.NORMAL); //just for testing i add always NORMAL
+        System.out.println(JSONUtils.objectToJson(messageToArduino));
+
+        this.serialCommChannel.sendMessageToArduino(JSONUtils.objectToJson(messageToArduino));
 
         //TODO: at the end i always emd the message with EOM
         sendEndOfMessage();

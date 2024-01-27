@@ -6,17 +6,17 @@ package org.mqttserver.presentation;
 * */
 public class MessageToArduino {
 
-    private Statuses status;
+    private Status status;
 
-    public MessageToArduino(Statuses status) {
+    public MessageToArduino(Status status) {
         this.status = status;
     }
 
-    public Statuses getStatus() {
+    public Status getStatus() {
         return this.status;
     }
 
-    public void setStatus(Statuses status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 }

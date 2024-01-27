@@ -2,7 +2,7 @@ package org.mqttserver.presentation;
 
 /**
  * This enum represents the statuses of the system*/
-public enum Statuses {
+public enum Status {
 
     ALARM_TOO_LOW,
     NORMAL,

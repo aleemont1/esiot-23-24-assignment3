@@ -4,7 +4,7 @@ public interface ChannelControllerManager {
 
 
     //ARDUINO
-    void sendMessageToArduino(String message);
+    void sendMessageToArduino();
     String receiveDataFromArduino() throws InterruptedException;
 
 
