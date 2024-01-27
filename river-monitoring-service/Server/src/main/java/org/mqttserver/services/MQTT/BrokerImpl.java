@@ -2,20 +2,14 @@ package org.mqttserver.services.MQTT;
 
 import io.netty.handler.codec.mqtt.MqttQoS;
 import io.vertx.core.Vertx;
-import io.vertx.core.buffer.Buffer;
+import io.vertx.mqtt.MqttEndpoint;
 import io.vertx.mqtt.MqttServer;
 import io.vertx.mqtt.MqttServerOptions;
-import io.vertx.mqtt.MqttTopicSubscription;
-import org.mqttserver.services.MQTT.publisher.MQTTPublisherImpl;
-import org.mqttserver.services.MQTT.subscriber.MQTTSubscriberImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/*
-*   THIS CLASS IS JUST TO TRY PUBLISH AND SUBSCRIBE, THE CODE MUST BE DIVIDED INTO THE RELATED CORRECT CLASS
-*
-* */
+
 public class BrokerImpl implements Broker {
 
     private final String HOST = "localhost";
@@ -25,13 +19,14 @@ public class BrokerImpl implements Broker {
 
     protected MqttServerOptions mqttServerOptions = null;
 
-    private MQTTPublisherImpl mqttPublisher = null; //the object responsable of publishing the message on a certain topic (response)
-    private MQTTSubscriberImpl mqttSubscriber = null; //the object rensposable of subscribing a topic from the client (request)
+    private final Vertx vertx;
+
+    private final List<MqttEndpoint> subscribedClients = new ArrayList<>();
 
 
     public BrokerImpl() {
         //Setting up Vertx, Server Options and Server
-        Vertx vertx = Vertx.vertx();
+        this.vertx = Vertx.vertx();
         this.mqttServerOptions = this.createMqttServerOptions();
         this.mqttServer = this.createMqttServer(vertx, mqttServerOptions);
     }
@@ -48,98 +43,51 @@ public class BrokerImpl implements Broker {
 
     @Override
     public void initialize(MqttServer mqttServer) {
+
+
         mqttServer.endpointHandler(endpoint -> {
+            // Handle connection
+            System.out.println("Client connected: " + endpoint.clientIdentifier());
 
-            // shows main connect info
-            System.out.println("MQTT client [" + endpoint.clientIdentifier() + "] request to connect, clean session = " + endpoint.isCleanSession());
-
-            if (endpoint.auth() != null) {
-                System.out.println("[username = " + endpoint.auth().getUsername() + ", password = " + endpoint.auth().getPassword() + "]");
-            }
-            if (endpoint.will() != null) {
-                System.out.println("[will flag = " + endpoint.will().isWillFlag() + " topic = " + endpoint.will().getWillTopic() + " msg = " + endpoint.will().getWillMessage() +
-                        " QoS = " + endpoint.will().getWillQos() + " isRetain = " + endpoint.will().isWillRetain() + "]");
-            }
-
-            System.out.println("[keep alive timeout = " + endpoint.keepAliveTimeSeconds() + "]");
-
-            // accept connection from the remote client
-            endpoint.accept(false);
-
-            // handling requests for subscriptions (get info from the server)
+            // Handle subscription
             endpoint.subscribeHandler(subscribe -> {
-                List<MqttQoS> grantedQosLevels = new ArrayList<>();
-                for (MqttTopicSubscription s : subscribe.topicSubscriptions()) {
-                    System.out.println("Subscription for " + s.topicName() + " with QoS " + s.qualityOfService());
-                    grantedQosLevels.add(s.qualityOfService());
-                }
-                // ack the subscriptions request
-                endpoint.subscribeAcknowledge(subscribe.messageId(), grantedQosLevels);
-
-                // just as example, publish a message on the first topic with requested QoS
-                endpoint.publish(subscribe.topicSubscriptions().get(0).topicName(),
-                        Buffer.buffer("Hello from the Vert.x MQTT server"),
-                        subscribe.topicSubscriptions().get(0).qualityOfService(),
-                        false,
-                        false);
-
-                // specifing handlers for handling QoS 1 and 2
-                endpoint.publishAcknowledgeHandler(messageId -> {
-
-                    System.out.println("Received ack for message = " + messageId);
-
-                }).publishReceivedHandler(endpoint::publishRelease).publishCompletionHandler(messageId -> {
-
-                    System.out.println("Received ack for message = " + messageId);
+                subscribe.topicSubscriptions().forEach(topic -> {
+                    System.out.println("Client subscribed to: " + topic.topicName());
+                    subscribedClients.add(endpoint);
                 });
             });
 
-            // handling requests for unsubscriptions
-            endpoint.unsubscribeHandler(unsubscribe -> {
 
-                for (String t : unsubscribe.topics()) {
-                    System.out.println("Unsubscription for " + t);
-                }
-                // ack the subscriptions request
-                endpoint.unsubscribeAcknowledge(unsubscribe.messageId());
-            });
-
-            // handling ping from client
-            endpoint.pingHandler(v -> {
-                System.out.println("Ping received from client");
-            });
-
-            // handling disconnect message
-            endpoint.disconnectHandler(v -> {
-                System.out.println("Received disconnect from client");
-            });
-
-            // handling closing connection
-            endpoint.closeHandler(v -> {
-                System.out.println("Connection closed");
-            });
-
-            // handling incoming published messages
             endpoint.publishHandler(message -> {
-
-                System.out.println("Just received message on [" + message.topicName() + "] payload [" + message.payload() + "] with QoS [" + message.qosLevel() + "]");
-
-                if (message.qosLevel() == MqttQoS.AT_LEAST_ONCE) {
-                    endpoint.publishAcknowledge(message.messageId());
-                } else if (message.qosLevel() == MqttQoS.EXACTLY_ONCE) {
-                    endpoint.publishReceived(message.messageId());
+                System.out.println("Received message on topic " + message.topicName() + " with payload: " + message.payload().toString());
+                if (!subscribedClients.isEmpty()) {
+                    for (MqttEndpoint client : subscribedClients) {
+                        client.publish(message.topicName(), message.payload(), MqttQoS.valueOf(0), false, false);
+                    }
                 }
+            });
 
-            }).publishReleaseHandler(endpoint::publishComplete);
-        })
-        .listen(SERVER_PORT, HOST, ar -> {
+            endpoint.disconnectHandler(disconnect -> System.out.println("Client disconnected"));
+
+           endpoint.closeHandler(handler -> {
+               System.out.println("Client close the connection: " + endpoint.clientIdentifier());
+               subscribedClients.remove(endpoint);
+
+               System.out.println("Subscriber " + endpoint + "removed from list. ACTUAL LIST: " + subscribedClients);
+           });
+
+            // Acknowledge the connection request
+            endpoint.accept(false);
+        });
+
+        mqttServer.listen(SERVER_PORT, HOST, ar -> {
             if (ar.succeeded()) {
                 System.out.println("MQTT server is listening on port " + mqttServer.actualPort());
-
             } else {
                 System.err.println("Error on starting the server" + ar.cause().getMessage());
             }
         });
+
     }
 
     @Override
