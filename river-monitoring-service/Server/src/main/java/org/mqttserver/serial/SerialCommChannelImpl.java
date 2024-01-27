@@ -32,7 +32,7 @@ public class SerialCommChannelImpl implements SerialCommChannel, SerialPortEvent
 		}
 		try {
 			synchronized (serialPort) {
-				System.out.println("I write on serial line: " + String.valueOf(array) );
+				System.out.println("Server wrote on arduino: " + String.valueOf(array) );
 				serialPort.writeBytes(bytes);
 			}
 		} catch(Exception ex){

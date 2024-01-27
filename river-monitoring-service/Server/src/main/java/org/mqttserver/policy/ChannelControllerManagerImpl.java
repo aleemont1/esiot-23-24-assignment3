@@ -48,10 +48,7 @@ public class ChannelControllerManagerImpl implements ChannelControllerManager {
 
 
 
-
-
         MessageToArduino messageToArduino = new MessageToArduino(Status.NORMAL); //just for testing i add always NORMAL
-        System.out.println(JSONUtils.objectToJson(messageToArduino));
 
         this.serialCommChannel.sendMessageToArduino(JSONUtils.objectToJson(messageToArduino));
 

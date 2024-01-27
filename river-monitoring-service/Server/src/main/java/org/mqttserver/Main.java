@@ -26,17 +26,17 @@ public class Main {
 
 
         //attesa necessaria per fare in modo che Arduino completi il reboot
-        //System.out.println("Waiting Arduino for rebooting...");
-        //Thread.sleep(4000);
-        //System.out.println("Ready.");
-       /* while (true){
-            System.out.println("Sending ping");
+        System.out.println("Waiting Arduino for rebooting...");
+        Thread.sleep(4000);
+        System.out.println("Ready.");
+        while (true){
+            System.out.println("Server send message...");
             channelControllerManager.sendMessageToArduino(); //this message must be different
 
             String msg = channelControllerManager.receiveDataFromArduino();
             System.out.println("Received: "+ msg);
             Thread.sleep(500);
-        } */
+         }
 
 
 
