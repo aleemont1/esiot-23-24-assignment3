@@ -6,7 +6,6 @@ public class SerialScannerImpl implements SerialScanner {
     public SerialScannerImpl() {
 
     }
-
     @Override
     public String getConnectedPort() {
         String[] portNames = SerialPortList.getPortNames();

@@ -1,21 +1,30 @@
 package org.mqttserver.policy;
 
-import io.vertx.mqtt.MqttServer;
+import org.mqttserver.presentation.EndOfMessage;
+import org.mqttserver.serial.SerialCommChannel;
+import org.mqttserver.serial.SerialCommChannelImpl;
+import org.mqttserver.serial.SerialScanner;
+import org.mqttserver.serial.SerialScannerImpl;
 import org.mqttserver.services.HTTP.HTTPServer;
 import org.mqttserver.services.MQTT.Broker;
-import org.mqttserver.services.MQTT.BrokerImpl;
-
-import java.util.logging.Handler;
 
 public class ChannelControllerManagerImpl implements ChannelControllerManager {
-
 
     private Broker broker;
     private HTTPServer httpServer = null;
 
-    public ChannelControllerManagerImpl(Broker broker, HTTPServer httpServer) {
+    private SerialCommChannel serialCommChannel;
+    private SerialScanner serialScanner = new SerialScannerImpl();
+
+    public ChannelControllerManagerImpl(Broker broker, HTTPServer httpServer) throws Exception {
+        //Init broker and http server
         this.broker = broker;
         this.httpServer = httpServer;
+
+        //init serial communication
+        this.serialCommChannel = new SerialCommChannelImpl(this.serialScanner.getConnectedPort(), 9600 );
+
+
     }
 
     private void startController() {
@@ -27,6 +36,21 @@ public class ChannelControllerManagerImpl implements ChannelControllerManager {
     @Override
     public void sendMessageToArduino(String message) { //USE SERIAL LINE
 
+
+       /* MessageToArduino messageToArduino = new MessageToArduino();
+        messageToArduino.setStatus(this);*/
+
+        this.serialCommChannel.sendMessageToArduino(message);
+
+        //TODO: at the end i always emd the message with EOM
+        sendEndOfMessage();
+
+
+    }
+
+    @Override
+    public String receiveDataFromArduino() throws InterruptedException { //USE SERIAL PROTOCOL
+        return this.serialCommChannel.receiveMessageFromArduino();
     }
 
     @Override
@@ -44,17 +68,23 @@ public class ChannelControllerManagerImpl implements ChannelControllerManager {
 
     }
 
-    @Override
-    public void receiveDataFromArduino() { //USE SERIAL PROTOCOL
 
+
+    @Override
+    public boolean receivedEndOfMessage() { //valid for serial
+
+        //TODO: when receive end of message it means i can take control of the serial line
+        return false;
     }
 
     @Override
-    public void run() {
-        try {
-            this.startController();
-        } catch (Exception ex) {
-            System.out.println("Error in starting CHANNEL CONTROLLER MANAGER");
-        }
+    public boolean sendEndOfMessage() { //valid for serial
+
+        //TODO: when i call this method it means i have finished to send my message on serial line so i send another message that represent the EOF
+        EndOfMessage endOfMessage = new EndOfMessage();
+
+       // this.serialWriter.writeDataOnSerial(endOfMessage.getEOM());
+        return true;
     }
+
 }
