@@ -64,6 +64,20 @@ public:
      */
     bool isMessageDelivered();
 
+    /**
+     * @brief Sends a message to the server.
+     *
+     * @param message The message to send to the server.
+     */
+    void sendMessage(String message);
+
+    /**
+     * @brief Checks if a message is available on the serial port to be read by the client.
+     *
+     * @return bool True if a message is available, false otherwise.
+     */
+    bool checkMessageAvailability();
+
 private:
     /**
      * @brief The status of the valve received from the server.
@@ -152,26 +166,12 @@ private:
     bool isValidStatus(String status);
 
     /**
-     * @brief Sends a message to the server.
-     *
-     * @param message The message to send to the server.
-     */
-    void sendMessage(String message);
-
-    /**
      * @brief Sends a specific end message to the server to close
      * the communication channel.
      *
      * @param endMessage The message to send to the server to end the communication.
      */
     void sendEndMessage(String endMessage);
-
-    /**
-     * @brief Checks if a message is available on the serial port to be read by the client.
-     *
-     * @return bool True if a message is available, false otherwise.
-     */
-    bool checkMessageAvailability();
 
     /**
      * @brief Initializes the serial communication channel.
