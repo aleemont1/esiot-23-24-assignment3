@@ -1,22 +1,27 @@
 package org.mqttserver.policy;
 
-import org.mqttserver.presentation.MessageToArduino;
-import org.mqttserver.presentation.MessageToDashboard;
-import org.mqttserver.presentation.MessageToSensor;
-
-public interface ChannelControllerManager extends Runnable {
+public interface ChannelControllerManager {
 
 
+    //ARDUINO
     void sendMessageToArduino(String message);
+    String receiveDataFromArduino() throws InterruptedException;
 
-    void sendMessageToDashboard(String message);
+
+    //ESP32
 
     void sendMessageToSensor(String message);
 
     void receiveDataFromSensor();
 
-    void receiveDataFromArduino();
 
+    //DASHBOARD
+
+    void sendMessageToDashboard(String message);
+
+
+
+    //this two methods are not useful in this implementation
     boolean receivedEndOfMessage(); //valid for serial line
 
     boolean sendEndOfMessage(); //valid for serial line
