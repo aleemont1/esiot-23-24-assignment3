@@ -24,7 +24,7 @@ public class Main {
         //Init Controller Manager
         ChannelControllerManager channelControllerManager = new ChannelControllerManagerImpl(broker, null);
 
-
+/***
         //attesa necessaria per fare in modo che Arduino completi il reboot
         System.out.println("Waiting Arduino for rebooting...");
         Thread.sleep(4000);
@@ -44,6 +44,6 @@ public class Main {
         //HttpServer httpServer = new HttpServer() .....
 
 
-
+*/
     }
 }

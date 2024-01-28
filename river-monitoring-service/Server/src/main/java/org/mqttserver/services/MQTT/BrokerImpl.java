@@ -12,7 +12,7 @@ import java.util.List;
 
 public class BrokerImpl implements Broker {
 
-    private final String HOST = "localhost";
+    private final String HOST = "broker";
     private final int SERVER_PORT = 1883;
 
     protected MqttServer mqttServer = null;
@@ -28,7 +28,7 @@ public class BrokerImpl implements Broker {
         //Setting up Vertx, Server Options and Server
         this.vertx = Vertx.vertx();
         this.mqttServerOptions = this.createMqttServerOptions();
-        this.mqttServer = this.createMqttServer(vertx, mqttServerOptions);
+        this.mqttServer = this.createMqttServer(vertx);
     }
 
     private MqttServerOptions createMqttServerOptions() {
@@ -37,8 +37,8 @@ public class BrokerImpl implements Broker {
                 .setHost(HOST);
     }
 
-    private MqttServer createMqttServer(Vertx vertx, MqttServerOptions mqttServerOptions) {
-        return MqttServer.create(vertx, mqttServerOptions);
+    private MqttServer createMqttServer(Vertx vertx) {
+        return MqttServer.create(vertx);
     }
 
     @Override
@@ -80,9 +80,9 @@ public class BrokerImpl implements Broker {
             endpoint.accept(false);
         });
 
-        mqttServer.listen(SERVER_PORT, HOST, ar -> {
+        mqttServer.listen( ar -> {
             if (ar.succeeded()) {
-                System.out.println("MQTT server is listening on port " + mqttServer.actualPort());
+                System.out.println("MQTT server is listening on port " + ar.result().actualPort() + " " + ar);
             } else {
                 System.err.println("Error on starting the server" + ar.cause().getMessage());
             }
