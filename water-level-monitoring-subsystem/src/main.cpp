@@ -5,8 +5,8 @@
 #include "utils/WifiConnection.h"
 #include "constants.h"
 
-#define FREQ_MSG_SIZE 5
-#define SONAR_MSG_SIZE 5
+#define FREQ_MSG_SIZE 15
+#define SONAR_MSG_SIZE 15
 
 /* MQTT client management */
 
