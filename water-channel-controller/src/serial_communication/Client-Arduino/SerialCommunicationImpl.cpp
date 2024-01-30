@@ -1,4 +1,3 @@
-#include "Arduino.h"
 #include "SerialCommunication.h"
 
 SerialCommunicationChannel::SerialCommunicationChannel()
@@ -85,7 +84,7 @@ String SerialCommunicationChannel::processReceivedContent(String receivedContent
 {
     receivedContent = "";
     // Create a DynamicJsonDocument with a capacity of 1024 bytes
-    DynamicJsonDocument doc(1024);
+    JsonDocument doc;
 
     // Deserialize the JSON document
     DeserializationError error = deserializeJson(doc, receivedContent);
@@ -113,7 +112,7 @@ void SerialCommunicationChannel::sentMessageConfirmation(String originalMessage)
     Serial.println("Received message: " + originalMessage);
 
     // Create a DynamicJsonDocument with a capacity of 1024 bytes
-    DynamicJsonDocument doc(1024);
+    JsonDocument doc;
 
     // Deserialize the JSON document
     DeserializationError error = deserializeJson(doc, originalMessage);
