@@ -18,13 +18,11 @@ public class Main {
         Broker broker = new BrokerImpl();
         broker.initialize(broker.getMqttServer());
 
-        //start httpServer
-
 
         //Init Controller Manager
         ChannelControllerManager channelControllerManager = new ChannelControllerManagerImpl(broker, null);
 
-/***
+
         //attesa necessaria per fare in modo che Arduino completi il reboot
         System.out.println("Waiting Arduino for rebooting...");
         Thread.sleep(4000);
@@ -42,8 +40,6 @@ public class Main {
 
         //TODO: start the HTTPServer to communicate with Client-Dashboard passing values of system
         //HttpServer httpServer = new HttpServer() .....
-
-
-*/
+        
     }
 }

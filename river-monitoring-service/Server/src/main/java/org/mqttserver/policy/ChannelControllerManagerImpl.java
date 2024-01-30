@@ -1,7 +1,5 @@
 package org.mqttserver.policy;
 
-import com.google.gson.Gson;
-import org.mqttserver.presentation.EndOfMessage;
 import org.mqttserver.presentation.JSONUtils;
 import org.mqttserver.presentation.MessageToArduino;
 import org.mqttserver.presentation.Status;
@@ -28,9 +26,9 @@ public class ChannelControllerManagerImpl implements ChannelControllerManager {
         this.httpServer = httpServer;
 
         //init serial communication
-        //this.serialCommChannel = new SerialCommChannelImpl(this.serialScanner.getConnectedPort(), 9600 );
-        //System.out.println("Started CHANNEL CONTROLLER " + "\nChannel Controller Controls MQTTServer: " +
-              //  this.broker.getMqttServer().toString() + " ON PORT: "  + this.broker.getMqttServer().actualPort());
+        this.serialCommChannel = new SerialCommChannelImpl(this.serialScanner.getConnectedPort(), 9600 );
+        System.out.println("Started CHANNEL CONTROLLER " + "\nChannel Controller Controls MQTTServer: " +
+               this.broker.getMqttServer().toString() + " ON PORT: "  + this.broker.getMqttServer().actualPort());
 
     }
 
@@ -52,8 +50,6 @@ public class ChannelControllerManagerImpl implements ChannelControllerManager {
 
         this.serialCommChannel.sendMessageToArduino(JSONUtils.objectToJson(messageToArduino));
 
-        //TODO: at the end i always emd the message with EOM
-        sendEndOfMessage();
 
 
     }
@@ -78,23 +74,5 @@ public class ChannelControllerManagerImpl implements ChannelControllerManager {
 
     }
 
-
-
-    @Override
-    public boolean receivedEndOfMessage() { //valid for serial
-
-        //TODO: when receive end of message it means i can take control of the serial line
-        return false;
-    }
-
-    @Override
-    public boolean sendEndOfMessage() { //valid for serial
-
-        //TODO: when i call this method it means i have finished to send my message on serial line so i send another message that represent the EOF
-        EndOfMessage endOfMessage = new EndOfMessage();
-
-       // this.serialWriter.writeDataOnSerial(endOfMessage.getEOM());
-        return true;
-    }
 
 }

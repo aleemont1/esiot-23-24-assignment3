@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
+// topic della frequenza: sensor/freq,  {"freq":""}   ,  sensor/wl   {"WL":""}
+
 public class BrokerImpl implements Broker {
 
     private final String HOST = "broker";
