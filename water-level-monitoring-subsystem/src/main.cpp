@@ -1,130 +1,70 @@
 #define __CAPTIVE_PORTAL
-
-#include <WiFi.h>
-#include <PubSubClient.h>
-#include <HTTPClient.h>
-#include "api/Sonar.h"
 #ifdef __CAPTIVE_PORTAL
-  #include "utils/CaptivePortalConnection.h"
+#include "utils/CaptivePortalConnection.h"
 #else
-  #include "utils/WifiConnection.h"
+#include "utils/WifiConnection.h"
 #endif
+
+#include <PubSubClient.h>
+#include <WiFiClient.h>
+#include "api/Sonar.h"
 #include "env/constants.h"
 
 #define FREQ_MSG_SIZE 16
 #define SONAR_MSG_SIZE 16
 
-WiFiClient espClient;
-PubSubClient client(espClient);
 #ifdef __CAPTIVE_PORTAL
-  CaptivePortalConnection wifiConn = CaptivePortalConnection();
+CaptivePortalConnection wifiConn = CaptivePortalConnection();
 #else
-  WifiConnection wifiConn = WifiConnection();
+/**
+ * Define ssid and password in env/constants.h
+ */
+WifiConnection wifiConn = WifiConnection(ssid, password);
 #endif
 
+WiFiClient espClient;
+// MQTTpublisher publisher;
+// MQTTsubscriber subscriber;
+
 unsigned long lastMsgTime = 0;
+
 char freq_msg[FREQ_MSG_SIZE];
 char sonar_msg[SONAR_MSG_SIZE];
 
 /* Frequenza di invio dei messaggi al server */
-unsigned int frequency = 2000; // 2 seconds default
-
+unsigned int frequency = 2000;    // 2 seconds default
 Sonar sonar = Sonar(12, 13, 500); // random values, to be changed
 
-/* MQTT subscribing callback */
-
-void callback(char *topic, byte *payload, unsigned int length)
-{
-  char *buff = (char *)malloc(length + 1);
-  for (int i = 0; i < length; i++)
-  {
-    buff[i] = (char)payload[i];
-  }
-  Serial.println(String("Message arrived on [") + topic + "] len: " + length + " " + buff);
-  // setFrequency(toInt(payload));
-  free(buff);
-}
-
-void setFrequency(int freq)
-{
-  frequency = freq;
-}
-
-unsigned int getFrequency()
-{
-  return frequency;
-}
-
-unsigned long getSonarValue()
-{
-  return sonar.getDistance();
-}
-
-void reconnect()
-{
-  // Loop until we're reconnected
-  while (!client.connected())
-  {
-    Serial.print("Attempting MQTT connection...");
-
-    // Create a random client ID
-    String clientId = String("water-level-monitor-") + String(random(0xffff), HEX);
-
-    // Attempt to connect
-    if (client.connect(clientId.c_str()))
-    {
-      Serial.println("connected");
-      // Once connected, publish an announcement...
-      // client.publish("outTopic", "hello world");
-      // ... and resubscribe
-      client.subscribe(freq_topic);
-    }
-    else
-    {
-      Serial.print("failed, rc=");
-      Serial.print(client.state());
-      Serial.println(" trying again in 5 seconds...");
-      // Wait 5 seconds before retrying
-      delay(5000);
-    }
-  }
-}
+// void setFrequency(int freq);
+// unsigned int getFrequency();
 
 void setup()
 {
+
   Serial.begin(115200);
   wifiConn.setup_wifi();
   randomSeed(micros());
-  client.setServer(mqtt_server, 1883);
-  client.setCallback(callback);
+
+  // publisher = MQTTpublisher(default_mqtt_server);
+  // Serial.println(publisher.connected());
+  // subscriber = MQTTsubscriber(default_mqtt_server, freq_topic);
 }
 
 void loop()
 {
 
-  if (!client.connected())
-  {
-    reconnect();
-  }
-  client.loop();
-
-  unsigned long now = millis();
-  if (now - lastMsgTime > frequency)
-  {
-    lastMsgTime = now;
-
-    /* creating a msg in the buffer
-     *
-     * NOTE TO SELF: Use JSON serializer
-     */
-    snprintf(freq_msg, FREQ_MSG_SIZE, "{\"FREQ\":\"%i\"}", getFrequency());  // getFrequency() deve ritornare il livello dell'acqua (Il campo deve chiamarsi FREQ)
-    snprintf(sonar_msg, SONAR_MSG_SIZE, "{\"WL\":\"%i\"}", getSonarValue()); // Sonar.getValue() deve ritornare il livello dell'acqua (Il campo deve chiamarsi WL)
-
-    Serial.println(String("Publishing message: ") + freq_msg + " on topic: " + freq_topic);
-    Serial.println(String("Publishing message: ") + sonar_msg + " on topic: " + wl_topic);
-
-    /* publishing the msg */
-    client.publish(freq_topic, freq_msg);
-    client.publish(wl_topic, sonar_msg);
-  }
+  Serial.println("Frequency: " + String(frequency));
+  Serial.println("Sonar: " + String(sonar.getDistance()));
+  delay(1000);
 }
+
+// void setFrequency(int freq)
+// {
+//   // frequency = atoi(subscriber.getPayload());
+// }
+
+// unsigned int getFrequency()
+// {
+//   // return atoi(subscriber.getPayload());
+//   return -1;
+// }
