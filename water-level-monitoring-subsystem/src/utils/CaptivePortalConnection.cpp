@@ -97,6 +97,7 @@ void CaptivePortalConnection::setSSID(char *ssid)
 
 /**
  * @brief Get the SSID of the WiFi network
+ * @return char* ssid: WiFi network SSID
 */
 char *CaptivePortalConnection::getSSID()
 {
@@ -105,6 +106,7 @@ char *CaptivePortalConnection::getSSID()
 
 /**
  * @brief Get the captive portal domain
+ * @return char* captivePortalDomain: URL or IP of the radius server
 */
 char *CaptivePortalConnection::getCaptive()
 {
@@ -113,6 +115,7 @@ char *CaptivePortalConnection::getCaptive()
 
 /**
  * @brief Get the query for the radius server
+ * @return char* query: Usually a POST request
 */
 char *CaptivePortalConnection::getQuery()
 {
