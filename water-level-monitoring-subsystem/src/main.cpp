@@ -3,7 +3,7 @@
 #include <HTTPClient.h>
 #include "api/Sonar.h"
 #include "utils/CaptivePortalConnection.h"
-#include "constants.h"
+#include "env/constants.h"
 
 #define FREQ_MSG_SIZE 16
 #define SONAR_MSG_SIZE 16
@@ -109,8 +109,8 @@ void loop()
      *
      * NOTE TO SELF: Use JSON serializer
      */
-    snprintf(freq_msg, FREQ_MSG_SIZE, "{\"FREQ\":\"%d\"}", getFrequency());    // getFrequency() deve ritornare il livello dell'acqua (Il campo deve chiamarsi FREQ)                                                          
-    snprintf(sonar_msg, SONAR_MSG_SIZE, "{\"WL\":\"%d\"}", getSonarValue()); // Sonar.getValue() deve ritornare il livello dell'acqua (Il campo deve chiamarsi WL)
+    snprintf(freq_msg, FREQ_MSG_SIZE, "{\"FREQ\":\"%i\"}", getFrequency());    // getFrequency() deve ritornare il livello dell'acqua (Il campo deve chiamarsi FREQ)                                                          
+    snprintf(sonar_msg, SONAR_MSG_SIZE, "{\"WL\":\"%i\"}", getSonarValue()); // Sonar.getValue() deve ritornare il livello dell'acqua (Il campo deve chiamarsi WL)
 
     Serial.println(String("Publishing message: ") + freq_msg + " on topic: " + freq_topic);
     Serial.println(String("Publishing message: ") + sonar_msg + " on topic: " + wl_topic);

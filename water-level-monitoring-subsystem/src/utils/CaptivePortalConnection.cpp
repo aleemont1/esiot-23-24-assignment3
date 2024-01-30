@@ -1,6 +1,6 @@
 // CaptivePortalConnection
 #include "CaptivePortalConnection.h"
-#include "../constants.h"
+#include "../env/constants.h"
 #include <WiFi.h>
 #include <HTTPClient.h>
 
@@ -60,7 +60,7 @@ void CaptivePortalConnection::setup_wifi()
     login.begin(this->getCaptive());
     login.addHeader("Content-Type", "application/x-www-form-urlencoded");
     Serial.println("Sending POST request for login");
-    int httpCode = login.POST(this->getQuery());
+    login.POST(this->getQuery());
     String payload = login.getString();
 }
 
