@@ -1,0 +1,31 @@
+name: PlatformIO CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - directory: water-channel-controller
+            board: uno
+          - directory: water-level-monitoring-subsystem
+            board: esp32dev
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+    - name: Install PlatformIO
+      run: |
+        python -m pip install --upgrade pip
+        pip install platformio
+    - name: Run PlatformIO
+      run: platformio ci --project-option="board=${{ matrix.board }}" ${{ matrix.directory }}
