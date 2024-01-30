@@ -2,12 +2,9 @@
 #define CONSTANTS_H
 
 /* wifi network info */
-#include <Arduino.h> // Include the necessary header file for the 'String' type
-
-extern const char *ssid;
-extern const String captivePortalDomain;
-extern const String query;
-extern const String msg;
+extern char *default_ssid;
+extern char *default_captivePortalDomain;
+extern char *default_query;
 
 /* MQTT server address */
 extern const char *mqtt_server;
