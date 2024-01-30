@@ -124,13 +124,24 @@ private:
     String processReceivedContent(String receivedContent);
 
     /**
-     * @brief Sends a confirmation message for the original message sent.
+     * @brief Sends a confirmation message in response to the original message received.
      *
-     * This function is responsible for sending a confirmation message to the client
-     * Arduino, indicating that the original message has been successfully received
-     * and processed.
+     * This function is responsible for acknowledging the receipt and successful processing
+     * of the original message sent by the client Arduino.
+     * It does this by sending a confirmation message back to the client.
+     * The confirmation message includes the status from the original message
+     * and a corresponding valve value.
+     * The valve value is determined based on the status received in the original message.
      *
-     * @param originalMessage The original message that was sent.
+     * The function performs the following steps:
+     * 1. Echoes the original message back to the client as a form of receipt confirmation.
+     * 2. Deserializes the original message to extract the "status" field.
+     * 3. Determines the corresponding valve value based on the received status.
+     * 4. Creates a new JSON document that includes the received status and the determined valve value.
+     * 5. Serializes the new JSON document into a string.
+     * 6. Sends the serialized string as the confirmation message back to the client.
+     *
+     * @param originalMessage The original message that was received from the client Arduino.
      */
     void sentMessageConfirmation(String originalMessage);
 
