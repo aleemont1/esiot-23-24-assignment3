@@ -3,8 +3,14 @@ name: Java CI with Gradle
 on:
   push:
     branches: [main]
+    paths:
+      - "river-monitoring-service/**"
+      - ".github/workflows/gradle.yml"
   pull_request:
     branches: [main]
+    paths:
+      - "river-monitoring-service/**"
+      - ".github/workflows/gradle.yml"
 
 jobs:
   build:

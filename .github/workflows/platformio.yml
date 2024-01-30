@@ -3,8 +3,16 @@ name: PlatformIO CI
 on:
   push:
     branches: [main]
+    paths:
+      - 'water-channel-controller/**'
+      - 'water-level-monitoring-subsystem/**'
+      - '.github/workflows/platformio.yml'
   pull_request:
     branches: [main]
+    paths:
+      - 'water-channel-controller/**'
+      - 'water-level-monitoring-subsystem/**'
+      - '.github/workflows/platformio.yml'
 
 jobs:
   build:
