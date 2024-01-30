@@ -11,4 +11,5 @@ void loop()
 
   SerialCommunicationChannel commChannel;
   String content = commChannel.getReceivedContent();
+  commChannel.getReceivedContent();
 }
