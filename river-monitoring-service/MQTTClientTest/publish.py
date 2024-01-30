@@ -3,9 +3,9 @@ import time
 
 from paho.mqtt import client as mqtt_client
 
-broker = 'localhost'
+broker = '10.250.23.142'
 port = 1883
-topic = "python/mqtt"
+topic = "test"
 # Generate a Client ID with the publish prefix.
 client_id = f'publish-{random.randint(0, 1000)}'
 # username = 'emqx'
@@ -29,7 +29,7 @@ def publish(client):
     msg_count = 1
     while True:
         time.sleep(1)
-        msg = f"messages: {msg_count}"
+        msg = f"Ciao dal client python"
         result = client.publish(topic, msg)
         # result: [0, 1]
         status = result[0]

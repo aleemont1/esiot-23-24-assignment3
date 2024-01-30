@@ -21,10 +21,6 @@ public interface ChannelControllerManager {
 
 
 
-    //this two methods are not useful in this implementation
-    boolean receivedEndOfMessage(); //valid for serial line
-
-    boolean sendEndOfMessage(); //valid for serial line
 
 
 
