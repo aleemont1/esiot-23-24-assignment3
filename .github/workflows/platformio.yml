@@ -27,4 +27,4 @@ jobs:
           python -m pip install --upgrade pip
           pip install platformio
       - name: Run PlatformIO
-        run: platformio ci --project-option="board=${{ matrix.board }}" ${{ matrix.directory }}
+        run: platformio run -d ${{ matrix.directory }}
