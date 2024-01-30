@@ -6,8 +6,8 @@ char *default_captivePortalDomain = "";
 char *default_query = "";
 
 /* MQTT server address */
-const char *mqtt_server = "altair";   // MQTT server IP address/hostname
+char *default_mqtt_server = "";   // MQTT server IP address/hostname
 
-/* MQTT topicS */
-const char *freq_topic = "sensor/freq";
-const char *wl_topic = "sensor/wl";
+/* MQTT topics */
+char *freq_topic = "sensor/freq";
+char *wl_topic = "sensor/wl";
