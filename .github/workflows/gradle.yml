@@ -21,6 +21,11 @@ jobs:
           java-version: "11"
           distribution: "adopt"
       - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
-      - name: Build with Gradle
-        run: ./gradlew build
+        run: chmod +x ./river-monitoring-service/Server/gradlew
+        if: runner.os == 'Linux'
+      - name: Build with Gradle on Linux
+        run: ./river-monitoring-service/Server/gradlew
+        if: runner.os == 'Linux'
+      - name: Build with Gradle on Windows
+        run: .\river-monitoring-service\Server\gradlew.bat
+        if: runner.os == 'Windows'
