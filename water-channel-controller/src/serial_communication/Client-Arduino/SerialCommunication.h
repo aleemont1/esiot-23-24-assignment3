@@ -99,6 +99,11 @@ private:
     String content;
 
     /**
+     * @brief The baud rate used by the serial communication channel.
+     */
+    const int BAUD_RATE = 9600;
+
+    /**
      * @brief A flag indicating whether a message is available
      * on the serial port to be read by the client.
      */
@@ -117,6 +122,17 @@ private:
      * @return String The processed message.
      */
     String processReceivedContent(String receivedContent);
+
+    /**
+     * @brief Sends a confirmation message for the original message sent.
+     *
+     * This function is responsible for sending a confirmation message to the client
+     * Arduino, indicating that the original message has been successfully received
+     * and processed.
+     *
+     * @param originalMessage The original message that was sent.
+     */
+    void sentMessageConfirmation(String originalMessage);
 
     /**
      * @brief Processes a specific end message received from the server
