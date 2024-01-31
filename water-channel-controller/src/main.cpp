@@ -8,10 +8,7 @@ void setup()
 
 void loop()
 {
-
-  SerialCommunicationChannel commChannel;
+  JsonProcessor jsonProcessor;
+  SerialCommunicationChannel commChannel(jsonProcessor);
   commChannel.initializeSerialCommunication();
-  // commChannel.isMessageAvailable();
-  // commChannel.setMessageAvailable(true);
-  // commChannel.setMessageDelivered(true);
 }
