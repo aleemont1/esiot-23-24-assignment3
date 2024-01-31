@@ -17,14 +17,8 @@ void SerialCommunicationChannel::initializeSerialCommunication()
 
 bool SerialCommunicationChannel::checkMessageSent(size_t bytesSent, String message)
 {
-    // Check if all bytes were sent successfully
-    if (bytesSent == message.length())
-    {
-        return true;
-    }
-    // If we reach this point, not all bytes were sent
-    // Serial.println("Error: Not all bytes were sent to the server.");
-    return false;
+    // return the number of bytes sent to the server
+    return bytesSent == message.length();
 }
 
 bool SerialCommunicationChannel::sendMessage(String message)
@@ -62,7 +56,7 @@ String SerialCommunicationChannel::getReceivedContent()
     unsigned long startTime = millis();
     String receivedContent = "";
 
-    while (millis() - startTime < 500)
+    while (millis() - startTime < WAIT_TIME)
     {
         if (checkMessageAvailability())
         {
@@ -86,20 +80,16 @@ String SerialCommunicationChannel::getReceivedContent()
 void SerialCommunicationChannel::setMessageAvailable(bool messageAvailable)
 {
     this->messageAvailable = messageAvailable;
-    // Serial.println(String("Message availability set to: ") + (messageAvailable ? "Yes" : "No"));
 }
 
 bool SerialCommunicationChannel::isMessageAvailable()
 {
-    bool available = messageAvailable;
-    // Serial.println(String("Message availability: ") + (available ? "Yes" : "No"));
-    return available;
+    return messageAvailable;
 }
 
 void SerialCommunicationChannel::setMessageDelivered(bool messageDelivered)
 {
     this->messageDelivered = messageDelivered;
-    // Serial.println(String("Message delivery status set to: ") + (messageDelivered ? "Delivered" : "Not Delivered"));
 }
 
 void SerialCommunicationChannel::receivedEndMessage()
@@ -111,76 +101,32 @@ void SerialCommunicationChannel::receivedEndMessage()
 String SerialCommunicationChannel::processReceivedContent(String receivedContent)
 {
     receivedContent = "";
-    // Create a DynamicJsonDocument with a capacity of 1024 bytes
     JsonDocument doc;
-
-    // Deserialize the JSON document
-    // DeserializationError error = deserializeJson(doc, receivedContent);
-
-    // // Extract the status from the JSON document
-    // if (!doc.containsKey("status"))
-    // {
-    //     return "Error: JSON does not contain 'status' field.";
-    // }
-
-    // // Test if parsing succeeds.
-    // if (error)
-    // {
-    //     return "deserializeJson() failed: " + String(error.c_str());
-    // }
 
     // Extract the status from the JSON document
     String status = doc["status"];
 
     // Create a readable version of the JSON
     receivedContent = "Processed JSON: " + status;
-
     receivedEndMessage();
-
     return receivedContent;
 }
 
 void SerialCommunicationChannel::sentMessageConfirmation(String originalMessage)
 {
-    // Write on the serial line the confirmation of the receipt
-    Serial.println("Received message: " + originalMessage);
-
-    // Create a DynamicJsonDocument with a capacity of 1024 bytes
+    // Serial.println("Received message: " + originalMessage);
+    // Parse the original message into a JsonDocument
     JsonDocument doc;
-
-    // Deserialize the JSON document
-    DeserializationError error = deserializeJson(doc, originalMessage);
-
-    // Test if parsing succeeds.
-    if (error)
-    {
-        Serial.println("deserializeJson() failed: " + String(error.c_str()));
-        return;
-    }
+    deserializeJson(doc, originalMessage);
 
     // Extract the status from the JSON document
     String status = doc["status"];
 
     // Get the corresponding valve value
-    String valveValue;
-    if (status == "NORMAL")
-        valveValue = "25%";
-    else if (status == "ALARM-TOO-LOW")
-        valveValue = "0%";
-    else if (status == "PRE-ALARM-TOO-HIGH")
-        valveValue = "40%";
-    else if (status == "ALARM-TOO-HIGH")
-        valveValue = "50%";
-    else if (status == "ALARM-TOO-HIGH-CRITIC")
-        valveValue = "100%";
-    else if (status == "ping")
-        valveValue = "0%";
-    else
-        valveValue = "Unknown status";
-
+    String valveValue = getValveValue(status);
     doc["valveValue"] = valveValue;
 
-    // Serialize JSON document to string
+    // Serialize the modified JSON document to a string
     String confirmationMessage;
     serializeJson(doc, confirmationMessage);
 
@@ -191,7 +137,6 @@ void SerialCommunicationChannel::sentMessageConfirmation(String originalMessage)
 String SerialCommunicationChannel::formatMessage(String status, String valveValue)
 {
     JsonDocument doc;
-
     // Set the values in the JSON document
     doc["status"] = status;
     doc["valveValue"] = valveValue;
@@ -201,4 +146,22 @@ String SerialCommunicationChannel::formatMessage(String status, String valveValu
     serializeJson(doc, formattedMessage);
 
     return formattedMessage;
+}
+
+String SerialCommunicationChannel::getValveValue(String status)
+{
+    if (status == "NORMAL")
+        return "25%";
+    else if (status == "ALARM-TOO-LOW")
+        return "0%";
+    else if (status == "PRE-ALARM-TOO-HIGH")
+        return "40%";
+    else if (status == "ALARM-TOO-HIGH")
+        return "50%";
+    else if (status == "ALARM-TOO-HIGH-CRITIC")
+        return "100%";
+    else if (status == "ping")
+        return "0%";
+    else
+        return "Unknown status";
 }
