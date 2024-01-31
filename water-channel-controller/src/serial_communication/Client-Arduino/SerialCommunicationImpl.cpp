@@ -1,12 +1,7 @@
 #include "SerialCommunication.h"
 
 SerialCommunicationChannel::SerialCommunicationChannel()
-    : messageAvailable(false), messageDelivered(false)
-{
-    initializeSerialCommunication();
-    checkMessageAvailability();
-    getReceivedContent();
-}
+    : messageAvailable(false), messageDelivered(false) {}
 
 SerialCommunicationChannel::~SerialCommunicationChannel()
 {
@@ -15,14 +10,30 @@ SerialCommunicationChannel::~SerialCommunicationChannel()
 
 void SerialCommunicationChannel::initializeSerialCommunication()
 {
-
     Serial.begin(BAUD_RATE);
+    checkMessageAvailability();
+    getReceivedContent();
 }
 
-void SerialCommunicationChannel::sendMessage(String message)
+bool SerialCommunicationChannel::checkMessageSent(size_t bytesSent, String message)
 {
-    Serial.println(message);
-    isMessageDelivered();
+    // Check if all bytes were sent successfully
+    if (bytesSent == message.length())
+    {
+        return true;
+    }
+    // If we reach this point, not all bytes were sent
+    // Serial.println("Error: Not all bytes were sent to the server.");
+    return false;
+}
+
+bool SerialCommunicationChannel::sendMessage(String message)
+{
+    // Used to represent the size of message (object of type String) in bytes
+    size_t bytesSent = Serial.println(message);
+
+    // Check if all bytes were sent successfully to the server
+    return checkMessageSent(bytesSent, message);
 }
 
 bool SerialCommunicationChannel::isMessageDelivered()
@@ -30,48 +41,65 @@ bool SerialCommunicationChannel::isMessageDelivered()
     return messageDelivered;
 }
 
-void SerialCommunicationChannel::sendEndMessage(String endMessage)
-{
-    sendMessage(endMessage);
-}
-
 bool SerialCommunicationChannel::checkMessageAvailability()
 {
     messageAvailable = Serial.available() > 0;
+    setMessageAvailable(true);
     return messageAvailable;
 }
 
+/*
+    @note:
+    In this version, the method waits up to 500 milliseconds for a message to become available.
+    If a message becomes available within this time, it reads the message, processes it,
+    and sends a confirmation back to the server.
+    If no message becomes available within 500 milliseconds, it prints an error message.
+    This version of the method is non-blocking (delay() instead is not), meaning it won't delay
+    other operations while waiting for a message to become available.
+*/
 String SerialCommunicationChannel::getReceivedContent()
 {
-    delay(500);
+    unsigned long startTime = millis();
     String receivedContent = "";
-    if (checkMessageAvailability())
+
+    while (millis() - startTime < 500)
     {
-        // Read the message from the serial port
-        receivedContent = Serial.readStringUntil('\n');
+        if (checkMessageAvailability())
+        {
+            // Read the message from the serial port
+            receivedContent = Serial.readStringUntil('\n');
 
-        // // Process the received message
-        // receivedContent = processReceivedContent(receivedContent);
+            // Process the received message
+            // receivedContent = processReceivedContent(receivedContent);
 
-        // After reading, send a confirmation back to the server
-        sentMessageConfirmation(receivedContent);
+            // After reading, send a confirmation back to the server
+            sentMessageConfirmation(receivedContent);
+
+            // Exit the loop once the message is received
+            break;
+        }
     }
+
     return receivedContent;
 }
 
 void SerialCommunicationChannel::setMessageAvailable(bool messageAvailable)
 {
     this->messageAvailable = messageAvailable;
+    // Serial.println(String("Message availability set to: ") + (messageAvailable ? "Yes" : "No"));
 }
 
 bool SerialCommunicationChannel::isMessageAvailable()
 {
-    return messageAvailable;
+    bool available = messageAvailable;
+    // Serial.println(String("Message availability: ") + (available ? "Yes" : "No"));
+    return available;
 }
 
 void SerialCommunicationChannel::setMessageDelivered(bool messageDelivered)
 {
     this->messageDelivered = messageDelivered;
+    // Serial.println(String("Message delivery status set to: ") + (messageDelivered ? "Delivered" : "Not Delivered"));
 }
 
 void SerialCommunicationChannel::receivedEndMessage()
@@ -87,13 +115,19 @@ String SerialCommunicationChannel::processReceivedContent(String receivedContent
     JsonDocument doc;
 
     // Deserialize the JSON document
-    DeserializationError error = deserializeJson(doc, receivedContent);
+    // DeserializationError error = deserializeJson(doc, receivedContent);
 
-    // Test if parsing succeeds.
-    if (error)
-    {
-        return "deserializeJson() failed: " + String(error.c_str());
-    }
+    // // Extract the status from the JSON document
+    // if (!doc.containsKey("status"))
+    // {
+    //     return "Error: JSON does not contain 'status' field.";
+    // }
+
+    // // Test if parsing succeeds.
+    // if (error)
+    // {
+    //     return "deserializeJson() failed: " + String(error.c_str());
+    // }
 
     // Extract the status from the JSON document
     String status = doc["status"];
@@ -144,12 +178,6 @@ void SerialCommunicationChannel::sentMessageConfirmation(String originalMessage)
     else
         valveValue = "Unknown status";
 
-    // Create a confirmation message
-    // DynamicJsonDocument confirmationDoc(1024);
-    // confirmationDoc["confirmation"] = "Received";
-    // confirmationDoc["status"] = status;
-    // confirmationDoc["valveValue"] = valveValue;
-
     doc["valveValue"] = valveValue;
 
     // Serialize JSON document to string
@@ -162,6 +190,15 @@ void SerialCommunicationChannel::sentMessageConfirmation(String originalMessage)
 
 String SerialCommunicationChannel::formatMessage(String status, String valveValue)
 {
-    // Format the message as a JSON string
-    return "{\"status\":\"" + status + "\",\"valveValue\":\"" + valveValue + "\"}";
+    JsonDocument doc;
+
+    // Set the values in the JSON document
+    doc["status"] = status;
+    doc["valveValue"] = valveValue;
+
+    // Serialize JSON document to string
+    String formattedMessage;
+    serializeJson(doc, formattedMessage);
+
+    return formattedMessage;
 }
