@@ -35,20 +35,20 @@ public:
     String getReceivedContent();
 
     /**
+     * @brief Initializes the serial communication channel.
+     *
+     * This function sets up the serial communication with the Arduino board.
+     * It should be called before any other serial communication functions are used.
+     */
+    void initializeSerialCommunication();
+
+    /**
      * @brief Sets the availability status of messages on the serial port.
      *
      * @param status The availability status of the message.
      * True if a message is available, false otherwise.
      */
     void setMessageAvailable(bool status);
-
-    /**
-     * @brief Checks if a message is available on the serial port to be read by the client.
-     *
-     *
-     * @return bool True if a message is available, false otherwise.
-     */
-    bool isMessageAvailable();
 
     /**
      * Sets the flag indicating whether the message has been delivered.
@@ -58,25 +58,12 @@ public:
     void setMessageDelivered(bool messageDelivered);
 
     /**
-     * @brief Checks if my message is sended to the server.
-     *
-     * @return bool True if the message is sent, false otherwise.
-     */
-    bool isMessageDelivered();
-
-    /**
-     * @brief Sends a message to the server.
-     *
-     * @param message The message to send to the server.
-     */
-    void sendMessage(String message);
-
-    /**
      * @brief Checks if a message is available on the serial port to be read by the client.
+     *
      *
      * @return bool True if a message is available, false otherwise.
      */
-    bool checkMessageAvailability();
+    bool isMessageAvailable();
 
 private:
     /**
@@ -171,42 +158,52 @@ private:
     String formatMessage(String status, String valveValue);
 
     /**
-     * @brief Checks if the valve value is valid.
+     * @brief Checks if my message is sended to the server.
      *
-     * @param valveValue A string representing the valve value.
-     * This should be a numeric value between 0 and 100, inclusive,
-     * where 0 represents a fully closed valve
-     * and 100 represents a fully open valve.
-     * @return bool True if the valve value is valid, false otherwise.
+     * @return bool True if the message is sent, false otherwise.
      */
-    bool isValidValveValue(String valveValue);
+    bool isMessageDelivered();
 
     /**
-     * @brief Checks if the provided status is valid.
+     * @brief Sends a message to the server and checks if it was sent successfully.
      *
-     * This method takes a status string as input and checks if it is a valid status.
-     * For example, a status could be valid if it is either "NORMAL" or "ALARM-TOO-LOW".
+     * This function sends a message to the server using the Serial.println() function.
+     * After sending the message, it checks if the entire message was successfully
+     * sent by comparing the number of bytes sent with the length of the message.
+     * If all bytes were sent successfully, the function returns true.
+     * If not all bytes were sent, it returns false.
      *
-     * @param status A string representing the status to be checked.
-     * @return bool true If the provided status is considered valid, false otherwise.
+     * @param message The message to send to the server.
+     * @return bool Returns true if the entire message was successfully sent,
+     * false otherwise.
      */
-    bool isValidStatus(String status);
+    bool sendMessage(String message);
 
     /**
-     * @brief Sends a specific end message to the server to close
-     * the communication channel.
+     * @brief Verifies if the entire message was successfully sent to the server.
      *
-     * @param endMessage The message to send to the server to end the communication.
+     * This function checks if the number of bytes sent to the server matches
+     * the length of the message.
+     * If the number of bytes sent and the message length are equal,
+     * it means the entire message was successfully sent.
+     * If they are not equal, it indicates that there was an error
+     * and not all bytes of the message were sent.
+     *
+     * @param bytesSent The number of bytes that were sent to the server.
+     * This is returned by the function used to send the message.
+     * @param message The original message that was attempted to be sent to the server.
+     * This is used to compare its length with the number of bytes sent.
+     * @return bool Returns true if the entire message was successfully sent
+     * (i.e., the number of bytes sent equals the message length), false otherwise.
      */
-    void sendEndMessage(String endMessage);
+    bool checkMessageSent(size_t bytesSent, String message);
 
     /**
-     * @brief Initializes the serial communication channel.
+     * @brief Checks if a message is available on the serial port to be read by the client.
      *
-     * This function sets up the serial communication with the Arduino board.
-     * It should be called before any other serial communication functions are used.
+     * @return bool True if a message is available, false otherwise.
      */
-    void initializeSerialCommunication();
+    bool checkMessageAvailability();
 };
 
 #endif // __COMMUNICATION_H__
