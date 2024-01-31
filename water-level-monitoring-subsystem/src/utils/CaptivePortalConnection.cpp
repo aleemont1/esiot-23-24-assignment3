@@ -27,9 +27,9 @@ CaptivePortalConnection::CaptivePortalConnection(char *ssid, char *captivePortal
  * 
  */
 CaptivePortalConnection::CaptivePortalConnection() {
-    this->ssid = default_ssid;
-    this->captivePortalDomain = default_captivePortalDomain;
-    this->query = default_query;
+    this->ssid = captive_ssid;
+    this->captivePortalDomain = captive_PortalDomain;
+    this->query = captive_query;
 }
 
 /**

@@ -6,10 +6,12 @@
 */
 
 /* wifi network info */
-extern char *default_ssid;
-extern char *default_captivePortalDomain;
-extern char *default_query;
+extern char *captive_ssid;
+extern char *captive_PortalDomain;
+extern char *captive_query;
 
+extern char *ssid;
+extern char *password;
 /* MQTT server address */
 extern char *default_mqtt_server;
 
