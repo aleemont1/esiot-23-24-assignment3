@@ -4,7 +4,12 @@
 
 #include "IWifiConnection.h"
 
-class CaptivePortalConnection : public IWifiConnection {
+/**
+ * @brief CaptivePortalConnection class
+ * Connect to a free wifi with Captive Portal authentication.
+*/
+class CaptivePortalConnection : public IWifiConnection
+{
 public:
     CaptivePortalConnection();
     ~CaptivePortalConnection() = default;
@@ -12,10 +17,11 @@ public:
     void setup_wifi() override;
     void setSSID(char *ssid) override;
     char *getSSID() override;
-    void setCaptive(char *captivePortalDomain);   // URL or IP of the radius server
-    void setQuery(char *query);                    // Usually a POST request
+    void setCaptive(char *captivePortalDomain); // URL or IP of the radius server
+    void setQuery(char *query);                 // Usually a POST request
     char *getCaptive();
     char *getQuery();
+
 private:
     char *captivePortalDomain;
     char *query;
