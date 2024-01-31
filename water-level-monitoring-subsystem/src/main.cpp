@@ -1,4 +1,4 @@
-#define __CAPTIVE_PORTAL
+// #define __CAPTIVE_PORTAL
 #ifdef __CAPTIVE_PORTAL
 #include "utils/CaptivePortalConnection.h"
 #else
@@ -6,6 +6,7 @@
 #endif
 
 #include "api/MQTTpublisher.h"
+#include "api/MQTTsubscriber.h"
 #include <WiFiClient.h>
 #include "api/Sonar.h"
 #include "env/constants.h"
@@ -17,14 +18,16 @@
 CaptivePortalConnection wifiConn = CaptivePortalConnection();
 #else
 /**
- * Define ssid and password in env/constants.h
+ * Create ssid and password in env/constants.h
  */
+char *ssid = "Mont";
+char *password = "a26062002";
 WifiConnection wifiConn = WifiConnection(ssid, password);
 #endif
 
 WiFiClient espClient;
 MQTTpublisher publisher = MQTTpublisher(default_mqtt_server, "espClient", "freq");
-// MQTTsubscriber subscriber;
+MQTTsubscriber subscriber = MQTTsubscriber(default_mqtt_server, "espClient");
 
 unsigned long lastMsgTime = 0;
 
@@ -46,7 +49,9 @@ void setup()
   randomSeed(micros());
 
   publisher.connect();
-
+  subscriber.connect();
+  subscriber.subscribe("freq");
+  subscriber.subscribe("sensor");
   // Serial.println(publisher.connected());
   // subscriber = MQTTsubscriber(default_mqtt_server, freq_topic);
 }
@@ -57,7 +62,9 @@ void loop()
   Serial.println("Frequency: " + String(frequency));
   Serial.println("Sonar: " + String(sonar.getDistance()));
   publisher.loop();
+  subscriber.loop();
   publisher.publish(String(frequency).c_str());
+  publisher.publish("sensor", String(sonar.getDistance()).c_str());
   delay(1000);
 }
 

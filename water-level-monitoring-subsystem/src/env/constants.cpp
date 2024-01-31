@@ -6,7 +6,7 @@ char *default_captivePortalDomain = "latorre.er-go.it/login";
 char *default_query = "username=1200019&password=Ybj3qDfH&dst=&popup=true";
 
 /* MQTT server address */
-char *default_mqtt_server = "10.250.23.142";   // MQTT server IP address/hostname
+char *default_mqtt_server = "192.168.112.147";   // MQTT server IP address/hostname
 
 /* MQTT topics */
 char *freq_topic = "sensor/freq";

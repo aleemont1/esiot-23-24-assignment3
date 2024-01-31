@@ -17,7 +17,8 @@ protected:
 public:
     MQTTservice(const char *server, const char *client_id, const char *topic)
         : mqtt_server(server), mqtt_client_id(client_id), mqtt_topic(topic), mqttClient(espClient) {}
-
+    MQTTservice(const char *server, const char *client_id)
+        : mqtt_server(server), mqtt_client_id(client_id), mqttClient(espClient) {}
     void connect();
 
     void loop();
