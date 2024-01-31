@@ -6,15 +6,21 @@
 */
 
 /* wifi network info */
-extern char *default_ssid;
-extern char *default_captivePortalDomain;
-extern char *default_query;
+extern char *captive_ssid;
+extern char *captive_PortalDomain;
+extern char *captive_query;
 
+extern char *ssid;
+extern char *password;
 /* MQTT server address */
 extern char *default_mqtt_server;
 
 /* MQTT topics */
 extern char *freq_topic;
 extern char *wl_topic;
+
+/* JSON fields */
+extern const char *frequency_field;
+extern const char *water_level_field;
 
 #endif

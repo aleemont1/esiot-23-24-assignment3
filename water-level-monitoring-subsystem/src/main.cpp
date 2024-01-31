@@ -5,7 +5,8 @@
 #include "utils/WifiConnection.h"
 #endif
 
-#include <PubSubClient.h>
+#include "api/MQTTpublisher.h"
+#include "api/MQTTsubscriber.h"
 #include <WiFiClient.h>
 #include "api/Sonar.h"
 #include "env/constants.h"
@@ -17,54 +18,59 @@
 CaptivePortalConnection wifiConn = CaptivePortalConnection();
 #else
 /**
- * Define ssid and password in env/constants.h
+ * Create ssid and password in env/constants.h
  */
+
 WifiConnection wifiConn = WifiConnection(ssid, password);
 #endif
 
+Sonar sonar = Sonar(12, 13, 500); // test values, to be changed
+
 WiFiClient espClient;
-// MQTTpublisher publisher;
-// MQTTsubscriber subscriber;
+/**NOTE: default_mqtt_server is defined in constants.cpp**/
+MQTTpublisher publisher = MQTTpublisher(default_mqtt_server, "espPublisher");
+MQTTsubscriber subscriber = MQTTsubscriber(default_mqtt_server, "espSubscriber");
 
 unsigned long lastMsgTime = 0;
 
-char freq_msg[FREQ_MSG_SIZE];
-char sonar_msg[SONAR_MSG_SIZE];
-
-/* Frequenza di invio dei messaggi al server */
-unsigned int frequency = 2000;    // 2 seconds default
-Sonar sonar = Sonar(12, 13, 500); // random values, to be changed
-
-// void setFrequency(int freq);
-// unsigned int getFrequency();
+/* Publish/Read frequency (in ms, can be changed) */
+unsigned int frequency = 2000; // 2 seconds default
 
 void setup()
 {
-
   Serial.begin(115200);
   wifiConn.setup_wifi();
-  randomSeed(micros());
 
-  // publisher = MQTTpublisher(default_mqtt_server);
-  // Serial.println(publisher.connected());
-  // subscriber = MQTTsubscriber(default_mqtt_server, freq_topic);
+  publisher.connect();
+  subscriber.connect();
+  subscriber.subscribeJSON(freq_topic);
 }
 
 void loop()
 {
+  publisher.loop();
+  subscriber.loop();
+  unsigned long now = millis();
 
-  Serial.println("Frequency: " + String(frequency));
-  Serial.println("Sonar: " + String(sonar.getDistance()));
-  delay(1000);
+  if (now - lastMsgTime > frequency)
+  {
+    char wl_char[SONAR_MSG_SIZE];
+    // snprintf(wl_char, SONAR_MSG_SIZE, "%d", sonar.getDistance());
+    snprintf(wl_char, SONAR_MSG_SIZE, "%d", 100); // test value, to be changed as above
+    Serial.println("Publishing water level: " + String(wl_char));
+    publisher.publishJSON(wl_topic, water_level_field, wl_char);
+    int receivedFrequency = 0;
+    int payload = subscriber.getSavedPayloadInt();
+    if (payload > 0)
+    {
+      Serial.println("Received payload: " + String(payload));
+      frequency = payload;
+      Serial.println("New frequency: " + String(frequency));
+    }
+    else
+    {
+      Serial.println("Payload is NULL");
+    }
+    lastMsgTime = millis();
+  }
 }
-
-// void setFrequency(int freq)
-// {
-//   // frequency = atoi(subscriber.getPayload());
-// }
-
-// unsigned int getFrequency()
-// {
-//   // return atoi(subscriber.getPayload());
-//   return -1;
-// }

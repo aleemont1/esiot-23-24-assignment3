@@ -11,7 +11,7 @@
  */
 WifiConnection::WifiConnection()
 {
-    this->ssid = default_ssid;
+    this->ssid = ssid;
     this->password = nullptr;
 }
 
