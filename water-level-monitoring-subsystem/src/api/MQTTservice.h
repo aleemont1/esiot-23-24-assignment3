@@ -15,12 +15,32 @@ protected:
     PubSubClient mqttClient;
 
 public:
+
+    /**
+     * @brief Construct a new MQTTservice object
+     * @param server The MQTT broker server
+     * @param client_id The MQTT client ID
+     * @param topic The MQTT topic
+    */
     MQTTservice(const char *server, const char *client_id, const char *topic)
         : mqtt_server(server), mqtt_client_id(client_id), mqtt_topic(topic), mqttClient(espClient) {}
+    
+    /**
+     * @brief Construct a new MQTTservice object
+     * @param server The MQTT broker server
+     * @param client_id The MQTT client ID
+    */
     MQTTservice(const char *server, const char *client_id)
         : mqtt_server(server), mqtt_client_id(client_id), mqttClient(espClient) {}
+    
+    /**
+     * @brief Connect to MQTT broker
+     */
     void connect();
-
+    
+    /**
+     * @brief Loop function (a \ref PubSubClient::loop wrapper)
+     */
     void loop();
 };
 

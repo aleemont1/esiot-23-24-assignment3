@@ -4,14 +4,12 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 
-/**
- * 
- * @brief Construct a new CaptivePortalConnection object
- * @param ssid WiFi network SSID
- * @param captivePortalDomain URL or IP of the radius server
- * @param query Usually a POST request
- * 
-*/
+CaptivePortalConnection::CaptivePortalConnection() {
+    this->ssid = captive_ssid;
+    this->captivePortalDomain = captive_PortalDomain;
+    this->query = captive_query;
+}
+
 CaptivePortalConnection::CaptivePortalConnection(char *ssid, char *captivePortalDomain, char *query)
 {
     this->ssid = ssid;
@@ -19,23 +17,6 @@ CaptivePortalConnection::CaptivePortalConnection(char *ssid, char *captivePortal
     this->query = query;
 }
 
-/**
- * @brief Construct a new CaptivePortalConnection object
- * 
- * Default values for ssid, captivePortalDomain and query are used 
- * (see \ref ../constants.h)
- * 
- */
-CaptivePortalConnection::CaptivePortalConnection() {
-    this->ssid = captive_ssid;
-    this->captivePortalDomain = captive_PortalDomain;
-    this->query = captive_query;
-}
-
-/**
- * @brief Initialize WiFi connection
- * 
-*/
 void CaptivePortalConnection::setup_wifi()
 {
     Serial.begin(115200);
@@ -64,59 +45,31 @@ void CaptivePortalConnection::setup_wifi()
     String payload = login.getString();
 }
 
-/**
- * @brief Set the captive portal domain
- * 
- * @param captivePortalDomain URL or IP of the radius server
- * 
-*/
-void CaptivePortalConnection::setCaptive(char *captivePortalDomain)
-{
-    this->captivePortalDomain = captivePortalDomain;
-}
-
-/**
- * @brief Set the query for the radius server
- * 
- * @param query Usually a POST request
-*/
-void CaptivePortalConnection::setQuery(char *query)
-{
-    this->query = query;
-}
-
-/**
- * @brief Set the SSID of the WiFi network
- * 
- * @param ssid WiFi network SSID
-*/
 void CaptivePortalConnection::setSSID(char *ssid)
 {
     this->ssid = ssid;
 }
 
-/**
- * @brief Get the SSID of the WiFi network
- * @return char* ssid: WiFi network SSID
-*/
 char *CaptivePortalConnection::getSSID()
 {
     return this->ssid;
 }
 
-/**
- * @brief Get the captive portal domain
- * @return char* captivePortalDomain: URL or IP of the radius server
-*/
+void CaptivePortalConnection::setCaptive(char *captivePortalDomain)
+{
+    this->captivePortalDomain = captivePortalDomain;
+}
+
 char *CaptivePortalConnection::getCaptive()
 {
     return this->captivePortalDomain;
 }
 
-/**
- * @brief Get the query for the radius server
- * @return char* query: Usually a POST request
-*/
+void CaptivePortalConnection::setQuery(char *query)
+{
+    this->query = query;
+}
+
 char *CaptivePortalConnection::getQuery()
 {
     return this->query;
