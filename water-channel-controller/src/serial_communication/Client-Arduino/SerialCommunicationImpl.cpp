@@ -1,7 +1,7 @@
 #include "SerialCommunication.h"
 
-SerialCommunicationChannel::SerialCommunicationChannel()
-    : messageAvailable(false), messageDelivered(false) {}
+SerialCommunicationChannel::SerialCommunicationChannel(JsonProcessor jsonProcessor)
+    : jsonProcessor(jsonProcessor), messageAvailable(false), messageDelivered(false) {}
 
 SerialCommunicationChannel::~SerialCommunicationChannel()
 {
@@ -42,15 +42,6 @@ bool SerialCommunicationChannel::checkMessageAvailability()
     return messageAvailable;
 }
 
-/*
-    @note:
-    In this version, the method waits up to 500 milliseconds for a message to become available.
-    If a message becomes available within this time, it reads the message, processes it,
-    and sends a confirmation back to the server.
-    If no message becomes available within 500 milliseconds, it prints an error message.
-    This version of the method is non-blocking (delay() instead is not), meaning it won't delay
-    other operations while waiting for a message to become available.
-*/
 String SerialCommunicationChannel::getReceivedContent()
 {
     unsigned long startTime = millis();
@@ -62,9 +53,6 @@ String SerialCommunicationChannel::getReceivedContent()
         {
             // Read the message from the serial port
             receivedContent = Serial.readStringUntil('\n');
-
-            // Process the received message
-            // receivedContent = processReceivedContent(receivedContent);
 
             // After reading, send a confirmation back to the server
             sentMessageConfirmation(receivedContent);
@@ -98,39 +86,9 @@ void SerialCommunicationChannel::receivedEndMessage()
     sendMessage(message);
 }
 
-String SerialCommunicationChannel::processReceivedContent(String receivedContent)
-{
-    receivedContent = "";
-    JsonDocument doc;
-
-    // Extract the status from the JSON document
-    String status = doc["status"];
-
-    // Create a readable version of the JSON
-    receivedContent = "Processed JSON: " + status;
-    receivedEndMessage();
-    return receivedContent;
-}
-
 void SerialCommunicationChannel::sentMessageConfirmation(String originalMessage)
 {
-    // Serial.println("Received message: " + originalMessage);
-    // Parse the original message into a JsonDocument
-    JsonDocument doc;
-    deserializeJson(doc, originalMessage);
-
-    // Extract the status from the JSON document
-    String status = doc["status"];
-
-    // Get the corresponding valve value
-    String valveValue = getValveValue(status);
-    doc["valveValue"] = valveValue;
-
-    // Serialize the modified JSON document to a string
-    String confirmationMessage;
-    serializeJson(doc, confirmationMessage);
-
-    // Send the confirmation message
+    String confirmationMessage = jsonProcessor.createConfirmationMessage(originalMessage);
     sendMessage(confirmationMessage);
 }
 
@@ -146,22 +104,4 @@ String SerialCommunicationChannel::formatMessage(String status, String valveValu
     serializeJson(doc, formattedMessage);
 
     return formattedMessage;
-}
-
-String SerialCommunicationChannel::getValveValue(String status)
-{
-    if (status == "NORMAL")
-        return "25%";
-    else if (status == "ALARM-TOO-LOW")
-        return "0%";
-    else if (status == "PRE-ALARM-TOO-HIGH")
-        return "40%";
-    else if (status == "ALARM-TOO-HIGH")
-        return "50%";
-    else if (status == "ALARM-TOO-HIGH-CRITIC")
-        return "100%";
-    else if (status == "ping")
-        return "0%";
-    else
-        return "Unknown status";
 }
