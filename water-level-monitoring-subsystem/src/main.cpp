@@ -5,7 +5,7 @@
 #include "utils/WifiConnection.h"
 #endif
 
-#include <PubSubClient.h>
+#include "api/MQTTpublisher.h"
 #include <WiFiClient.h>
 #include "api/Sonar.h"
 #include "env/constants.h"
@@ -23,7 +23,7 @@ WifiConnection wifiConn = WifiConnection(ssid, password);
 #endif
 
 WiFiClient espClient;
-// MQTTpublisher publisher;
+MQTTpublisher publisher = MQTTpublisher(default_mqtt_server, "espClient", "freq");
 // MQTTsubscriber subscriber;
 
 unsigned long lastMsgTime = 0;
@@ -45,7 +45,8 @@ void setup()
   wifiConn.setup_wifi();
   randomSeed(micros());
 
-  // publisher = MQTTpublisher(default_mqtt_server);
+  publisher.connect();
+
   // Serial.println(publisher.connected());
   // subscriber = MQTTsubscriber(default_mqtt_server, freq_topic);
 }
@@ -55,6 +56,8 @@ void loop()
 
   Serial.println("Frequency: " + String(frequency));
   Serial.println("Sonar: " + String(sonar.getDistance()));
+  publisher.loop();
+  publisher.publish(String(frequency).c_str());
   delay(1000);
 }
 
