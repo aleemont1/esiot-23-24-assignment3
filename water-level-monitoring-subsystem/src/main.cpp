@@ -1,11 +1,12 @@
-#define __CAPTIVE_PORTAL
+// #define __CAPTIVE_PORTAL
 #ifdef __CAPTIVE_PORTAL
 #include "utils/CaptivePortalConnection.h"
 #else
 #include "utils/WifiConnection.h"
 #endif
 
-#include <PubSubClient.h>
+#include "api/MQTTpublisher.h"
+#include "api/MQTTsubscriber.h"
 #include <WiFiClient.h>
 #include "api/Sonar.h"
 #include "env/constants.h"
@@ -17,14 +18,16 @@
 CaptivePortalConnection wifiConn = CaptivePortalConnection();
 #else
 /**
- * Define ssid and password in env/constants.h
+ * Create ssid and password in env/constants.h
  */
+char *ssid = "";
+char *password = "";
 WifiConnection wifiConn = WifiConnection(ssid, password);
 #endif
 
 WiFiClient espClient;
-// MQTTpublisher publisher;
-// MQTTsubscriber subscriber;
+MQTTpublisher publisher = MQTTpublisher(default_mqtt_server, "espPublisher");
+MQTTsubscriber subscriber = MQTTsubscriber(default_mqtt_server, "espSubscriber");
 
 unsigned long lastMsgTime = 0;
 
@@ -45,17 +48,39 @@ void setup()
   wifiConn.setup_wifi();
   randomSeed(micros());
 
-  // publisher = MQTTpublisher(default_mqtt_server);
-  // Serial.println(publisher.connected());
-  // subscriber = MQTTsubscriber(default_mqtt_server, freq_topic);
+  publisher.connect();
+  subscriber.connect();
+
+  subscriber.subscribeJSON(freq_topic);
 }
 
 void loop()
 {
+  publisher.loop();
+  subscriber.loop();
+  unsigned long now = millis();
 
-  Serial.println("Frequency: " + String(frequency));
-  Serial.println("Sonar: " + String(sonar.getDistance()));
-  delay(1000);
+  if (now - lastMsgTime > frequency)
+  {
+    char wl_char[SONAR_MSG_SIZE];
+    // snprintf(wl_char, SONAR_MSG_SIZE, "%d", sonar.getDistance());
+    snprintf(wl_char, SONAR_MSG_SIZE, "%d", 100);
+    Serial.println("Publishing water level: " + String(wl_char));
+    publisher.publishJSON(wl_topic, water_level_field, wl_char);
+    int receivedFrequency = 0;
+    int payload = subscriber.getSavedPayloadInt();
+    if (payload > 0)
+    {
+      Serial.println("Received payload: " + String(payload));
+      frequency = payload;
+      Serial.println("New frequency: " + String(frequency));
+    }
+    else
+    {
+      Serial.println("Payload is NULL");
+    }
+    lastMsgTime = millis();
+  }
 }
 
 // void setFrequency(int freq)

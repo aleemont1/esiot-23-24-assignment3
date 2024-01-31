@@ -17,4 +17,8 @@ extern char *default_mqtt_server;
 extern char *freq_topic;
 extern char *wl_topic;
 
+/* JSON fields */
+extern const char *frequency_field;
+extern const char *water_level_field;
+
 #endif
