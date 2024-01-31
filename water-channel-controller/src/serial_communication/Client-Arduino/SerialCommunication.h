@@ -3,15 +3,25 @@
 
 #include "Arduino.h"
 #include "ArduinoJson.h"
+#include "JsonProcessor.h"
 
 /**
- * @brief This class represents a communication channel between a client
- * and a server over a serial port.
+ * @brief Manages a serial communication channel between a client and a server.
  *
- * It defines methods for processing received messages, sending messages,
- * checking if a message is available, and closing the communication channel.
+ * The SerialCommunicationChannel class provides a high-level interface
+ * for managing serial communication between a client (an Arduino board)
+ * and a server (a computer).
+ * It encapsulates the details of sending and receiving messages over a serial port,
+ * and provides methods for processing received messages, checking message availability,
+ * and closing the communication channel.
  *
- * @note The client in this case is an Arduino board and the server is a computer.
+ * Key responsibilities of this class include:
+ * - Processing incoming messages and formatting outgoing messages.
+ * - Managing the state of the communication channel (open, closed).
+ * - Checking the availability of incoming messages.
+ *
+ * @note This class is specifically designed for communication where
+ * the client is an Arduino board and the server is a computer.
  */
 class SerialCommunicationChannel
 {
@@ -20,7 +30,7 @@ public:
     /**
      * @brief Constructs a new SerialCommunicationChannel object.
      */
-    SerialCommunicationChannel();
+    SerialCommunicationChannel(JsonProcessor jsonProcessor);
 
     /**
      * @brief Uses RAII to automatically close the serial port when the object is destroyed.
@@ -67,6 +77,13 @@ public:
 
 private:
     /**
+     * @brief An instance of the JsonProcessor class.
+     *
+     * This instance, jsonProcessor, is used to handle JSON-formatted messages within the SerialCommunication class. It provides methods for processing these messages, including parsing the JSON content, extracting relevant information, and formatting it for use by other parts of the application.
+     */
+    JsonProcessor jsonProcessor;
+
+    /**
      * @brief The status of the valve received from the server.
      *
      * The valve's status depends on the received message.
@@ -110,14 +127,6 @@ private:
      * delivered to the server.
      */
     bool messageDelivered;
-
-    /**
-     * @brief Processes a message received from the server.
-     *
-     * @param receivedContent The message received from the server.
-     * @return String The processed message.
-     */
-    String processReceivedContent(String receivedContent);
 
     /**
      * @brief Sends a confirmation message in response to the original message received.
@@ -165,22 +174,6 @@ private:
      * `{"status":"NORMAL","valveValue":"25"}`.
      */
     String formatMessage(String status, String valveValue);
-
-    /**
-     * @brief Retrieves the corresponding valve value for a given status.
-     *
-     * This method maps the status of the system to a valve value.
-     * The status is a string that represents the current state of the system,
-     * and the valve value is a string that represents the percentage of the
-     * valve that should be open in response to the current status.
-     *
-     * @param status A string representing the current status of the system.
-     *
-     * @return String The corresponding valve value as a string representing a percentage.
-     * For example, "25%" for a normal status, "0%" for an alarm-too-low status, etc.
-     * If the status is unknown, it returns "Unknown status".
-     */
-    String getValveValue(String status);
 
     /**
      * @brief Checks if my message is sended to the server.
