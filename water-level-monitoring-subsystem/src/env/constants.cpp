@@ -9,5 +9,9 @@ char *default_query = "username=1200019&password=Ybj3qDfH&dst=&popup=true";
 char *default_mqtt_server = "192.168.112.147";   // MQTT server IP address/hostname
 
 /* MQTT topics */
-char *freq_topic = "sensor/freq";
-char *wl_topic = "sensor/wl";
+char *freq_topic = "/sensor/freq";
+char *wl_topic = "/sensor/wl";
+
+/* JSON fields */
+const char *frequency_field = "FREQ";
+const char *water_level_field = "WL";
