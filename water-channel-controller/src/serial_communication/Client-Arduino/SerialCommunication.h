@@ -91,6 +91,15 @@ private:
     const int BAUD_RATE = 9600;
 
     /**
+     * @brief The maximum amount of time to wait for data to be available on the serial port.
+     *
+     * This constant defines the maximum amount of time, in milliseconds, that the system
+     * will wait for data to become available on the serial port before timing out.
+     * It is used in the getReceivedContent method to control how long the method waits for incoming data.
+     */
+    const unsigned long WAIT_TIME = 500;
+
+    /**
      * @brief A flag indicating whether a message is available
      * on the serial port to be read by the client.
      */
@@ -156,6 +165,22 @@ private:
      * `{"status":"NORMAL","valveValue":"25"}`.
      */
     String formatMessage(String status, String valveValue);
+
+    /**
+     * @brief Retrieves the corresponding valve value for a given status.
+     *
+     * This method maps the status of the system to a valve value.
+     * The status is a string that represents the current state of the system,
+     * and the valve value is a string that represents the percentage of the
+     * valve that should be open in response to the current status.
+     *
+     * @param status A string representing the current status of the system.
+     *
+     * @return String The corresponding valve value as a string representing a percentage.
+     * For example, "25%" for a normal status, "0%" for an alarm-too-low status, etc.
+     * If the status is unknown, it returns "Unknown status".
+     */
+    String getValveValue(String status);
 
     /**
      * @brief Checks if my message is sended to the server.
