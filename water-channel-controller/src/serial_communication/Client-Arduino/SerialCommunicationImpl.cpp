@@ -1,13 +1,7 @@
-#include "Arduino.h"
 #include "SerialCommunication.h"
 
-SerialCommunicationChannel::SerialCommunicationChannel()
-    : messageAvailable(false), messageDelivered(false)
-{
-    initializeSerialCommunication();
-    checkMessageAvailability();
-    getReceivedContent();
-}
+SerialCommunicationChannel::SerialCommunicationChannel(JsonProcessor jsonProcessor)
+    : jsonProcessor(jsonProcessor), messageAvailable(false), messageDelivered(false) {}
 
 SerialCommunicationChannel::~SerialCommunicationChannel()
 {
@@ -16,13 +10,24 @@ SerialCommunicationChannel::~SerialCommunicationChannel()
 
 void SerialCommunicationChannel::initializeSerialCommunication()
 {
-    Serial.begin(9600);
+    Serial.begin(BAUD_RATE);
+    checkMessageAvailability();
+    getReceivedContent();
 }
 
-void SerialCommunicationChannel::sendMessage(String message)
+bool SerialCommunicationChannel::checkMessageSent(size_t bytesSent, String message)
 {
-    Serial.println(message);
-    isMessageDelivered();
+    // return the number of bytes sent to the server
+    return bytesSent == message.length();
+}
+
+bool SerialCommunicationChannel::sendMessage(String message)
+{
+    // Used to represent the size of message (object of type String) in bytes
+    size_t bytesSent = Serial.println(message);
+
+    // Check if all bytes were sent successfully to the server
+    return checkMessageSent(bytesSent, message);
 }
 
 bool SerialCommunicationChannel::isMessageDelivered()
@@ -30,27 +35,33 @@ bool SerialCommunicationChannel::isMessageDelivered()
     return messageDelivered;
 }
 
-void SerialCommunicationChannel::sendEndMessage(String endMessage)
-{
-    sendMessage(endMessage);
-}
-
 bool SerialCommunicationChannel::checkMessageAvailability()
 {
     messageAvailable = Serial.available() > 0;
+    setMessageAvailable(true);
     return messageAvailable;
 }
 
 String SerialCommunicationChannel::getReceivedContent()
 {
-    delay(500);
+    unsigned long startTime = millis();
     String receivedContent = "";
-    if (checkMessageAvailability())
+
+    while (millis() - startTime < WAIT_TIME)
     {
-        // setMessageAvailable(true);
-        receivedContent = Serial.readStringUntil('\n');
-        receivedContent = processReceivedContent(receivedContent);
+        if (checkMessageAvailability())
+        {
+            // Read the message from the serial port
+            receivedContent = Serial.readStringUntil('\n');
+
+            // After reading, send a confirmation back to the server
+            sentMessageConfirmation(receivedContent);
+
+            // Exit the loop once the message is received
+            break;
+        }
     }
+
     return receivedContent;
 }
 
@@ -71,40 +82,26 @@ void SerialCommunicationChannel::setMessageDelivered(bool messageDelivered)
 
 void SerialCommunicationChannel::receivedEndMessage()
 {
-    if (isValidStatus(status) || isValidValveValue(valveValue)) // TODO: change the || condition to &&
-    {
-        String message = formatMessage(status, valveValue);
-        sendMessage(message);
-    }
+    String message = formatMessage(status, valveValue);
+    sendMessage(message);
 }
 
-String SerialCommunicationChannel::processReceivedContent(String receivedContent)
+void SerialCommunicationChannel::sentMessageConfirmation(String originalMessage)
 {
-    if (receivedContent == "ping")
-    {
-        receivedEndMessage();
-        receivedContent = "";
-    }
-    return receivedContent;
-}
-
-bool SerialCommunicationChannel::isValidStatus(String status)
-{
-    // Assuming status can be "OK" or "ERROR"
-    return status == "NORMAL" || status == "ALARM-TOO-LOW" ||
-           status == "PRE-ALARM-TOO-HIGH" || status == "ALARM-TOO-HIGH" ||
-           status == "ALARM-TOO-HIGH-CRITIC" || status == "ping";
-}
-
-bool SerialCommunicationChannel::isValidValveValue(String valveValue)
-{
-    // Assuming valveValue is a number between 0 and 100
-    int value = valveValue.toInt();
-    return value >= 0 && value <= 100;
+    String confirmationMessage = jsonProcessor.createConfirmationMessage(originalMessage);
+    sendMessage(confirmationMessage);
 }
 
 String SerialCommunicationChannel::formatMessage(String status, String valveValue)
 {
-    // Format the message as a JSON string
-    return "{\"status\":\"" + status + "\",\"valveValue\":\"" + valveValue + "\"}";
+    JsonDocument doc;
+    // Set the values in the JSON document
+    doc["status"] = status;
+    doc["valveValue"] = valveValue;
+
+    // Serialize JSON document to string
+    String formattedMessage;
+    serializeJson(doc, formattedMessage);
+
+    return formattedMessage;
 }
