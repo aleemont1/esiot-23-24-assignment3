@@ -10,6 +10,8 @@ void loop()
 {
 
   SerialCommunicationChannel commChannel;
-  String content = commChannel.getReceivedContent();
-  commChannel.getReceivedContent();
+  commChannel.initializeSerialCommunication();
+  // commChannel.isMessageAvailable();
+  // commChannel.setMessageAvailable(true);
+  // commChannel.setMessageDelivered(true);
 }
