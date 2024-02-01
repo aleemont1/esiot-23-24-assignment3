@@ -30,17 +30,17 @@ String JsonProcessor::createConfirmationMessage(String originalMessage)
 String JsonProcessor::getValveValue(String status)
 {
     if (status == "NORMAL")
-        return "25%";
+        return "25";
     else if (status == "ALARM-TOO-LOW")
-        return "0%";
+        return "0";
     else if (status == "PRE-ALARM-TOO-HIGH")
-        return "40%";
+        return "40";
     else if (status == "ALARM-TOO-HIGH")
-        return "50%";
+        return "50";
     else if (status == "ALARM-TOO-HIGH-CRITIC")
-        return "100%";
+        return "100";
     else if (status == "ping")
-        return "0%";
+        return "0";
     else
         return "Unknown status";
 }
