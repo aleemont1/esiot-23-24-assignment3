@@ -1,12 +1,13 @@
-#include <Arduino.h> // Include the necessary header file for the 'String' type
-
 /* wifi network info */
-char *captive_ssid = "ergo-latorre"; // WiFi network SSID
-char *captive_PortalDomain = "latorre.er-go.it/login";
-char *captive_query = "username=1200019&password=Ybj3qDfH&dst=&popup=true";
 
-char *ssid = "";
-char *password = "";
+#define __CAPTIVE_PORTAL
+
+char *captive_ssid = ""; // WiFi network SSID
+char *captive_PortalDomain = "";
+char *captive_query = "";
+
+char *ssid = "Mont";
+char *password = "a26062002";
 /* MQTT server address */
 char *default_mqtt_server = "192.168.112.147";   // MQTT server IP address/hostname
 

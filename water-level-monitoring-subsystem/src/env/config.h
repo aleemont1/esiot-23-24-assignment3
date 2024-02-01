@@ -1,9 +1,22 @@
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
+#ifndef CONFIG_H
+#define CONFIG_H
 
 /**
  * Definitions go in constants.cpp
 */
+
+/* LEDs PINs */
+#define GREEN_LED 19
+#define RED_LED 21
+
+/* sonar sensor info */
+#define ECHO_PIN 5
+#define TRIG_PIN 18
+#define SONAR_TIMER 10000
+
+/* mqtt buffers dimensions*/
+#define FREQ_MSG_SIZE 16
+#define SONAR_MSG_SIZE 16
 
 /* wifi network info */
 extern char *captive_ssid;

@@ -25,3 +25,8 @@ void MQTTservice::loop()
 {
     mqttClient.loop();
 }
+
+bool MQTTservice::connected()
+{
+    return mqttClient.connected();
+}

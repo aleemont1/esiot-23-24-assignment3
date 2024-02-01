@@ -1,30 +1,25 @@
-#define __CAPTIVE_PORTAL
-#ifdef __CAPTIVE_PORTAL
-#include "utils/CaptivePortalConnection.h"
-#else
-#include "utils/WifiConnection.h"
-#endif
-
 #include "api/MQTTpublisher.h"
 #include "api/MQTTsubscriber.h"
-#include <WiFiClient.h>
 #include "api/Sonar.h"
-#include "env/constants.h"
-
-#define FREQ_MSG_SIZE 16
-#define SONAR_MSG_SIZE 16
+#include "env/config.h"
+#include <WiFiClient.h>
+#include <WiFi.h>
 
 #ifdef __CAPTIVE_PORTAL
+
+#include "utils/CaptivePortalConnection.h"
 CaptivePortalConnection wifiConn = CaptivePortalConnection();
 #else
-/**
- * Create ssid and password in env/constants.h
- */
 
+#include "utils/WifiConnection.h"
+/**
+ * NOTE: Create ssid and password in env/config.h
+ */
 WifiConnection wifiConn = WifiConnection(ssid, password);
+
 #endif
 
-Sonar sonar = Sonar(12, 13, 500); // test values, to be changed
+Sonar sonar = Sonar(ECHO_PIN, TRIG_PIN, SONAR_TIMER);
 
 WiFiClient espClient;
 /**NOTE: default_mqtt_server is defined in constants.cpp**/
@@ -36,41 +31,146 @@ unsigned long lastMsgTime = 0;
 /* Publish/Read frequency (in ms, can be changed) */
 unsigned int frequency = 2000; // 2 seconds default
 
+// Define your tasks
+void TaskPublisher(void *pvParameters);
+void TaskSubscriber(void *pvParameters);
+void TaskCheckConnection(void *pvParameters);
+
+void turnGreenLedOn();
+void turnGreenLedOff();
+void turnRedLedOn();
+
 void setup()
 {
+  pinMode(GREEN_LED, OUTPUT);
+  pinMode(RED_LED, OUTPUT);
+
   Serial.begin(115200);
+  turnRedLedOn();
   wifiConn.setup_wifi();
 
   publisher.connect();
   subscriber.connect();
   subscriber.subscribeJSON(freq_topic);
+
+  // Create the tasks
+  xTaskCreate(
+      TaskPublisher,
+      "Publisher", // Task name
+      2000,        // Stack size
+      NULL,        // Task input parameter
+      1,           // Priority
+      NULL);       // Task handle
+
+  xTaskCreate(
+      TaskSubscriber,
+      "Subscriber", // Task name
+      2000,         // Stack size
+      NULL,         // Task input parameter
+      1,            // Priority
+      NULL);        // Task handle
+
+  xTaskCreate(
+      TaskCheckConnection,
+      "CheckConnection", // Task name
+      2000,              // Stack size
+      NULL,              // Task input parameter
+      1,                 // Priority
+      NULL);             // Task handle
 }
 
 void loop()
 {
-  publisher.loop();
-  subscriber.loop();
-  unsigned long now = millis();
+}
 
-  if (now - lastMsgTime > frequency)
+void TaskPublisher(void *pvParameters)
+{
+  for (;;)
   {
-    char wl_char[SONAR_MSG_SIZE];
-    // snprintf(wl_char, SONAR_MSG_SIZE, "%d", sonar.getDistance());
-    snprintf(wl_char, SONAR_MSG_SIZE, "%d", 100); // test value, to be changed as above
-    Serial.println("Publishing water level: " + String(wl_char));
-    publisher.publishJSON(wl_topic, water_level_field, wl_char);
-    int receivedFrequency = 0;
+    publisher.loop();
+    unsigned long now = millis();
+    if (now - lastMsgTime > frequency)
+    {
+      turnGreenLedOn();
+      // Serial.println("Publishing with frequency: " + String(frequency) + "ms");
+      char wl_char[SONAR_MSG_SIZE];
+      snprintf(wl_char, SONAR_MSG_SIZE, "%.2f", sonar.getDistance() * 100); // test value
+      // Serial.println("Publishing water level: " + String(wl_char));
+      publisher.publishJSON(wl_topic, water_level_field, wl_char);
+      lastMsgTime = now;
+    }
+    vTaskDelay(1); // Yield to other tasks
+    turnGreenLedOff();
+  }
+}
+
+void TaskSubscriber(void *pvParameters)
+{
+  for (;;)
+  {
+    subscriber.loop();
+    turnGreenLedOn();
     int payload = subscriber.getSavedPayloadInt();
     if (payload > 0)
     {
-      Serial.println("Received payload: " + String(payload));
-      frequency = payload;
-      Serial.println("New frequency: " + String(frequency));
+      if (payload != frequency)
+      {
+        frequency = payload;
+        Serial.println("New frequency: " + String(frequency) + "ms");
+      }
     }
     else
     {
-      Serial.println("Payload is NULL");
+      Serial.println("Invalid Payload (retrying)");
     }
-    lastMsgTime = millis();
+    vTaskDelay(1); // Yield to other tasks
+    turnGreenLedOff();
   }
+}
+
+void TaskCheckConnection(void *pvParameters)
+{
+  for (;;)
+  {
+    while (wifiConn.status() != WL_CONNECTED)
+    {
+      turnRedLedOn();
+      Serial.println("WiFi disconnected");
+      wifiConn.setup_wifi();
+    }
+
+    while (publisher.connected() == false)
+    {
+      turnRedLedOn();
+      Serial.println("MQTT publisher disconnected... trying to reconnect in 3s");
+      publisher.connect();
+      vTaskDelay(3000);
+    }
+
+    while (subscriber.connected() == false)
+    {
+      turnRedLedOn();
+      Serial.println("MQTT subscriber disconnected... trying to reconnect in 3s");
+      subscriber.connect();
+      vTaskDelay(3000);
+    }
+    vTaskDelay(1000); // Delay between connection checks
+  }
+}
+
+void turnGreenLedOn()
+{
+  digitalWrite(GREEN_LED, HIGH);
+  digitalWrite(RED_LED, LOW);
+}
+
+void turnGreenLedOff()
+{
+  digitalWrite(GREEN_LED, LOW);
+}
+
+void turnRedLedOn()
+{
+  digitalWrite(RED_LED, HIGH);
+  digitalWrite(GREEN_LED, LOW);
 }

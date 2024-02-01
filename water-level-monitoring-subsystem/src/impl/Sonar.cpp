@@ -21,6 +21,7 @@ float Sonar::getDistance(){
     digitalWrite(trigPin,HIGH);
     delayMicroseconds(5);
     digitalWrite(trigPin,LOW);
+    delayMicroseconds(10); // Add a delay to allow the signal to settle
     
     float tUS = pulseIn(echoPin, HIGH, timeOut);
     if (tUS == 0) {
