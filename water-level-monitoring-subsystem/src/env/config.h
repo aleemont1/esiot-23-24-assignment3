@@ -1,9 +1,14 @@
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
+#ifndef CONFIG_H
+#define CONFIG_H
 
 /**
  * Definitions go in constants.cpp
 */
+
+/* sonar sensor info */
+#define ECHO_PIN 5
+#define TRIG_PIN 18
+#define SONAR_TIMER 10000
 
 /* wifi network info */
 extern char *captive_ssid;

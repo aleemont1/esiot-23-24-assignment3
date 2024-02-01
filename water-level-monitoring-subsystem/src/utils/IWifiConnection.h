@@ -2,6 +2,10 @@
 #ifndef IWIFI_CONNECTION_H
 #define IWIFI_CONNECTION_H
 
+/**
+ * @brief Interface for WiFi connection
+ * 
+ */
 class IWifiConnection
 {
 public:
