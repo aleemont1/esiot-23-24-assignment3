@@ -1,8 +1,6 @@
 package org.mqttserver.policy;
 
-import org.mqttserver.presentation.JSONUtils;
-import org.mqttserver.presentation.MessageToArduino;
-import org.mqttserver.presentation.Status;
+import org.mqttserver.presentation.*;
 import org.mqttserver.serial.SerialCommChannel;
 import org.mqttserver.serial.SerialCommChannelImpl;
 import org.mqttserver.serial.SerialScanner;
@@ -20,6 +18,7 @@ public class ChannelControllerManagerImpl implements ChannelControllerManager {
     private SerialScanner serialScanner = new SerialScannerImpl();
 
 
+
     public ChannelControllerManagerImpl(Broker broker, HTTPServer httpServer) throws Exception {
         //Init broker and http server
         this.broker = broker;
@@ -34,20 +33,8 @@ public class ChannelControllerManagerImpl implements ChannelControllerManager {
 
 
     @Override
-    public void sendMessageToArduino() { //USE SERIAL LINE
-
-        Status actualStatus;
-
-        this.broker.getMqttServer();
-
-
-
-
-
-
-
-        MessageToArduino messageToArduino = new MessageToArduino(Status.NORMAL); //just for testing i add always NORMAL
-
+    public void sendMessageToArduino(Status status) {
+        MessageToArduino messageToArduino = new MessageToArduino(status);
         this.serialCommChannel.sendMessageToArduino(JSONUtils.objectToJson(messageToArduino));
 
 
@@ -60,13 +47,14 @@ public class ChannelControllerManagerImpl implements ChannelControllerManager {
     }
 
     @Override
-    public void sendMessageToDashboard(String message) { //USE HTTP PROTOCOL
+    public void sendMessageToDashboard(MessageToDashboard message) { //USE HTTP PROTOCOL
 
     }
 
     @Override
-    public void sendMessageToSensor(String message) { //use MQTT PROTOCOL
+    public void sendMessageToSensor(MessageToSensor message) { //use MQTT PROTOCOL
 
+        //devo far partire un messaggio verso arduino con la frequenza
     }
 
     @Override
