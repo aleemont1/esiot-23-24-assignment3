@@ -31,16 +31,16 @@ String JsonProcessor::getValveValue(String status)
 {
     if (status == "NORMAL")
         return "25";
-    else if (status == "ALARM-TOO-LOW")
+    else if (status == "ALARM_TOO_LOW")
         return "0";
-    else if (status == "PRE-ALARM-TOO-HIGH")
+    else if (status == "PRE_ALARM_TOO_HIGH")
         return "40";
-    else if (status == "ALARM-TOO-HIGH")
+    else if (status == "ALARM_TOO_HIGH")
         return "50";
-    else if (status == "ALARM-TOO-HIGH-CRITIC")
+    else if (status == "ALARM_TOO_HIGH_CRITIC")
         return "100";
     else if (status == "ping")
-        return "0";
+        return "ping";
     else
         return "Unknown status";
 }
