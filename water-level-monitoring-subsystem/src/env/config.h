@@ -1,5 +1,5 @@
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
+#ifndef CONFIG_H
+#define CONFIG_H
 
 /**
  * Definitions go in constants.cpp
