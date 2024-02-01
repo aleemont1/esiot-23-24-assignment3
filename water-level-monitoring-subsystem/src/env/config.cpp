@@ -1,4 +1,7 @@
 /* wifi network info */
+
+#define __CAPTIVE_PORTAL
+
 char *captive_ssid = ""; // WiFi network SSID
 char *captive_PortalDomain = "";
 char *captive_query = "";

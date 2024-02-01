@@ -5,6 +5,11 @@
  * Definitions go in constants.cpp
 */
 
+/* sonar sensor info */
+#define ECHO_PIN 5
+#define TRIG_PIN 18
+#define SONAR_TIMER 10000
+
 /* wifi network info */
 extern char *captive_ssid;
 extern char *captive_PortalDomain;

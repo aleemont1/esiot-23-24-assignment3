@@ -1,15 +1,15 @@
-#define __CAPTIVE_PORTAL
+#include "api/MQTTpublisher.h"
+#include "api/MQTTsubscriber.h"
+#include "api/Sonar.h"
+#include "env/config.h"
+
 #ifdef __CAPTIVE_PORTAL
 #include "utils/CaptivePortalConnection.h"
 #else
 #include "utils/WifiConnection.h"
 #endif
 
-#include "api/MQTTpublisher.h"
-#include "api/MQTTsubscriber.h"
 #include <WiFiClient.h>
-#include "api/Sonar.h"
-#include "env/constants.h"
 
 #define FREQ_MSG_SIZE 16
 #define SONAR_MSG_SIZE 16
@@ -18,13 +18,13 @@
 CaptivePortalConnection wifiConn = CaptivePortalConnection();
 #else
 /**
- * NOTE: Create ssid and password in env/constants.h
+ * NOTE: Create ssid and password in env/config.h
  */
 
 WifiConnection wifiConn = WifiConnection(ssid, password);
 #endif
 
-Sonar sonar = Sonar(12, 13, 500); // test values, to be changed
+Sonar sonar = Sonar(ECHO_PIN, TRIG_PIN, SONAR_TIMER);
 
 WiFiClient espClient;
 /**NOTE: default_mqtt_server is defined in constants.cpp**/
@@ -69,7 +69,6 @@ void setup()
 
 void loop()
 {
-  // Empty. Tasks are managed by FreeRTOS.
 }
 
 void TaskPublisher(void *pvParameters)
@@ -80,10 +79,10 @@ void TaskPublisher(void *pvParameters)
     unsigned long now = millis();
     if (now - lastMsgTime > frequency)
     {
-      Serial.println("Publishing with frequency: " + String(frequency) + "ms");
+      // Serial.println("Publishing with frequency: " + String(frequency) + "ms");
       char wl_char[SONAR_MSG_SIZE];
-      snprintf(wl_char, SONAR_MSG_SIZE, "%d", 100); // test value
-      Serial.println("Publishing water level: " + String(wl_char));
+      snprintf(wl_char, SONAR_MSG_SIZE, "%.2f", sonar.getDistance() * 100); // test value
+      // Serial.println("Publishing water level: " + String(wl_char));
       publisher.publishJSON(wl_topic, water_level_field, wl_char);
       lastMsgTime = now;
     }
@@ -96,7 +95,6 @@ void TaskSubscriber(void *pvParameters)
   for (;;)
   {
     subscriber.loop();
-    int receivedFrequency = 0;
     int payload = subscriber.getSavedPayloadInt();
     if (payload > 0)
     {
