@@ -26,6 +26,8 @@ WifiConnection::WifiConnection(char *ssid, char *password)
 
 void WifiConnection::setup_wifi()
 {
+    digitalWrite(RED_LED, HIGH);
+    digitalWrite(GREEN_LED, LOW);
     Serial.println("Connecting to WiFi network: " + String(this->ssid));
     if (this->password == nullptr)
     {
@@ -42,6 +44,7 @@ void WifiConnection::setup_wifi()
     }
     Serial.println("");
     Serial.println("WiFi connected");
+    digitalWrite(RED_LED, LOW);
 }
 
 
@@ -60,4 +63,9 @@ char *WifiConnection::getSSID()
 void WifiConnection::setPassword(char *password)
 {
     this->password = password;
+}
+
+int WifiConnection::status()
+{
+    return WiFi.status();
 }
