@@ -6,10 +6,10 @@ char *captive_ssid = ""; // WiFi network SSID
 char *captive_PortalDomain = "";
 char *captive_query = "";
 
-char *ssid = "";
-char *password = "";
+char *ssid = "Mont";
+char *password = "a26062002";
 /* MQTT server address */
-char *default_mqtt_server = "";   // MQTT server IP address/hostname
+char *default_mqtt_server = "192.168.112.147";   // MQTT server IP address/hostname
 
 /* MQTT topics */
 char *freq_topic = "/sensor/freq";

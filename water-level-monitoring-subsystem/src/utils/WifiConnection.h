@@ -59,6 +59,12 @@ public:
      */
     void setPassword(char *password);
 
+    /**
+     * @brief Check connection status (a \ref WiFi.status() wrapper).
+     * @return int status: WiFi network status.
+     */
+    int status();
+
 private:
     char *ssid;
     char *password;

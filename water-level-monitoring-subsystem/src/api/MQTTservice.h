@@ -42,6 +42,12 @@ public:
      * @brief Loop function (a \ref PubSubClient::loop wrapper).
      */
     void loop();
+
+    /**
+     * @brief Check if the client is connected to the MQTT broker (a \ref PubSubClient::connected wrapper).
+     * @return true if connected, false otherwise.
+    */
+    bool connected();
 };
 
 #endif // MQTT_SERVICE_H
