@@ -16,7 +16,7 @@ public:
      * @brief Construct a new WifiConnection object
      *
      * Default values for ssid are used
-     * (see \ref ../constants.h)
+     * (see \ref ../config.h)
      *
      */
     WifiConnection();
@@ -42,20 +42,20 @@ public:
     void setup_wifi() override;
 
     /**
-     * @brief Set the SSID object
-     * @param ssid WiFi network SSID
+     * @brief Set the SSID object.
+     * @param ssid WiFi network SSID.
      */
     void setSSID(char *ssid) override;
 
     /**
-     * @brief Get the SSID object
-     * @return char* ssid: WiFi network SSID
+     * @brief Get the SSID object.
+     * @return char* ssid: WiFi network SSID.
      */
     char *getSSID() override;
 
     /**
-     * @brief Set the Password object
-     * @param password WiFi network password
+     * @brief Set the Password object.
+     * @param password WiFi network password.
      */
     void setPassword(char *password);
 

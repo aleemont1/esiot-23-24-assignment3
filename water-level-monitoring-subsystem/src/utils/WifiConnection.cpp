@@ -1,6 +1,6 @@
-#include "WifiConnection.h"
 #include <WiFi.h>
-#include "../env/constants.h"
+#include "WifiConnection.h"
+#include "../env/config.h"
 
 
 WifiConnection::WifiConnection()

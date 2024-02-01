@@ -1,8 +1,8 @@
 // CaptivePortalConnection
-#include "CaptivePortalConnection.h"
-#include "../env/constants.h"
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include "../env/config.h"
+#include "CaptivePortalConnection.h"
 
 CaptivePortalConnection::CaptivePortalConnection() {
     this->ssid = captive_ssid;
