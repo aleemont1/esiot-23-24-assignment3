@@ -5,7 +5,7 @@ from paho.mqtt import client as mqtt_client
 
 broker = '10.250.23.142'
 port = 1883
-topic = "test"
+topic = "/sensor/freq"
 # Generate a Client ID with the publish prefix.
 client_id = f'publish-{random.randint(0, 1000)}'
 # username = 'emqx'
@@ -28,7 +28,7 @@ def connect_mqtt():
 def publish(client):
     msg_count = 1
     while True:
-        time.sleep(1)
+        time.sleep(random.randint(1,7))
         msg = "{" + '"FREQ":' + '"' + str(random.randint(300,5000))+ '"}'
         result = client.publish(topic, msg)
         # result: [0, 1]
@@ -38,8 +38,6 @@ def publish(client):
         else:
             print(f"Failed to send message to topic {topic}")
         msg_count += 1
-        if msg_count > 100:
-            break
             
 
 
