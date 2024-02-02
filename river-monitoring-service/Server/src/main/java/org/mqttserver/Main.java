@@ -30,7 +30,6 @@ public class Main {
         Thread.sleep(4000);
         System.out.println("Ready.");
         while (true){
-*
             System.out.println("Server send message...");
             channelControllerManager.sendMessageToArduino(broker.getSystemController().getStatus()); //this message must be different
             String msg = channelControllerManager.receiveDataFromArduino();
