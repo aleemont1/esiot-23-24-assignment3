@@ -1,21 +1,21 @@
 package org.mqttserver.presentation;
 
 public class MessageFromArduino {
-    private int valvValue = 0;
 
     private String status = "";
+    private Integer valveValue = 0;
 
-    public MessageFromArduino(int valvValue, String status) {
-        this.valvValue = valvValue;
+    public MessageFromArduino(Integer valveValue, String status) {
+        this.valveValue = valveValue;
         this.status = status;
     }
 
-    public int getValvValue() {
-        return valvValue;
+    public Integer getValveValue() {
+        return valveValue;
     }
 
-    public void setValvValue(int valvValue) {
-        this.valvValue = valvValue;
+    public void setValveValue(Integer valveValue) {
+        this.valveValue = valveValue;
     }
 
     public String getStatus() {

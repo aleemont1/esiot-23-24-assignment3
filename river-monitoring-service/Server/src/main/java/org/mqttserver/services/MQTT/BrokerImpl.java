@@ -2,6 +2,7 @@ package org.mqttserver.services.MQTT;
 
 import io.netty.handler.codec.mqtt.MqttQoS;
 import io.vertx.core.Vertx;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.mqtt.MqttEndpoint;
 import io.vertx.mqtt.MqttServer;
 import io.vertx.mqtt.MqttServerOptions;
@@ -12,6 +13,7 @@ import org.mqttserver.policy.SystemControllerImpl;
 import org.mqttserver.presentation.JSONUtils;
 import org.mqttserver.presentation.MessageFromSensor;
 import org.mqttserver.presentation.MessageToArduino;
+import org.mqttserver.presentation.MessageToSensor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +67,7 @@ public class BrokerImpl implements Broker {
                 subscribe.topicSubscriptions().forEach(topic -> {
                     System.out.println("Client subscribed to: " + topic.topicName());
                     subscribedClients.add(endpoint);
+
                 });
             });
 
@@ -80,8 +83,18 @@ public class BrokerImpl implements Broker {
                 if (Objects.equals(message.topicName(), "/sensor/wl")) {
                     //setta lo stato del sistema in base al valore rilevato dell acqua
                     MessageFromSensor messageObj  = new MessageFromSensor(JSONUtils.jsonToObject(message.payload().toString(), MessageFromSensor.class).getWL());
-                    System.out.println("Value received by ESP32: " + messageObj.getWL());
+                    System.out.println("Value received from ESP32: " + messageObj.getWL());
                     this.updateSystem(messageObj.getWL());
+
+                    //pubblicare la frequenza su tutti i client
+                    MessageToSensor messageToSensor = new MessageToSensor(this.systemController.getFrequency());
+                    System.out.println("MESSAGE TO SENSOR: " + JSONUtils.objectToJson(messageToSensor));
+
+                    for (MqttEndpoint client : subscribedClients) {
+
+                        client.publish("sensor/freq", Buffer.buffer(JSONUtils.objectToJson(messageToSensor)), MqttQoS.valueOf(0), false, false);
+                    }
+
                 }
 
             });
@@ -111,6 +124,8 @@ public class BrokerImpl implements Broker {
 
     private void updateSystem(float WL) {
         this.systemController.setWL(WL);
+        //manda un messaggio ad esp con la frequenza in base allo satto settata del sistema
+
     }
 
 
@@ -122,11 +137,6 @@ public class BrokerImpl implements Broker {
     @Override
     public SystemController getSystemController() {
         return this.systemController;
-    }
-
-
-    private void checkStatus() {
-
     }
 
 }
