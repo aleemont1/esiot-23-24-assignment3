@@ -8,28 +8,18 @@ package org.mqttserver.presentation;
 * */
 public class MessageFromSensor {
 
-    private int WL;
+    private float WL;
 
-    private int ID;
-
-    public MessageFromSensor(int WL, int ID) {
+    public MessageFromSensor(float WL) {
         this.WL = WL;
-        this.ID = ID;
     }
 
-    public int getWL() {
+    public float getWL() {
         return WL;
     }
 
-    public void setWL(int WL) {
+    public void setWL(float WL) {
         this.WL = WL;
     }
 
-    public int getID() {
-        return ID;
-    }
-
-    public void setID(int ID) {
-        this.ID = ID;
-    }
 }

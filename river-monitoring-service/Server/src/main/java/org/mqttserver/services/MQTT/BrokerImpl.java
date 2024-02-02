@@ -5,10 +5,17 @@ import io.vertx.core.Vertx;
 import io.vertx.mqtt.MqttEndpoint;
 import io.vertx.mqtt.MqttServer;
 import io.vertx.mqtt.MqttServerOptions;
+import org.mqttserver.policy.ChannelControllerManager;
+import org.mqttserver.policy.ChannelControllerManagerImpl;
+import org.mqttserver.policy.SystemController;
+import org.mqttserver.policy.SystemControllerImpl;
+import org.mqttserver.presentation.JSONUtils;
+import org.mqttserver.presentation.MessageFromSensor;
+import org.mqttserver.presentation.MessageToArduino;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Objects;
 
 
 // topic della frequenza: sensor/freq,  {"freq":""}   ,  sensor/wl   {"WL":""}
@@ -26,6 +33,7 @@ public class BrokerImpl implements Broker {
 
     private final List<MqttEndpoint> subscribedClients = new ArrayList<>();
 
+    private SystemController systemController = new SystemControllerImpl();
 
     public BrokerImpl() {
         //Setting up Vertx, Server Options and Server
@@ -68,6 +76,14 @@ public class BrokerImpl implements Broker {
                         client.publish(message.topicName(), message.payload(), MqttQoS.valueOf(0), false, false);
                     }
                 }
+
+                if (Objects.equals(message.topicName(), "/sensor/wl")) {
+                    //setta lo stato del sistema in base al valore rilevato dell acqua
+                    MessageFromSensor messageObj  = new MessageFromSensor(JSONUtils.jsonToObject(message.payload().toString(), MessageFromSensor.class).getWL());
+                    System.out.println("Value received by ESP32: " + messageObj.getWL());
+                    this.updateSystem(messageObj.getWL());
+                }
+
             });
 
             endpoint.disconnectHandler(disconnect -> System.out.println("Client disconnected"));
@@ -93,9 +109,24 @@ public class BrokerImpl implements Broker {
 
     }
 
+    private void updateSystem(float WL) {
+        this.systemController.setWL(WL);
+    }
+
+
     @Override
     public MqttServer getMqttServer() {
         return this.mqttServer;
+    }
+
+    @Override
+    public SystemController getSystemController() {
+        return this.systemController;
+    }
+
+
+    private void checkStatus() {
+
     }
 
 }
