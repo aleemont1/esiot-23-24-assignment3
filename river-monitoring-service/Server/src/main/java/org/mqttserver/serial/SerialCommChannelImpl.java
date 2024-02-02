@@ -10,7 +10,7 @@ public class SerialCommChannelImpl implements SerialCommChannel, SerialPortEvent
 	private StringBuffer currentMsg = new StringBuffer();
 	
 	public SerialCommChannelImpl(String port, int rate) throws Exception {
-		queue = new ArrayBlockingQueue<String>(100);
+		queue = new ArrayBlockingQueue<String>(200);
 		serialPort = new SerialPort(port);
 		serialPort.openPort();
 		serialPort.setParams(rate,
@@ -19,8 +19,8 @@ public class SerialCommChannelImpl implements SerialCommChannel, SerialPortEvent
 		                         SerialPort.PARITY_NONE);
 		serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | 
 		                                  SerialPort.FLOWCONTROL_RTSCTS_OUT);
-		// serialPort.addEventListener(this, SerialPort.MASK_RXCHAR);
-		serialPort.addEventListener(this);
+		serialPort.addEventListener(this, SerialPort.MASK_RXCHAR);
+		//serialPort.addEventListener(this);
 	}
 
 	@Override

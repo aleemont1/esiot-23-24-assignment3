@@ -4,7 +4,7 @@ from paho.mqtt import client as mqtt_client
 
 broker = 'localhost'
 port = 1883
-topic = "python/mqtt"
+topic = "sensor/freq"
 # Generate a Client ID with the subscribe prefix.
 client_id = f'subscribe-{random.randint(0, 100)}'
 # username = 'emqx'

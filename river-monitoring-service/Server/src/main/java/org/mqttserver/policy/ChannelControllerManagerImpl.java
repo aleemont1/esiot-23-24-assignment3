@@ -54,7 +54,6 @@ public class ChannelControllerManagerImpl implements ChannelControllerManager {
     @Override
     public void sendMessageToSensor(MessageToSensor message) { //use MQTT PROTOCOL
 
-        //devo far partire un messaggio verso arduino con la frequenza
     }
 
     @Override

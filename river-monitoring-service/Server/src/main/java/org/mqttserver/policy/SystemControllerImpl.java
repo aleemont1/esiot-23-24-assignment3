@@ -1,6 +1,10 @@
 package org.mqttserver.policy;
 
+import io.vertx.core.buffer.Buffer;
 import org.mqttserver.presentation.Status;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SystemControllerImpl implements SystemController {
 
@@ -10,6 +14,29 @@ public class SystemControllerImpl implements SystemController {
     private final double WL2 = 20;
     private final double WL3 = 25;
     private final double WL4 = 28;
+
+    private int frequency = 1;
+
+    private final int F1 = 1800; //1800ms
+
+    private final int F2 = 1000; //1000ms
+
+
+    private final Map<Status, Integer> statusValveValue = new HashMap<Status, Integer>() {{
+        put(Status.ALARM_TOO_LOW, 0);
+        put(Status.NORMAL, 25 );
+        put(Status.PRE_ALARM_TOO_HIGH, 40 );
+        put(Status.ALARM_TOO_HIGH, 50);
+        put(Status.ALARM_TOO_HIGH_CRITIC, 100);
+    }};
+
+    private final Map<Status, Integer> statusFreq = new HashMap<Status, Integer>() {{
+        put(Status.ALARM_TOO_LOW, F2);
+        put(Status.NORMAL, F1 );
+        put(Status.PRE_ALARM_TOO_HIGH, F2 );
+        put(Status.ALARM_TOO_HIGH, F2);
+        put(Status.ALARM_TOO_HIGH_CRITIC, F2);
+    }};
 
     public SystemControllerImpl() {
     }
@@ -29,12 +56,22 @@ public class SystemControllerImpl implements SystemController {
         } else if (wl > WL4) {
             this.status = Status.ALARM_TOO_HIGH_CRITIC;
         }
-        System.out.println("SET SYSTEM STATUS: " + this.status + "\n\n");
 
-
+        this.frequency = this.statusFreq.get(this.status);
+        System.out.println("SET SYSTEM STATUS: " + this.status);
+        System.out.println("SET SYSTEM FREQ: " + this.frequency);
     }
 
     public Status getStatus() {
         return this.status;
+    }
+
+    public Map<Status, Integer> getStatusValveValue() {
+        return this.statusValveValue;
+    }
+
+    @Override
+    public int getFrequency() {
+        return this.frequency;
     }
 }

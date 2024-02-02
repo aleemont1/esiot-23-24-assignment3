@@ -1,6 +1,9 @@
 package org.mqttserver.policy;
 
+import io.vertx.core.buffer.Buffer;
 import org.mqttserver.presentation.Status;
+
+import java.util.Map;
 
 public interface SystemController {
 
@@ -8,4 +11,7 @@ public interface SystemController {
 
     Status getStatus();
 
+    Map<Status, Integer> getStatusValveValue();
+
+    int getFrequency();
 }
