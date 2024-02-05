@@ -7,6 +7,6 @@ public interface Broker {
     void initialize(MqttServer mqttServer);
     MqttServer getMqttServer();
 
-    public SystemController getSystemController();
+    SystemController getSystemController();
 
 }

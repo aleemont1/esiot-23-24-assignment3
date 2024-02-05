@@ -1,7 +1,10 @@
 package org.mqttserver.policy;
 
 import io.vertx.core.buffer.Buffer;
+import org.mqttserver.presentation.JSONUtils;
+import org.mqttserver.presentation.MessageFromArduino;
 import org.mqttserver.presentation.Status;
+import org.mqttserver.services.MQTT.Broker;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +41,10 @@ public class SystemControllerImpl implements SystemController {
         put(Status.ALARM_TOO_HIGH_CRITIC, F2);
     }};
 
+
+
     public SystemControllerImpl() {
+
     }
 
     @Override
@@ -73,5 +79,20 @@ public class SystemControllerImpl implements SystemController {
     @Override
     public int getFrequency() {
         return this.frequency;
+    }
+
+    @Override
+    public void checkValveValue(String msg, Broker broker) {
+        try {
+            System.out.println("ARDUINO SENT: " + msg);
+            Integer valveValue = JSONUtils.jsonToObject(msg, MessageFromArduino.class).getValveValue();
+            if (valveValue.equals(broker.getSystemController().getStatusValveValue().get(broker.getSystemController().getStatus()))) {
+                System.out.println("SERVER: Valve value ok");
+            } else {
+                System.err.println("SERVER: Valve value incorrect for system state");
+            }
+        } catch (Exception ex) {
+            System.err.println("Il server è In attesa di dati validi da parte di Arduino....");
+        }
     }
 }

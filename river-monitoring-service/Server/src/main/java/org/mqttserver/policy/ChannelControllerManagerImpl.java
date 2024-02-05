@@ -36,9 +36,6 @@ public class ChannelControllerManagerImpl implements ChannelControllerManager {
     public void sendMessageToArduino(Status status) {
         MessageToArduino messageToArduino = new MessageToArduino(status);
         this.serialCommChannel.sendMessageToArduino(JSONUtils.objectToJson(messageToArduino));
-
-
-
     }
 
     @Override
@@ -48,16 +45,6 @@ public class ChannelControllerManagerImpl implements ChannelControllerManager {
 
     @Override
     public void sendMessageToDashboard(MessageToDashboard message) { //USE HTTP PROTOCOL
-
-    }
-
-    @Override
-    public void sendMessageToSensor(MessageToSensor message) { //use MQTT PROTOCOL
-
-    }
-
-    @Override
-    public void receiveDataFromSensor() { //USE MQTT PROTOCOL ()
 
     }
 
