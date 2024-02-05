@@ -25,7 +25,6 @@ import java.util.Objects;
 public class BrokerImpl implements Broker {
 
     private final String HOST = "broker";
-    private final int SERVER_PORT = 1883;
 
     protected MqttServer mqttServer = null;
 
@@ -40,14 +39,7 @@ public class BrokerImpl implements Broker {
     public BrokerImpl() {
         //Setting up Vertx, Server Options and Server
         this.vertx = Vertx.vertx();
-        this.mqttServerOptions = this.createMqttServerOptions();
         this.mqttServer = this.createMqttServer(vertx);
-    }
-
-    private MqttServerOptions createMqttServerOptions() {
-        return new MqttServerOptions()
-                .setPort(SERVER_PORT)
-                .setHost(HOST);
     }
 
     private MqttServer createMqttServer(Vertx vertx) {
@@ -59,10 +51,7 @@ public class BrokerImpl implements Broker {
 
 
         mqttServer.endpointHandler(endpoint -> {
-            // Handle connection
             System.out.println("Client connected: " + endpoint.clientIdentifier());
-
-            // Handle subscription
             endpoint.subscribeHandler(subscribe -> {
                 subscribe.topicSubscriptions().forEach(topic -> {
                     System.out.println("Client subscribed to: " + topic.topicName());
@@ -70,7 +59,6 @@ public class BrokerImpl implements Broker {
 
                 });
             });
-
 
             endpoint.publishHandler(message -> {
                 System.out.println("Received message on topic " + message.topicName() + " with payload: " + message.payload().toString());
@@ -81,17 +69,17 @@ public class BrokerImpl implements Broker {
                 }
 
                 if (Objects.equals(message.topicName(), "/sensor/wl")) {
+
                     //setta lo stato del sistema in base al valore rilevato dell acqua
                     MessageFromSensor messageObj  = new MessageFromSensor(JSONUtils.jsonToObject(message.payload().toString(), MessageFromSensor.class).getWL());
-                    System.out.println("Value received from ESP32: " + messageObj.getWL());
+                    System.out.println("Value received from ESP32 (sensor): " + messageObj.getWL());
                     this.updateSystem(messageObj.getWL());
 
-                    //pubblicare la frequenza su tutti i client
+                    //pubblicare la frequenza su tutti i client in base allo stato
                     MessageToSensor messageToSensor = new MessageToSensor(this.systemController.getFrequency());
                     System.out.println("MESSAGE TO SENSOR: " + JSONUtils.objectToJson(messageToSensor));
 
                     for (MqttEndpoint client : subscribedClients) {
-
                         client.publish("sensor/freq", Buffer.buffer(JSONUtils.objectToJson(messageToSensor)), MqttQoS.valueOf(0), false, false);
                     }
 
@@ -124,8 +112,6 @@ public class BrokerImpl implements Broker {
 
     private void updateSystem(float WL) {
         this.systemController.setWL(WL);
-        //manda un messaggio ad esp con la frequenza in base allo satto settata del sistema
-
     }
 
 

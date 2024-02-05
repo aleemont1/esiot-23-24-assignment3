@@ -13,12 +13,6 @@ public interface ChannelControllerManager {
     void sendMessageToArduino(Status status);
     String receiveDataFromArduino() throws InterruptedException;
 
-
-    //ESP32
-    void sendMessageToSensor(MessageToSensor message);
-    void receiveDataFromSensor();
-
-
     //DASHBOARD
     void sendMessageToDashboard(MessageToDashboard message);
 
