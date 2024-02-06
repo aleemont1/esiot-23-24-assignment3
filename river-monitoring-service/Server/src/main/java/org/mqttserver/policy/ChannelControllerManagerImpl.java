@@ -28,7 +28,6 @@ public class ChannelControllerManagerImpl implements ChannelControllerManager {
         this.serialCommChannel = new SerialCommChannelImpl(this.serialScanner.getConnectedPort(), 9600 );
         System.out.println("Started CHANNEL CONTROLLER " + "\nChannel Controller Controls MQTTServer: " +
                this.broker.getMqttServer().toString() + " ON PORT: "  + this.broker.getMqttServer().actualPort());
-
     }
 
 

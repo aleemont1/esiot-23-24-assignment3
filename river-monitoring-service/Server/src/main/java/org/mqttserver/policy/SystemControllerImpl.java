@@ -18,6 +18,8 @@ public class SystemControllerImpl implements SystemController {
     private final double WL3 = 25;
     private final double WL4 = 28;
 
+    private final double INVALID_WL = -1;
+
     private int frequency = 1;
 
     private final int F1 = 1800; //1800ms
@@ -39,9 +41,8 @@ public class SystemControllerImpl implements SystemController {
         put(Status.PRE_ALARM_TOO_HIGH, F2 );
         put(Status.ALARM_TOO_HIGH, F2);
         put(Status.ALARM_TOO_HIGH_CRITIC, F2);
+        put(Status.INVALID_STATUS, null);
     }};
-
-
 
     public SystemControllerImpl() {
 
@@ -49,23 +50,27 @@ public class SystemControllerImpl implements SystemController {
 
     @Override
     public void setWL(float wl) {
-        if (wl < WL1) {
-            this.status = Status.ALARM_TOO_LOW;
-        } else if (wl > WL1 && wl <= WL2) {
-            this.status = Status.NORMAL;
-        } else if (wl > WL2 ) {
-            if (wl > WL2 && wl <= WL3 ) {
-                this.status = Status.PRE_ALARM_TOO_HIGH;
-            } else if (wl > WL3 && wl <= WL4) {
-                this.status = Status.ALARM_TOO_HIGH;
+        System.out.println("WL RECEIVED VALUE: " + wl);
+        if (wl != INVALID_WL) { //INVALID WL = -1;
+            if (wl < WL1) {
+                this.status = Status.ALARM_TOO_LOW;
+            } else if (wl > WL1 && wl <= WL2) {
+                this.status = Status.NORMAL;
+            } else if (wl > WL2) {
+                if (wl > WL2 && wl <= WL3) {
+                    this.status = Status.PRE_ALARM_TOO_HIGH;
+                } else if (wl > WL3 && wl <= WL4) {
+                    this.status = Status.ALARM_TOO_HIGH;
+                }
+            } else if (wl > WL4) {
+                this.status = Status.ALARM_TOO_HIGH_CRITIC;
             }
-        } else if (wl > WL4) {
-            this.status = Status.ALARM_TOO_HIGH_CRITIC;
+            this.frequency = this.statusFreq.get(this.status);
+            System.out.println("SET SYSTEM FREQ: " + this.frequency);
+        } else {
+            this.status = Status.INVALID_STATUS;
         }
-
-        this.frequency = this.statusFreq.get(this.status);
         System.out.println("SET SYSTEM STATUS: " + this.status);
-        System.out.println("SET SYSTEM FREQ: " + this.frequency);
     }
 
     public Status getStatus() {

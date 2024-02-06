@@ -5,13 +5,13 @@
 #include <WiFiClient.h>
 #include <WiFi.h>
 
-#define __CAPTIVE_PORTAL
+/*#define __CAPTIVE_PORTAL*/
 
-#ifdef __CAPTIVE_PORTAL
+/*#ifdef __CAPTIVE_PORTAL*/
 
-#include "utils/CaptivePortalConnection.h"
-CaptivePortalConnection wifiConn = CaptivePortalConnection();
-#else
+//#include "utils/CaptivePortalConnection.h"
+//CaptivePortalConnection wifiConn = CaptivePortalConnection();
+//#else
 
 #include "utils/WifiConnection.h"
 /**
@@ -19,7 +19,6 @@ CaptivePortalConnection wifiConn = CaptivePortalConnection();
  */
 WifiConnection wifiConn = WifiConnection(ssid, password);
 
-#endif
 
 Sonar sonar = Sonar(ECHO_PIN, TRIG_PIN, SONAR_TIMER);
 
