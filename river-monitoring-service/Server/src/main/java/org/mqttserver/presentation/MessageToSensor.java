@@ -8,17 +8,17 @@ package org.mqttserver.presentation;
 
 
 public class MessageToSensor {
-    private int freq;
+    private String freq;
 
-    public MessageToSensor(int freq) {
+    public MessageToSensor(String freq) {
         this.freq = freq;
     }
 
-    public int getFreq() {
+    public String getFreq() {
         return freq;
     }
 
-    public void setFreq(int freq) {
+    public void setFreq(String freq) {
         this.freq = freq;
     }
 }

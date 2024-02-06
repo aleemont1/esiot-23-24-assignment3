@@ -3,7 +3,7 @@ import time
 
 from paho.mqtt import client as mqtt_client
 
-broker = '192.168.112.147'
+broker = 'localhost'
 port = 1883
 topic = "/sensor/freq"
 # Generate a Client ID with the publish prefix.
