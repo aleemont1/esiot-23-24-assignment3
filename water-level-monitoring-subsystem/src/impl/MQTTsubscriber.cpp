@@ -11,16 +11,16 @@ void MQTTsubscriber::subscribeJSON(const char *topic)
 
 void MQTTsubscriber::callbackJSON(char *topic, byte *payload, unsigned int length)
 {
-    /*
-        Serial.print("Message arrived [");
-        Serial.print(topic);
-        Serial.print("] ");
-        for (int i = 0; i < length; i++)
-        {
-            Serial.print((char)payload[i]);
-        }
-        Serial.println();
-    */
+    /* 
+     * Serial.print("Message arrived [");
+     * Serial.print(topic);
+     * Serial.print("] ");
+     */
+    for (int i = 0; i < length; i++)
+    {
+        Serial.print((char)payload[i]);
+    }
+    Serial.println();
     // Deserialize JSON payload
     JsonDocument doc;
     DeserializationError error = deserializeJson(doc, payload, length);
@@ -34,12 +34,12 @@ void MQTTsubscriber::callbackJSON(char *topic, byte *payload, unsigned int lengt
         return;
     }
 
-    // Get the "FREQ" field's value
-    int freq = doc["FREQ"];
+    // Get the "freq" field's value
+    int freq = doc[frequency_field];
     if (freq != 0)
     {
         this->setSavedPayload(freq);
-        // Serial.println("NEW payload: " + String((int)this->getSavedPayloadInt()));
+        /* Serial.println("NEW payload: " + String(this->getSavedPayloadInt())); */
     }
 }
 
@@ -52,9 +52,11 @@ void MQTTsubscriber::subscribe(const char *topic)
 
 void MQTTsubscriber::callback(char *topic, byte *payload, unsigned int length)
 {
-    Serial.print("Message arrived [");
-    Serial.print(topic);
-    Serial.print("] ");
+    /* 
+     * Serial.print("Message arrived [");
+     * Serial.print(topic);
+     * Serial.print("] ");
+     */
     for (int i = 0; i < length; i++)
     {
         Serial.print((char)payload[i]);
