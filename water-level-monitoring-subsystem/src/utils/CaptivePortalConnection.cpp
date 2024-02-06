@@ -74,3 +74,8 @@ char *CaptivePortalConnection::getQuery()
 {
     return this->query;
 }
+
+int CaptivePortalConnection::status()
+{
+    return WiFi.status();
+}

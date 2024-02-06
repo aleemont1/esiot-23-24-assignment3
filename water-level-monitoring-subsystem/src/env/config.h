@@ -19,6 +19,7 @@
 #define SONAR_MSG_SIZE 16
 
 /* wifi network info */
+#define __CAPTIVE_PORTAL
 extern char *captive_ssid;
 extern char *captive_PortalDomain;
 extern char *captive_query;
