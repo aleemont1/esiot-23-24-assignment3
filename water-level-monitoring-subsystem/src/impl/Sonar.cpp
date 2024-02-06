@@ -2,7 +2,7 @@
 
 #include "Arduino.h"
 
-#define MAX_LEVEL 30  /* cm */
+#define MAX_LEVEL 30 /* cm */
 
 Sonar::Sonar(int echoP, int trigP, long maxTime) : echoPin(echoP), trigPin(trigP), timeOut(maxTime)
 {
@@ -37,8 +37,8 @@ float Sonar::getDistance()
   else
   {
     float t = tUS / 1000.0 / 1000.0 / 2;
-    float d = t * getSoundSpeed() * 100; /* Distance in cm */
-    d = MAX_LEVEL - d;
+    float d = t * getSoundSpeed(); /* Distance in cm */
+    d = MAX_LEVEL - d * 100;
     return d;
   }
 }
