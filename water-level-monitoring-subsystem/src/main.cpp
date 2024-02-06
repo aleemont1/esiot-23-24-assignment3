@@ -5,6 +5,8 @@
 #include <WiFiClient.h>
 #include <WiFi.h>
 
+#define __CAPTIVE_PORTAL
+
 #ifdef __CAPTIVE_PORTAL
 
 #include "utils/CaptivePortalConnection.h"
@@ -94,7 +96,7 @@ void TaskPublisher(void *pvParameters)
       turnGreenLedOn();
       // Serial.println("Publishing with frequency: " + String(frequency) + "ms");
       char wl_char[SONAR_MSG_SIZE];
-      snprintf(wl_char, SONAR_MSG_SIZE, "%.2f", sonar.getDistance() * 100); // test value
+      snprintf(wl_char, SONAR_MSG_SIZE, "%.2f", sonar.getDistance()); // test value
       // Serial.println("Publishing water level: " + String(wl_char));
       publisher.publishJSON(wl_topic, water_level_field, wl_char);
       lastMsgTime = now;
@@ -154,7 +156,7 @@ void TaskCheckConnection(void *pvParameters)
       subscriber.connect();
       vTaskDelay(3000);
     }
-    vTaskDelay(1000); // Delay between connection checks
+    vTaskDelay(2000); // Delay between connection checks
   }
 }
 

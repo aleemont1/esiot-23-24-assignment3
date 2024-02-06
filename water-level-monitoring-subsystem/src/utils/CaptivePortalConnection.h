@@ -78,6 +78,12 @@ public:
      */
     char *getQuery();
 
+    /**
+     * @brief Check connection status (a \ref WiFi.status() wrapper).
+     * @return int status: WiFi network status.
+     */
+    int status() override;
+
 private:
     char *captivePortalDomain;
     char *query;
