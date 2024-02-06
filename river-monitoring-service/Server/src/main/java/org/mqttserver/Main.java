@@ -23,7 +23,7 @@ public class Main {
             channelControllerManager.sendMessageToArduino(broker.getSystemController().getStatus()); //I send the message to arduino with state
             String msg = channelControllerManager.receiveDataFromArduino(); //i receive the answer from arduino
             broker.getSystemController().checkValveValue(msg, broker); //check valve value
-            Thread.sleep(500);
+            Thread.sleep(200);
          }
     }
 }

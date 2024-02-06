@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class SystemControllerImpl implements SystemController {
 
-    private Status status;
+    private Status status = null;
 
     private final double WL1 = 5;
     private final double WL2 = 20;
@@ -69,6 +69,10 @@ public class SystemControllerImpl implements SystemController {
     }
 
     public Status getStatus() {
+        if (this.status==null){
+            System.err.println("SERVER: STATUS undefined, check your connection to sensor");
+            return null;
+        }
         return this.status;
     }
 
