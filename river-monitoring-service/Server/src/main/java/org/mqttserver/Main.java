@@ -18,12 +18,11 @@ public class Main {
         broker.initialize(broker.getMqttServer());
         //Init Channel Controller Manager
         ChannelControllerManager channelControllerManager = new ChannelControllerManagerImpl(broker, null);
-
-         while (true){
+        while (true) {
             channelControllerManager.sendMessageToArduino(broker.getSystemController().getStatus()); //I send the message to arduino with state
             String msg = channelControllerManager.receiveDataFromArduino(); //i receive the answer from arduino
             broker.getSystemController().checkValveValue(msg, broker); //check valve value
             Thread.sleep(200);
-         }
+        }
     }
 }
