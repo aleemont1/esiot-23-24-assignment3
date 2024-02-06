@@ -76,7 +76,7 @@ public class BrokerImpl implements Broker {
                     this.updateSystem(messageObj.getWL());
 
                     //pubblicare la frequenza su tutti i client in base allo stato
-                    MessageToSensor messageToSensor = new MessageToSensor(this.systemController.getFrequency());
+                    MessageToSensor messageToSensor = new MessageToSensor(String.valueOf(this.systemController.getFrequency()));
                     System.out.println("MESSAGE TO SENSOR: " + JSONUtils.objectToJson(messageToSensor));
 
                     for (MqttEndpoint client : subscribedClients) {
