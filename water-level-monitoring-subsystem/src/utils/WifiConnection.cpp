@@ -48,13 +48,13 @@ void WifiConnection::setup_wifi()
 }
 
 
-void WifiConnection::setSSID(char *ssid)
+void WifiConnection::setSSID(const char *ssid)
 {
     this->ssid = ssid;
 }
 
 
-char *WifiConnection::getSSID()
+const char *WifiConnection::getSSID()
 {
     return this->ssid;
 }

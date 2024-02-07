@@ -45,13 +45,13 @@ public:
      * @brief Set the SSID object.
      * @param ssid WiFi network SSID.
      */
-    void setSSID(char *ssid) override;
+    void setSSID(const char *ssid) override;
 
     /**
      * @brief Get the SSID object.
      * @return char* ssid: WiFi network SSID.
      */
-    char *getSSID() override;
+    const char *getSSID() override;
 
     /**
      * @brief Set the Password object.
@@ -66,7 +66,7 @@ public:
     int status() override;
 
 private:
-    char *ssid;
+    const char *ssid;
     char *password;
 };
 
