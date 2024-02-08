@@ -26,6 +26,8 @@ public class SystemControllerImpl implements SystemController {
 
     private final int F2 = 1000; //1000ms
 
+    private final int F0 = 0;
+
 
     private final Map<Status, Integer> statusValveValue = new HashMap<Status, Integer>() {{
         put(Status.ALARM_TOO_LOW, 0);
@@ -41,7 +43,7 @@ public class SystemControllerImpl implements SystemController {
         put(Status.PRE_ALARM_TOO_HIGH, F2 );
         put(Status.ALARM_TOO_HIGH, F2);
         put(Status.ALARM_TOO_HIGH_CRITIC, F2);
-        put(Status.INVALID_STATUS, null);
+        put(Status.INVALID_STATUS, F0);
     }};
 
     public SystemControllerImpl() {
@@ -51,25 +53,26 @@ public class SystemControllerImpl implements SystemController {
     @Override
     public void setWL(float wl) {
         System.out.println("WL RECEIVED VALUE: " + wl);
-        if (wl != INVALID_WL) { //INVALID WL = -1;
-            if (wl < WL1) {
-                this.status = Status.ALARM_TOO_LOW;
-            } else if (wl > WL1 && wl <= WL2) {
-                this.status = Status.NORMAL;
-            } else if (wl > WL2) {
-                if (wl > WL2 && wl <= WL3) {
-                    this.status = Status.PRE_ALARM_TOO_HIGH;
-                } else if (wl > WL3 && wl <= WL4) {
-                    this.status = Status.ALARM_TOO_HIGH;
+        if (wl > INVALID_WL) { //INVALID WL = -1;
+                if (wl < WL1) {
+                    this.status = Status.ALARM_TOO_LOW;
+                } else if (wl > WL1 && wl <= WL2) {
+                    this.status = Status.NORMAL;
+                } else if (wl > WL2) {
+                    if (wl > WL2 && wl <= WL3) {
+                        this.status = Status.PRE_ALARM_TOO_HIGH;
+                    } else if (wl > WL3 && wl <= WL4) {
+                        this.status = Status.ALARM_TOO_HIGH;
+                    }
+                } else if (wl > WL4) {
+                    this.status = Status.ALARM_TOO_HIGH_CRITIC;
                 }
-            } else if (wl > WL4) {
-                this.status = Status.ALARM_TOO_HIGH_CRITIC;
+                this.frequency = this.statusFreq.get(this.status);
+                System.out.println("SET SYSTEM FREQ: " + this.frequency);
+            } else {
+                this.status = Status.INVALID_STATUS;
             }
-            this.frequency = this.statusFreq.get(this.status);
-            System.out.println("SET SYSTEM FREQ: " + this.frequency);
-        } else {
-            this.status = Status.INVALID_STATUS;
-        }
+
         System.out.println("SET SYSTEM STATUS: " + this.status);
     }
 
@@ -101,6 +104,7 @@ public class SystemControllerImpl implements SystemController {
                 System.err.println("SERVER: Valve value incorrect for system state");
             }
         } catch (Exception ex) {
+
             System.err.println("Il server è In attesa di dati validi da parte di Arduino....");
         }
     }
