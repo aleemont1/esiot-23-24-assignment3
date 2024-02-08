@@ -81,7 +81,7 @@ public class SystemControllerImpl implements SystemController {
             System.err.println("SERVER: STATUS undefined, check your connection to sensor");
             return null;
         }
-        return this.status;
+        return Status.ALARM_TOO_LOW;
     }
 
     public Map<Status, Integer> getStatusValveValue() {
