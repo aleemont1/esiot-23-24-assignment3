@@ -19,7 +19,7 @@ String JsonProcessor::createConfirmationMessage(String originalMessage)
     deserializeJson(doc, originalMessage);
 
     String status = doc["status"];
-    String valveValue = getValveValue(status);
+    String valveValue = valveController.setValveValue(status);
     doc["valveValue"] = valveValue;
 
     String confirmationMessage;
@@ -27,20 +27,17 @@ String JsonProcessor::createConfirmationMessage(String originalMessage)
 
     return confirmationMessage;
 }
-String JsonProcessor::getValveValue(String status)
+
+String JsonProcessor::formatMessage(String status, String valveValue)
 {
-    if (status == "NORMAL")
-        return "25";
-    else if (status == "ALARM_TOO_LOW")
-        return "0";
-    else if (status == "PRE_ALARM_TOO_HIGH")
-        return "40";
-    else if (status == "ALARM_TOO_HIGH")
-        return "50";
-    else if (status == "ALARM_TOO_HIGH_CRITIC")
-        return "100";
-    else if (status == "ping")
-        return "ping";
-    else
-        return "Unknown status";
+    JsonDocument doc;
+    // Set the values in the JSON document
+    doc["status"] = status;
+    doc["valveValue"] = valveValue;
+
+    // Serialize JSON document to string
+    String formattedMessage;
+    serializeJson(doc, formattedMessage);
+
+    return formattedMessage;
 }
