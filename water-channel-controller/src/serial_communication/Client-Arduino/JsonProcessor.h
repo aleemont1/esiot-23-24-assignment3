@@ -1,8 +1,9 @@
 #ifndef __JSONPROCESSOR_H__
 #define __JSONPROCESSOR_H__
 
-#include <Arduino.h>
-#include <ArduinoJson.h>
+#include "Arduino.h"
+#include "ArduinoJson.h"
+#include "ValveController.h"
 
 /**
  * @brief A utility class for handling JSON-formatted messages.
@@ -57,20 +58,29 @@ public:
     String createConfirmationMessage(String originalMessage);
 
     /**
-     * @brief Retrieves the corresponding valve value for a given status.
+     * Formats the status and valve value into a structured message for transmission.
      *
-     * This method maps the status of the system to a valve value.
-     * The status is a string that represents the current state of the system,
-     * and the valve value is a string that represents the percentage of the
-     * valve that should be open in response to the current status.
+     * This method takes the status of the water channel and the valve value as inputs,
+     * and formats them into a structured message (e.g., a JSON string).
+     * This formatted message can then be sent over the serial communication channel
+     * to the Arduino.
      *
-     * @param status A string representing the current status of the system.
-     *
-     * @return String The corresponding valve value as a string representing a percentage.
-     * For example, "25%" for a normal status, "0%" for an alarm-too-low status, etc.
-     * If the status is unknown, it returns "Unknown status".
+     * @param status A string representing the status of the water channel.
+     * @param valveValue A string representing the value of the valve.
+     * This should be a numeric value between 0 and 100, inclusive,
+     * where 0 represents a fully closed valve
+     * and 100 represents a fully open valve.
+     * @return String A String containing the formatted message.
+     * The format of this message could be a JSON string like
+     * `{"status":"NORMAL","valveValue":"25"}`.
      */
-    String getValveValue(String status);
+    String formatMessage(String status, String valveValue);
+
+private:
+    /**
+     * @brief an instance of the ValveController class.
+     */
+    ValveController valveController;
 };
 
 #endif // __JSONPROCESSOR_H__
