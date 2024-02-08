@@ -28,8 +28,7 @@ StatusValvePair statusValvePairs[] = {
     {"ALARM_TOO_LOW", "0"},
     {"PRE_ALARM_TOO_HIGH", "40"},
     {"ALARM_TOO_HIGH", "50"},
-    {"ALARM_TOO_HIGH_CRITIC", "100"},
-    {"ping", "ping"}};
+    {"ALARM_TOO_HIGH_CRITIC", "100"}};
 
 String ValveController::getValveValueForState(String systemState)
 {
