@@ -76,6 +76,8 @@ public:
      */
     String formatMessage(String status, String valveValue);
 
+    String getStatus(String receivedContent);
+
 private:
     /**
      * @brief an instance of the ValveController class.
