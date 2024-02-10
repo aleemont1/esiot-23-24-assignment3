@@ -111,6 +111,10 @@ public:
      */
     int mapValveOpeningLevelToServoAngle(int valveOpeningLevel);
 
+    /**
+     * @brief Reads the status of the water channel controller.
+     * Checks the button status and performs manual control if the controller is in manual mode.
+     */
     void reading();
 
 private:
@@ -118,7 +122,7 @@ private:
     int columns = 16;                         ///< The number of columns in the LCD display.
     int rows = 2;                             ///< The number of rows in the LCD display.
     Servo valveServo;                         ///< The servo motor that controls the position of the water valve.
-    int buttonPin = 4;                            ///< The pin number to which the manual control button is connected.
+    int buttonPin = 4;                        ///< The pin number to which the manual control button is connected.
     int potentiometerPin;                     ///< The pin number to which the potentiometer for adjusting the valve opening level is connected.
     bool manualMode;                          ///< A flag indicating whether the system is in manual control mode.
     LiquidCrystal_I2C lcd;                    ///< The object representing the LCD display.
