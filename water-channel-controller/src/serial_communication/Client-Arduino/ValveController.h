@@ -2,7 +2,6 @@
 #define __VALVECONTROLLER_H__
 
 #include "Arduino.h"
-
 class ValveController
 {
 public:
@@ -38,6 +37,15 @@ public:
      * @return String The valve value for the given system state, or "Unknown system state" if the system state is not found in the mapping.
      */
     String getValveValueForState(String systemState);
+
+    /**
+     * @brief This method is used to parse the valve value from a string to an integer.
+     * It is used to convert the valve value received from the server to an integer that can be used to control the valve position.
+     *
+     * @param valveValue
+     * @return int
+     */
+    int parseValveValue(String valveValue);
 };
 
 #endif // __VALVECONTROLLER_H__
