@@ -47,3 +47,9 @@ String ValveController::setValveValue(String systemState)
     String valveValue = getValveValueForState(systemState);
     return valveValue;
 }
+
+int ValveController::parseValveValue(String valveValue)
+{
+    int parsedValveValue = valveValue.toInt();
+    return parsedValveValue;
+}
