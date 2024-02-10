@@ -8,7 +8,6 @@ WaterChannelController::WaterChannelController(int servoPin, int buttonPin, int 
 
 void WaterChannelController::initialize()
 {
-    Serial.println("Initializing water channel controller...");
     initializeButton();
     initializeValve();
     initializeLcd();
@@ -42,8 +41,6 @@ void WaterChannelController::updateValvePosition(int valveOpeningLevel)
     valveServo.write(servoAngle);
     currentValveOpeningLevel = valveOpeningLevel;
     updateLCD();
-    Serial.print("Valve position updated: ");
-    Serial.println(valveOpeningLevel);
 }
 
 int WaterChannelController::mapValveOpeningLevelToServoAngle(int valveOpeningLevel)
@@ -53,7 +50,6 @@ int WaterChannelController::mapValveOpeningLevelToServoAngle(int valveOpeningLev
 
 void WaterChannelController::updateLCD()
 {
-    Serial.println("Updating LCD...");
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("Valve: ");
@@ -69,8 +65,6 @@ void WaterChannelController::manualControl()
     int potentiometerValue = analogRead(potentiometerPin);
     int valveOpeningLevel = map(potentiometerValue, MIN_POTENTIOMETER_VALUE, MAX_POTENTIOMETER_VALUE, MIN_VALVE_OPENING_LEVEL, MAX_VALVE_OPENING_LEVEL);
     updateValvePosition(valveOpeningLevel);
-    Serial.print("Manual control activated. Valve opening level: ");
-    Serial.println(valveOpeningLevel);
 }
 
 void WaterChannelController::reading()
