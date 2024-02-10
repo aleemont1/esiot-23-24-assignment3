@@ -41,3 +41,12 @@ String JsonProcessor::formatMessage(String status, String valveValue)
 
     return formattedMessage;
 }
+
+String JsonProcessor::getStatus(String receivedContent)
+{
+    JsonDocument doc;
+    deserializeJson(doc, receivedContent);
+
+    String status = doc["status"];
+    return status;
+}
