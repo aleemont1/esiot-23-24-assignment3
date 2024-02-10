@@ -12,7 +12,6 @@ void WaterChannelController::initialize()
     initializeValve();
     initializeLcd();
     updateLCD();
-    updateValvePosition(50);
     reading();
 }
 
@@ -35,6 +34,7 @@ void WaterChannelController::initializeLcd()
     lcd.print("Water Channel");
 }
 
+// TODO: Implement the parseValveValue method
 void WaterChannelController::updateValvePosition(int valveOpeningLevel)
 {
     int servoAngle = mapValveOpeningLevelToServoAngle(valveOpeningLevel);
@@ -57,7 +57,7 @@ void WaterChannelController::updateLCD()
     lcd.print("%");
     lcd.setCursor(0, 1);
     lcd.print("Mode: ");
-    lcd.print(manualMode ? "MANUAL" : "AUTOMATIC");
+    lcd.print(state == State::MANUAL ? "MANUAL" : "AUTOMATIC");
 }
 
 void WaterChannelController::manualControl()
@@ -70,9 +70,13 @@ void WaterChannelController::manualControl()
 void WaterChannelController::reading()
 {
     checkButtonStatus();
-    if (manualMode == true)
+    if (state == State::MANUAL)
     {
         manualControl();
+    }
+    else if (state == State::AUTOMATIC)
+    {
+        updateValvePosition(50); // TODO: Replace with actual logic to determine valve opening level like a getter for the valve opening level
     }
 }
 
@@ -84,7 +88,7 @@ void WaterChannelController::checkButtonStatus()
     int buttonState = digitalRead(buttonPin);
     if (buttonState == HIGH && millis() - lastButtonPress > debounceDelay)
     {
-        manualMode = !manualMode;
+        state = (state == State::MANUAL) ? State::AUTOMATIC : State::MANUAL;
         lastButtonPress = millis();
     }
 }
