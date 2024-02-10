@@ -1,6 +1,8 @@
 #ifndef __WATERCHANNELCONTROLLER_H__
 #define __WATERCHANNELCONTROLLER_H__
 
+#include "../serial_communication/Client-Arduino/ValveController.h"
+#include "../serial_communication/Client-Arduino/JsonProcessor.h"
 #include "LiquidCrystal_I2C.h"
 #include "Servo.h"
 #include "Arduino.h"
@@ -37,6 +39,26 @@ public:
      * to represent a fully closed valve and updates the LCD display with the initial status.
      */
     void initialize();
+
+    /**
+     * @brief Initializes the button used to control the water channel manually.
+     * This method sets the mode of the button pin to INPUT, which allows the button to be used for manual control.
+     */
+    void initializeButton();
+
+    /**
+     * @brief Initializes the valve to a default position (fully closed).
+     * This method sets the initial position of the servo to represent a fully closed valve.
+     */
+    void initializeValve();
+
+    /**
+     * @brief Initializes the LCD display.
+     * This method initializes the LCD display with the specified dimensions and prints the initial message.
+     */
+    void initializeLcd();
+
+    void parseValveValue();
 
     /**
      * @brief Updates the position of the valve based on the specified opening level.
@@ -89,12 +111,14 @@ public:
      */
     int mapValveOpeningLevelToServoAngle(int valveOpeningLevel);
 
+    void reading();
+
 private:
     int address = 0;                          ///< The I2C address of the LCD display.
     int columns = 16;                         ///< The number of columns in the LCD display.
     int rows = 2;                             ///< The number of rows in the LCD display.
     Servo valveServo;                         ///< The servo motor that controls the position of the water valve.
-    int buttonPin;                            ///< The pin number to which the manual control button is connected.
+    int buttonPin = 4;                            ///< The pin number to which the manual control button is connected.
     int potentiometerPin;                     ///< The pin number to which the potentiometer for adjusting the valve opening level is connected.
     bool manualMode;                          ///< A flag indicating whether the system is in manual control mode.
     LiquidCrystal_I2C lcd;                    ///< The object representing the LCD display.
@@ -105,6 +129,8 @@ private:
     const int MAX_SERVO_ANGLE = 180;          ///< The maximum angle to which the servo can rotate.
     const int MIN_POTENTIOMETER_VALUE = 0;    ///< The minimum reading from the potentiometer.
     const int MAX_POTENTIOMETER_VALUE = 1023; ///< The maximum reading from the potentiometer.
+    ValveController valveController;          ///< The valve controller object used to set the valve value based on the system state.
+    JsonProcessor jsonProcessor;              ///< The JSON processor object used to parse the JSON data received from the server.
 };
 
 #endif // __WATERCHANNELCONTROLLER_H__
