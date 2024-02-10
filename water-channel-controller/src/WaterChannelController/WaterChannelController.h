@@ -5,6 +5,7 @@
 #include "../serial_communication/Client-Arduino/JsonProcessor.h"
 #include "LiquidCrystal_I2C.h"
 #include "Servo.h"
+#include "WaterChannelController/State.h"
 #include "Arduino.h"
 
 /**
@@ -122,7 +123,7 @@ private:
     int columns = 16;                         ///< The number of columns in the LCD display.
     int rows = 2;                             ///< The number of rows in the LCD display.
     Servo valveServo;                         ///< The servo motor that controls the position of the water valve.
-    int buttonPin = 4;                        ///< The pin number to which the manual control button is connected.
+    int buttonPin;                            ///< The pin number to which the manual control button is connected.
     int potentiometerPin;                     ///< The pin number to which the potentiometer for adjusting the valve opening level is connected.
     bool manualMode;                          ///< A flag indicating whether the system is in manual control mode.
     LiquidCrystal_I2C lcd;                    ///< The object representing the LCD display.
@@ -135,6 +136,7 @@ private:
     const int MAX_POTENTIOMETER_VALUE = 1023; ///< The maximum reading from the potentiometer.
     ValveController valveController;          ///< The valve controller object used to set the valve value based on the system state.
     JsonProcessor jsonProcessor;              ///< The JSON processor object used to parse the JSON data received from the server.
+    State state;                              ///< The state object used to store the current state of the system.
 };
 
 #endif // __WATERCHANNELCONTROLLER_H__
