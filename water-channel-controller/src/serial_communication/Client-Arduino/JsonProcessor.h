@@ -76,6 +76,12 @@ public:
      */
     String formatMessage(String status, String valveValue);
 
+    /**
+     * @brief Extracts the status from the received content.
+     *
+     * @param receivedContent A string representing the JSON-formatted message received from the server.
+     * @return String The status extracted from the received content.
+     */
     String getStatus(String receivedContent);
 
 private:
