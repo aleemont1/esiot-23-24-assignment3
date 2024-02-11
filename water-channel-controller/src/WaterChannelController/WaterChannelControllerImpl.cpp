@@ -87,7 +87,7 @@ void WaterChannelController::reading()
     }
     else if (state == State::AUTOMATIC)
     {
-        // String receivedContent = "{'systemState': 'NORMAL'}"; // TODO: Replace with "messageReceiver.getReceivedContent()
+        // String receivedContent = "{'systemState': 'NORMAL'}"; // TODO: used for testing purposes, remove this line when done
         String receivedContent = messageReceiver.getReceivedContent();
         String systemState = jsonProcessor.getSystemState(receivedContent);
         int valveValue = valveController.getValveValueForStateAsInt(systemState);
