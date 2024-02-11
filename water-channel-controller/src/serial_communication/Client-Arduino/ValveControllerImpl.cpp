@@ -53,3 +53,10 @@ int ValveController::parseValveValue(String valveValue)
     int parsedValveValue = valveValue.toInt();
     return parsedValveValue;
 }
+
+int ValveController::getValveValueForStateAsInt(String systemState)
+{
+    String valveValue = getValveValueForState(systemState);
+    int parsedValveValue = parseValveValue(valveValue);
+    return parsedValveValue;
+}
