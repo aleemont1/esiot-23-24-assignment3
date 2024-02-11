@@ -80,29 +80,31 @@ void WaterChannelController::manualControl()
 void WaterChannelController::reading()
 {
     checkButtonStatus();
-    if (state == State::MANUAL)
+
+    switch (state)
     {
+    case State::MANUAL:
         manualControl();
-    }
-    else if (state == State::AUTOMATIC)
-    {
-        // String receivedContent = "{'systemState': 'NORMAL'}"; // TODO: used for testing purposes, remove this line when done
+        break;
+
+    case State::AUTOMATIC:
         String receivedContent = messageReceiver.getReceivedContent();
         String systemState = jsonProcessor.getSystemState(receivedContent);
         int valveValue = valveController.getValveValueForStateAsInt(systemState);
         updateValvePosition(valveValue);
+        break;
     }
 }
 
 void WaterChannelController::checkButtonStatus()
 {
-    static unsigned long lastButtonPress = 0;
+    static unsigned long timeOfLastButtonPress = 0;
 
-    int buttonState = digitalRead(buttonPin);
-    if (buttonState == HIGH && millis() - lastButtonPress > DEBOUNCE_DELAY)
+    int currentButtonState = digitalRead(buttonPin);
+    if (currentButtonState == HIGH && millis() - timeOfLastButtonPress > DEBOUNCE_DELAY)
     {
         toggleState();
-        lastButtonPress = millis();
+        timeOfLastButtonPress = millis();
     }
 }
 
