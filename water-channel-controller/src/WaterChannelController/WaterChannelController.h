@@ -6,6 +6,7 @@
 #include "LiquidCrystal_I2C.h"
 #include "Servo.h"
 #include "WaterChannelController/State.h"
+#include "../serial_communication/Client-Arduino/MessageReceiver.h"
 #include "Arduino.h"
 
 /**
@@ -142,7 +143,8 @@ private:
     ValveController valveController;          ///< The valve controller object used to set the valve value based on the system state.
     JsonProcessor jsonProcessor;              ///< The JSON processor object used to parse the JSON data received from the server.
     State state;                              ///< The state object used to store the current state of the system.
-    const int DEBOUNCE_DELAY = 200;           ///< The delay (in milliseconds) used to debounce the button input.
+    const unsigned long DEBOUNCE_DELAY = 200; ///< The delay (in milliseconds) used to debounce the button input.
+    MessageReceiver messageReceiver;          ///< The message receiver object used to receive messages from the server.
 };
 
 #endif // __WATERCHANNELCONTROLLER_H__
