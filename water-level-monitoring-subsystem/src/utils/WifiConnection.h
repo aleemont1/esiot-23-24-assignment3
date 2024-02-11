@@ -25,14 +25,14 @@ public:
      * @brief Construct a new WifiConnection object
      * @param ssid WiFi network SSID
      */
-    WifiConnection(char *ssid);
+    WifiConnection(const char *ssid);
 
     /**
      * @brief Construct a new WifiConnection object
      * @param ssid WiFi network SSID
      * @param password WiFi network password
      */
-    WifiConnection(char *ssid, char *password);
+    WifiConnection(const char *ssid, const char *password);
     ~WifiConnection() = default;
 
     /**
@@ -57,7 +57,7 @@ public:
      * @brief Set the Password object.
      * @param password WiFi network password.
      */
-    void setPassword(char *password);
+    void setPassword(const char *password);
 
     /**
      * @brief Check connection status (a \ref WiFi.status() wrapper).
@@ -67,7 +67,7 @@ public:
 
 private:
     const char *ssid;
-    char *password;
+    const char *password;
 };
 
 #endif // WIFI_CONNECTION_H

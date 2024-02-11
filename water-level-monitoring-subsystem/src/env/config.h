@@ -13,21 +13,16 @@
 /* mqtt buffers dimensions*/
 #define FREQ_MSG_SIZE 16
 #define SONAR_MSG_SIZE 16
-#define __CAPTIVE_PORTAL /* Comment this line to use a regular WiFi network */
-
-/* wifi network info */
-#ifdef __CAPTIVE_PORTAL
+//#define __CAPTIVE_PORTAL /* Comment this line to use a regular WiFi network */
 
 extern const char *captive_ssid;
 extern const char *captive_PortalDomain;
 extern const char *captive_query;
 
-#else
 
 extern const char *ssid;
 extern const char *password;
 
-#endif
 /* MQTT server address */
 extern const char *default_mqtt_server; /* MQTT server IP address/hostname */
 

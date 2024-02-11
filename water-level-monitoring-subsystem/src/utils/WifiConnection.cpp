@@ -10,14 +10,14 @@ WifiConnection::WifiConnection()
 }
 
 
-WifiConnection::WifiConnection(char *ssid)
+WifiConnection::WifiConnection(const char *ssid)
 {
     this->ssid = ssid;
     this->password = nullptr;
 }
 
 
-WifiConnection::WifiConnection(char *ssid, char *password)
+WifiConnection::WifiConnection(const char *ssid, const char *password)
 {
     this->ssid = ssid;
     this->password = password;
@@ -60,7 +60,7 @@ const char *WifiConnection::getSSID()
 }
 
 
-void WifiConnection::setPassword(char *password)
+void WifiConnection::setPassword(const char *password)
 {
     this->password = password;
 }

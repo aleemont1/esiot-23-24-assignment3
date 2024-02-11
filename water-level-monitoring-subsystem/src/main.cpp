@@ -20,9 +20,6 @@ CaptivePortalConnection wifiConn = CaptivePortalConnection();
 
 #else
 #include "utils/WifiConnection.h"
-/**
- * NOTE: Create ssid and password in env/config.h
- */
 WifiConnection wifiConn = WifiConnection(ssid, password);
 
 #endif
