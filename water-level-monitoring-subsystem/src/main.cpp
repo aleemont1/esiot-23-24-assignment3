@@ -5,20 +5,27 @@
 #include <WiFiClient.h>
 #include <WiFi.h>
 
-/*#define __CAPTIVE_PORTAL*/
+/* 
+ * NOTE: DO NOT COMMENT OUT. SEE CONFIG.H 
+ * DO NOT CHANGE IMPLEMENTATION. THERE
+ * IS A REASON WHY THIS IS HERE
+ * YOU CAN REMOVE THE DEFINITION 
+ * OF THE __CAPTIVE_PORTAL SYMBOL
+ * IN CONFIG.H.
+*/
+#ifdef __CAPTIVE_PORTAL
 
-/*#ifdef __CAPTIVE_PORTAL*/
+#include "utils/CaptivePortalConnection.h"
+CaptivePortalConnection wifiConn = CaptivePortalConnection();
 
-//#include "utils/CaptivePortalConnection.h"
-//CaptivePortalConnection wifiConn = CaptivePortalConnection();
-//#else
-
+#else
 #include "utils/WifiConnection.h"
 /**
  * NOTE: Create ssid and password in env/config.h
  */
 WifiConnection wifiConn = WifiConnection(ssid, password);
 
+#endif
 
 Sonar sonar = Sonar(ECHO_PIN, TRIG_PIN, SONAR_TIMER);
 

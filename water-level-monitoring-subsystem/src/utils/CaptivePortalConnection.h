@@ -30,7 +30,7 @@ public:
      * @param query Usually a POST request.
      *
      */
-    CaptivePortalConnection(char *ssid, char *captivePortalDomain, char *query);
+    CaptivePortalConnection(const char *ssid, const char *captivePortalDomain, const char *query);
 
     /**
      * @brief Initialize WiFi connection.
@@ -43,13 +43,13 @@ public:
      *
      * @param ssid WiFi network SSID.
      */
-    void setSSID(char *ssid) override;
+    void setSSID(const char *ssid) override;
 
     /**
      * @brief Get the SSID of the WiFi network.
      * @return char* ssid: WiFi network SSID.
      */
-    char *getSSID() override;
+    const char *getSSID() override;
 
     /**
      * @brief Set the captive portal domain.
@@ -57,26 +57,26 @@ public:
      * @param captivePortalDomain URL or IP of the radius server.
      *
      */
-    void setCaptive(char *captivePortalDomain);
+    void setCaptive(const char *captivePortalDomain);
 
     /**
      * @brief Get the captive portal domain.
      * @return char* captivePortalDomain: URL or IP of the radius server.
      */
-    char *getCaptive();
+    const char *getCaptive();
 
     /**
      * @brief Set the query for the radius server.
      *
      * @param query Usually a POST request.
      */
-    void setQuery(char *query);
+    void setQuery(const char *query);
 
     /**
      * @brief Get the query for the radius server.
      * @return char* query: Usually a POST request.
      */
-    char *getQuery();
+    const char *getQuery();
 
     /**
      * @brief Check connection status (a \ref WiFi.status() wrapper).
@@ -85,8 +85,8 @@ public:
     int status() override;
 
 private:
-    char *captivePortalDomain;
-    char *query;
+    const char *captivePortalDomain;
+    const char *query;
 };
 
 #endif // CAPTIVE_PORTAL_CONNECTION_H

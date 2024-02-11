@@ -10,7 +10,7 @@ CaptivePortalConnection::CaptivePortalConnection() {
     this->query = captive_query;
 }
 
-CaptivePortalConnection::CaptivePortalConnection(char *ssid, char *captivePortalDomain, char *query)
+CaptivePortalConnection::CaptivePortalConnection(const char *ssid, const char *captivePortalDomain, const char *query)
 {
     this->ssid = ssid;
     this->captivePortalDomain = captivePortalDomain;
@@ -45,32 +45,32 @@ void CaptivePortalConnection::setup_wifi()
     String payload = login.getString();
 }
 
-void CaptivePortalConnection::setSSID(char *ssid)
+void CaptivePortalConnection::setSSID(const char *ssid)
 {
     this->ssid = ssid;
 }
 
-char *CaptivePortalConnection::getSSID()
+const char *CaptivePortalConnection::getSSID()
 {
     return this->ssid;
 }
 
-void CaptivePortalConnection::setCaptive(char *captivePortalDomain)
+void CaptivePortalConnection::setCaptive(const char *captivePortalDomain)
 {
     this->captivePortalDomain = captivePortalDomain;
 }
 
-char *CaptivePortalConnection::getCaptive()
+const char *CaptivePortalConnection::getCaptive()
 {
     return this->captivePortalDomain;
 }
 
-void CaptivePortalConnection::setQuery(char *query)
+void CaptivePortalConnection::setQuery(const char *query)
 {
     this->query = query;
 }
 
-char *CaptivePortalConnection::getQuery()
+const char *CaptivePortalConnection::getQuery()
 {
     return this->query;
 }
