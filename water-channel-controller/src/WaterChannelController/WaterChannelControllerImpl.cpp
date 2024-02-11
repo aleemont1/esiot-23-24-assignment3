@@ -8,20 +8,39 @@ WaterChannelController::WaterChannelController(int servoPin, int buttonPin, int 
 
 void WaterChannelController::initialize()
 {
-    pinMode(buttonPin, INPUT);
-    valveServo.write(MIN_SERVO_ANGLE); // Initially the valve is assumed as closed
-    lcd.begin(columns, rows);
+    initializeButton();
+    initializeValve();
+    initializeLcd();
     updateLCD();
+    reading();
 }
 
+void WaterChannelController::initializeButton()
+{
+    pinMode(buttonPin, INPUT);
+}
+
+void WaterChannelController::initializeValve()
+{
+    valveServo.write(MIN_SERVO_ANGLE);
+}
+
+void WaterChannelController::initializeLcd()
+{
+    lcd.begin(columns, rows);
+    lcd.init();
+    lcd.backlight();
+    lcd.setCursor(0, 0);
+    lcd.print("Water Channel");
+}
+
+// TODO: Implement the parseValveValue method
 void WaterChannelController::updateValvePosition(int valveOpeningLevel)
 {
     int servoAngle = mapValveOpeningLevelToServoAngle(valveOpeningLevel);
     valveServo.write(servoAngle);
     currentValveOpeningLevel = valveOpeningLevel;
     updateLCD();
-    Serial.print("Valve position updated: ");
-    Serial.println(valveOpeningLevel);
 }
 
 int WaterChannelController::mapValveOpeningLevelToServoAngle(int valveOpeningLevel)
@@ -38,17 +57,45 @@ void WaterChannelController::updateLCD()
     lcd.print("%");
     lcd.setCursor(0, 1);
     lcd.print("Mode: ");
-    lcd.print(manualMode ? "MANUAL" : "AUTOMATIC");
+    lcd.print(state == State::MANUAL ? "MANUAL" : "AUTOMATIC");
 }
 
 void WaterChannelController::manualControl()
 {
-    if (manualMode)
+    int potentiometerValue = analogRead(potentiometerPin);
+    int valveOpeningLevel = map(potentiometerValue, MIN_POTENTIOMETER_VALUE, MAX_POTENTIOMETER_VALUE, MIN_VALVE_OPENING_LEVEL, MAX_VALVE_OPENING_LEVEL);
+    updateValvePosition(valveOpeningLevel);
+}
+
+void WaterChannelController::reading()
+{
+    checkButtonStatus();
+    if (state == State::MANUAL)
     {
-        int potentiometerValue = analogRead(potentiometerPin);
-        int valveOpeningLevel = map(potentiometerValue, MIN_POTENTIOMETER_VALUE, MAX_POTENTIOMETER_VALUE, MIN_VALVE_OPENING_LEVEL, MAX_VALVE_OPENING_LEVEL);
-        updateValvePosition(valveOpeningLevel);
-        Serial.print("Manual control activated. Valve opening level: ");
-        Serial.println(valveOpeningLevel);
+        manualControl();
     }
+    else if (state == State::AUTOMATIC)
+    {
+        String receivedContent = messageReceiver.getReceivedContent();
+        String systemState = jsonProcessor.getSystemState(receivedContent);
+        int valveValue = valveController.getValveValueForStateAsInt(systemState);
+        updateValvePosition(valveValue);
+    }
+}
+
+void WaterChannelController::checkButtonStatus()
+{
+    static unsigned long lastButtonPress = 0;
+
+    int buttonState = digitalRead(buttonPin);
+    if (buttonState == HIGH && millis() - lastButtonPress > DEBOUNCE_DELAY)
+    {
+        toggleState();
+        lastButtonPress = millis();
+    }
+}
+
+void WaterChannelController::toggleState()
+{
+    state = (state == State::MANUAL) ? State::AUTOMATIC : State::MANUAL;
 }

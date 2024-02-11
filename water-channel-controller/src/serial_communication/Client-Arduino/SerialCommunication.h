@@ -106,8 +106,14 @@ private:
      */
     void receivedEndMessage();
 
+    /**
+     * @brief an instance of the MessageSender class.
+     */
     MessageSender messageSender;
 
+    /**
+     * @brief an instance of the MessageReceiver class.
+     */
     MessageReceiver messageReceiver;
 };
 

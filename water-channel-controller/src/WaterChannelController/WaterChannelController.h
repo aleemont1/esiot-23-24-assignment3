@@ -1,8 +1,12 @@
 #ifndef __WATERCHANNELCONTROLLER_H__
 #define __WATERCHANNELCONTROLLER_H__
 
+#include "../serial_communication/Client-Arduino/ValveController.h"
+#include "../serial_communication/Client-Arduino/JsonProcessor.h"
 #include "LiquidCrystal_I2C.h"
 #include "Servo.h"
+#include "WaterChannelController/State.h"
+#include "../serial_communication/Client-Arduino/MessageReceiver.h"
 #include "Arduino.h"
 
 /**
@@ -39,6 +43,26 @@ public:
     void initialize();
 
     /**
+     * @brief Initializes the button used to control the water channel manually.
+     * This method sets the mode of the button pin to INPUT, which allows the button to be used for manual control.
+     */
+    void initializeButton();
+
+    /**
+     * @brief Initializes the valve to a default position (fully closed).
+     * This method sets the initial position of the servo to represent a fully closed valve.
+     */
+    void initializeValve();
+
+    /**
+     * @brief Initializes the LCD display.
+     * This method initializes the LCD display with the specified dimensions and prints the initial message.
+     */
+    void initializeLcd();
+
+    void parseValveValue();
+
+    /**
      * @brief Updates the position of the valve based on the specified opening level.
      *
      * This method adjusts the position of the servo motor, which in turn changes the opening level of the valve.
@@ -58,6 +82,11 @@ public:
      * The method also debounces the button input to prevent false triggering.
      */
     void checkButtonStatus();
+
+    /**
+     * @brief Toggles the operating mode of the water channel controller between manual and automatic.
+     */
+    void toggleState();
 
     /**
      * @brief Enables manual control of the water channel.
@@ -89,6 +118,12 @@ public:
      */
     int mapValveOpeningLevelToServoAngle(int valveOpeningLevel);
 
+    /**
+     * @brief Reads the status of the water channel controller.
+     * Checks the button status and performs manual control if the controller is in manual mode.
+     */
+    void reading();
+
 private:
     int address = 0;                          ///< The I2C address of the LCD display.
     int columns = 16;                         ///< The number of columns in the LCD display.
@@ -105,6 +140,11 @@ private:
     const int MAX_SERVO_ANGLE = 180;          ///< The maximum angle to which the servo can rotate.
     const int MIN_POTENTIOMETER_VALUE = 0;    ///< The minimum reading from the potentiometer.
     const int MAX_POTENTIOMETER_VALUE = 1023; ///< The maximum reading from the potentiometer.
+    ValveController valveController;          ///< The valve controller object used to set the valve value based on the system state.
+    JsonProcessor jsonProcessor;              ///< The JSON processor object used to parse the JSON data received from the server.
+    State state;                              ///< The state object used to store the current state of the system.
+    const unsigned long DEBOUNCE_DELAY = 200; ///< The delay (in milliseconds) used to debounce the button input.
+    MessageReceiver messageReceiver;          ///< The message receiver object used to receive messages from the server.
 };
 
 #endif // __WATERCHANNELCONTROLLER_H__
