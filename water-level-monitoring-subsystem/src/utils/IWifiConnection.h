@@ -11,12 +11,12 @@ class IWifiConnection
 public:
   virtual ~IWifiConnection() = default;
   virtual void setup_wifi() = 0;
-  virtual void setSSID(char *ssid) = 0;
-  virtual char *getSSID() = 0;
+  virtual void setSSID(const char *ssid) = 0;
+  virtual const char *getSSID() = 0;
   virtual int status() = 0;
 
 protected:
-  char *ssid;
+  const char *ssid;
 };
 
 #endif // IWIFI_CONNECTION_H

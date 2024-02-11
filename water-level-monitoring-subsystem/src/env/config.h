@@ -1,10 +1,6 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-/**
- * Definitions go in constants.cpp
-*/
-
 /* LEDs PINs */
 #define GREEN_LED 19
 #define RED_LED 21
@@ -17,24 +13,30 @@
 /* mqtt buffers dimensions*/
 #define FREQ_MSG_SIZE 16
 #define SONAR_MSG_SIZE 16
+#define __CAPTIVE_PORTAL /* Comment this line to use a regular WiFi network */
 
 /* wifi network info */
-#define __CAPTIVE_PORTAL
-extern char *captive_ssid;
-extern char *captive_PortalDomain;
-extern char *captive_query;
+#ifdef __CAPTIVE_PORTAL
 
-extern char *ssid;
-extern char *password;
+extern const char *captive_ssid;
+extern const char *captive_PortalDomain;
+extern const char *captive_query;
+
+#else
+
+extern const char *ssid;
+extern const char *password;
+
+#endif
 /* MQTT server address */
-extern char *default_mqtt_server;
+extern const char *default_mqtt_server; /* MQTT server IP address/hostname */
 
 /* MQTT topics */
-extern char *freq_topic;
-extern char *wl_topic;
+extern const char *freq_topic;
+extern const char *wl_topic;
 
 /* JSON fields */
 extern const char *frequency_field;
 extern const char *water_level_field;
 
-#endif
+#endif /* CONFIG_H */
