@@ -14,7 +14,6 @@ WaterChannelController::~WaterChannelController()
 void WaterChannelController::initialize()
 {
     initializeServo();
-    initializeServo();
     initializeButton();
     initializeValve();
     initializeLcd();
