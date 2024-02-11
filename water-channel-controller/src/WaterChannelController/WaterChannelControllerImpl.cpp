@@ -83,12 +83,16 @@ void WaterChannelController::reading()
 void WaterChannelController::checkButtonStatus()
 {
     static unsigned long lastButtonPress = 0;
-    unsigned long debounceDelay = 200;
 
     int buttonState = digitalRead(buttonPin);
-    if (buttonState == HIGH && millis() - lastButtonPress > debounceDelay)
+    if (buttonState == HIGH && millis() - lastButtonPress > DEBOUNCE_DELAY)
     {
-        state = (state == State::MANUAL) ? State::AUTOMATIC : State::MANUAL;
+        toggleState();
         lastButtonPress = millis();
     }
+}
+
+void WaterChannelController::toggleState()
+{
+    state = (state == State::MANUAL) ? State::AUTOMATIC : State::MANUAL;
 }
