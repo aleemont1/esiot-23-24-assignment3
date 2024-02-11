@@ -33,6 +33,12 @@ public:
     WaterChannelController(int servoPin, int buttonPin, int potentiometerPin, int lcdAddr, int lcdColumns, int lcdRows);
 
     /**
+     * @brief Destroy the Water Channel Controller object
+     *
+     */
+    ~WaterChannelController();
+
+    /**
      * @brief Initializes the Water Channel Controller.
      *
      * This method sets up the necessary hardware interfaces for the water channel controller.
@@ -47,6 +53,12 @@ public:
      * This method sets the mode of the button pin to INPUT, which allows the button to be used for manual control.
      */
     void initializeButton();
+
+    /**
+     * @brief Initializes the servo motor used to control the position of the water valve.
+     * This method attaches the servo to the specified pin, which allows the servo to be controlled by the Arduino.
+     */
+    void initializeServo();
 
     /**
      * @brief Initializes the valve to a default position (fully closed).
@@ -125,6 +137,7 @@ public:
     void reading();
 
 private:
+    int servoPin;                             ///< The pin number to which the servo motor is connected.
     int address = 0;                          ///< The I2C address of the LCD display.
     int columns = 16;                         ///< The number of columns in the LCD display.
     int rows = 2;                             ///< The number of rows in the LCD display.
