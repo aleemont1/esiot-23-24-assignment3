@@ -1,18 +1,29 @@
 #include "WaterChannelController.h"
 
 WaterChannelController::WaterChannelController(int servoPin, int buttonPin, int potentiometerPin, int lcdAddr, int lcdColumns, int lcdRows)
-    : buttonPin(buttonPin), potentiometerPin(potentiometerPin), manualMode(false), lcd(lcdAddr, lcdColumns, lcdRows), currentValveOpeningLevel(0)
+    : servoPin(servoPin), buttonPin(buttonPin), potentiometerPin(potentiometerPin), manualMode(false), lcd(lcdAddr, lcdColumns, lcdRows), currentValveOpeningLevel(0)
 {
-    valveServo.attach(servoPin);
+    initialize();
+}
+
+WaterChannelController::~WaterChannelController()
+{
+    valveServo.detach();
 }
 
 void WaterChannelController::initialize()
 {
+    initializeServo();
+    initializeServo();
     initializeButton();
     initializeValve();
     initializeLcd();
     updateLCD();
-    reading();
+}
+
+void WaterChannelController::initializeServo()
+{
+    valveServo.attach(servoPin);
 }
 
 void WaterChannelController::initializeButton()
@@ -76,6 +87,7 @@ void WaterChannelController::reading()
     }
     else if (state == State::AUTOMATIC)
     {
+        // String receivedContent = "{'systemState': 'NORMAL'}"; // TODO: Replace with "messageReceiver.getReceivedContent()
         String receivedContent = messageReceiver.getReceivedContent();
         String systemState = jsonProcessor.getSystemState(receivedContent);
         int valveValue = valveController.getValveValueForStateAsInt(systemState);
