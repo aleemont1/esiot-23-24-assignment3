@@ -76,7 +76,10 @@ void WaterChannelController::reading()
     }
     else if (state == State::AUTOMATIC)
     {
-        updateValvePosition(50); // TODO: Replace with actual logic to determine valve opening level like a getter for the valve opening level
+        String receivedContent = messageReceiver.getReceivedContent();
+        String systemState = jsonProcessor.getSystemState(receivedContent);
+        int valveValue = valveController.getValveValueForStateAsInt(systemState);
+        updateValvePosition(valveValue);
     }
 }
 
