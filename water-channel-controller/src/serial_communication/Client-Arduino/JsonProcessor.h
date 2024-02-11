@@ -82,7 +82,7 @@ public:
      * @param receivedContent A string representing the JSON-formatted message received from the server.
      * @return String The status extracted from the received content.
      */
-    String getStatus(String receivedContent);
+    String getSystemState(String receivedContent);
 
 private:
     /**
