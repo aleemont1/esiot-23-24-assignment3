@@ -83,6 +83,11 @@ public:
     void checkButtonStatus();
 
     /**
+     * @brief Toggles the operating mode of the water channel controller between manual and automatic.
+     */
+    void toggleState();
+
+    /**
      * @brief Enables manual control of the water channel.
      *
      * This method is used to manually control the opening level of the valve. When manual control mode is active,
@@ -137,6 +142,7 @@ private:
     ValveController valveController;          ///< The valve controller object used to set the valve value based on the system state.
     JsonProcessor jsonProcessor;              ///< The JSON processor object used to parse the JSON data received from the server.
     State state;                              ///< The state object used to store the current state of the system.
+    const int DEBOUNCE_DELAY = 200;           ///< The delay (in milliseconds) used to debounce the button input.
 };
 
 #endif // __WATERCHANNELCONTROLLER_H__
