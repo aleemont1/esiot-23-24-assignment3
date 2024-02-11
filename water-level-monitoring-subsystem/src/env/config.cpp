@@ -1,18 +1,14 @@
 #include "config.h"
 
 /* wifi network info */
-#ifdef __CAPTIVE_PORTAL
 
-const char *captive_ssid = "ergo-latorre";
-const char *captive_PortalDomain = "latorre.er-go.it/login";
-const char *captive_query = "username=1200019&password=Ybj3qDfH&dst=&popup=true";
-
-#else
+const char *captive_ssid = "";
+const char *captive_PortalDomain = "";
+const char *captive_query = "";
 
 const char *ssid = "";
 const char *password = "";
 
-#endif
 /* MQTT server address */
 const char *default_mqtt_server = "10.250.23.170";
 
