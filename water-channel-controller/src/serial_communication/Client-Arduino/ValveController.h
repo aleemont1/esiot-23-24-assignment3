@@ -46,6 +46,14 @@ public:
      * @return int
      */
     int parseValveValue(String valveValue);
+
+    /**
+     * @brief Get the valve value for a given system state as an integer value so that it can be used to control the valve position.
+     *
+     * @param systemState The system state for which to get the valve value.
+     * @return int The valve value for the given system state as an integer.
+     */
+    int getValveValueForStateAsInt(String systemState);
 };
 
 #endif // __VALVECONTROLLER_H__
