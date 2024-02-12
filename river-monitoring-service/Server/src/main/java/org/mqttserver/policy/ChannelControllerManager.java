@@ -8,18 +8,11 @@ import org.mqttserver.presentation.Status;
 
 public interface ChannelControllerManager {
 
-
     //ARDUINO
     void sendMessageToArduino(Status status);
+
+    void sendMessageToArduino(int valveValue);
+
     String receiveDataFromArduino() throws InterruptedException;
-
-    //DASHBOARD
-    void sendMessageToDashboard(MessageToDashboard message);
-
-
-
-
-
-
 
 }

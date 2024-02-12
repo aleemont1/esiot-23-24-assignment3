@@ -17,7 +17,10 @@ repositories {
 }
 
 dependencies {
-    implementation("io.vertx:vertx-mqtt:4.5.1") //for mqtt vertx server
+    implementation("io.vertx:vertx-mqtt:4.2.6")
+    implementation("io.vertx:vertx-core:4.2.6")
+    implementation("io.vertx:vertx-web:4.2.6")
+    implementation("io.vertx:vertx-web-client:4.2.6")
     implementation("com.google.code.gson:gson:2.8.8") //for json
     implementation("io.github.java-native:jssc:2.9.6") //for serial communication
     implementation("org.slf4j:slf4j-api:1.7.32")

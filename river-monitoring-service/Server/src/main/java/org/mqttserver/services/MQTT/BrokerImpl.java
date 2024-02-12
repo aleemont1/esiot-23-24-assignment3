@@ -24,11 +24,8 @@ import java.util.Objects;
 
 public class BrokerImpl implements Broker {
 
-    private final String HOST = "broker";
 
     protected MqttServer mqttServer = null;
-
-    protected MqttServerOptions mqttServerOptions = null;
 
     private final Vertx vertx;
 
@@ -61,30 +58,40 @@ public class BrokerImpl implements Broker {
             });
 
             endpoint.publishHandler(message -> {
-                System.out.println("Received message on topic " + message.topicName() + " with payload: " + message.payload().toString());
-                if (!subscribedClients.isEmpty()) {
-                    for (MqttEndpoint client : subscribedClients) {
-                        client.publish(message.topicName(), message.payload(), MqttQoS.valueOf(0), false, false);
-                    }
-                }
 
-                if (Objects.equals(message.topicName(), "/sensor/wl")) {
+                if (!this.getSystemController().getIsManual()) {
 
-                    //setta lo stato del sistema in base al valore rilevato dell acqua
-                    MessageFromSensor messageObj  = new MessageFromSensor(JSONUtils.jsonToObject(message.payload().toString(), MessageFromSensor.class).getWL());
-                    System.out.println("Value received from ESP32 (sensor): " + messageObj.getWL());
-                    this.updateSystem(messageObj.getWL());
+                    System.out.println("Received message on topic " + message.topicName() + " with payload: " + message.payload().toString());
 
-                    //pubblicare la frequenza su tutti i client in base allo stato
-                    if (this.systemController.getFrequency() != 1) {
-                        MessageToSensor messageToSensor = new MessageToSensor(String.valueOf(this.systemController.getFrequency()));
-                        System.out.println("MESSAGE TO SENSOR: " + JSONUtils.objectToJson(messageToSensor));
 
+                    if (!subscribedClients.isEmpty()) {
                         for (MqttEndpoint client : subscribedClients) {
-                            client.publish("sensor/freq", Buffer.buffer(JSONUtils.objectToJson(messageToSensor)), MqttQoS.valueOf(0), false, false);
+                            client.publish(message.topicName(), message.payload(), MqttQoS.valueOf(0), false, false);
                         }
                     }
 
+                    if (Objects.equals(message.topicName(), "/sensor/wl")) {
+
+                        //setta lo stato del sistema in base al valore rilevato dell acqua
+
+                        MessageFromSensor messageObj = new MessageFromSensor(JSONUtils.jsonToObject(message.payload().toString(), MessageFromSensor.class).getWL());
+                        System.out.println("Value received from ESP32 (sensor): " + messageObj.getWL());
+                        this.updateSystem(messageObj.getWL());
+
+
+                        //pubblicare la frequenza su tutti i client in base allo stato
+                        if (this.systemController.getFrequency() != 1) {
+                            MessageToSensor messageToSensor = new MessageToSensor(String.valueOf(this.systemController.getFrequency()));
+                            System.out.println("MESSAGE TO SENSOR: " + JSONUtils.objectToJson(messageToSensor));
+
+                            for (MqttEndpoint client : subscribedClients) {
+                                client.publish("sensor/freq", Buffer.buffer(JSONUtils.objectToJson(messageToSensor)), MqttQoS.valueOf(0), false, false);
+                            }
+                        }
+
+                    }
+                } else {
+                    System.out.println("The Sensor has been sent the message but OPERATOR set the system in manual mode, waiting for automatic mode...");
                 }
 
             });
