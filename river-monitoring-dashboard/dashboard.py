@@ -8,6 +8,9 @@ import datetime
 import requests
 import json
 
+# Inizializza una coda per memorizzare i dati
+data_queue = deque(maxlen=60)
+
 # Inizializza l"app Flask
 server = Flask(__name__)
 
@@ -37,16 +40,16 @@ app.layout = html.Div([
             dcc.Slider(
             id='valveValue',
             min=0,
-            max=180,
+            max=100,
             value=0,
-            marks={i: '{}'.format(i) for i in range(0, 181, 10)},
-            )], style={"width": "33%", "display": "inline-block", "vertical-align": "top"}),
-            html.Button("Set Valve Value", id="send-valveValue", n_clicks=0, style={"height": "2rem"})
-    ], style={"display": "flex", "justify-content": "center", "align-items": "center"})
-])
+            marks={i: '{}%'.format(i) for i in range(0, 101, 10)},
+            )], style={"width": "33%", "display": "inline-block", "vertical-align": "top", "font-family": "Roboto"}),
+            html.Button("Set Valve Value", id="send-valveValue", n_clicks=0, style={"height": "2rem", "font-family": "Roboto"}),
+            html.Button("Set Auto-mode", id="send-autoMode", n_clicks=0, style={"height": "2rem", "font-family": "Roboto"})
 
-# Inizializza una coda per memorizzare i dati
-data_queue = deque(maxlen=60)
+    ], style={"display": "flex", "justify-content": "center", "align-items": "center"}),
+    html.Div(id="dummy-output", style={"display": "none"})
+])
 
 # Gestisci le richieste POST al server
 @server.route("/api/systemdata", methods=["POST"])
@@ -63,6 +66,22 @@ def get_post_data():
     data_queue.append(data)
     return "Success", 200
 
+@app.callback([
+        Output("dummy-output", "children"),
+        Input("send-autoMode", "n_clicks")
+        ])
+def send_manualMode(n_clicks):
+    url = "http://localhost:8051/api/postdata"
+    if n_clicks is None:
+        return [""]
+    else:
+        data = {
+            "isManual": False
+        }
+        response = requests.post(url, data=json.dumps(data), headers={"Content-Type": "application/json"})
+        print(response.text)
+        return [f"Sent request with response: {response.text}"]
+
 @app.callback(Output("send-valveValue", "value"),
               [Input("send-valveValue", "n_clicks")],
               [State("valveValue", "value")])
@@ -70,11 +89,11 @@ def send_valveValue(n_clicks, valveValue):
     url = "http://localhost:8051/api/postdata"
     if n_clicks > 0:
         data = {
-            "valveValue": valveValue
+            "valveValue": valveValue,
+            "isManual": True
         }
         response = requests.post(url, data=json.dumps(data), headers={"Content-Type": "application/json"})
         print(response.text)
-
 # Aggiorna il grafico del livello dell'acqua in tempo reale
 @app.callback(Output("water-level-graph", "figure"),
               [Input("interval-component", "n_intervals")])
