@@ -14,6 +14,6 @@ void loop()
   JsonProcessor jsonProcessor;
   SerialCommunicationChannel commChannel(jsonProcessor);
   commChannel.initializeSerialCommunication();
-  // WaterChannelController waterChannelController(9, 4, A0, 0x27, 16, 2);
-  // waterChannelController.reading();
+  WaterChannelController waterChannelController(9, 4, A0, 0x27, 16, 2);
+  waterChannelController.reading();
 }
