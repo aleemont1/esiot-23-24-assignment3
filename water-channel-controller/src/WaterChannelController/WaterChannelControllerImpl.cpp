@@ -16,7 +16,7 @@ void WaterChannelController::initialize()
     initializeServo();
     initializeButton();
     initializeValve();
-    initializeLcd();
+    // initializeLcd(); // TODO: Uncomment this line after solving the issue with the LCD
     updateLCD();
 }
 
@@ -44,13 +44,22 @@ void WaterChannelController::initializeLcd()
     lcd.print("Water Channel");
 }
 
-// TODO: Implement the parseValveValue method
 void WaterChannelController::updateValvePosition(int valveOpeningLevel)
 {
-    int servoAngle = mapValveOpeningLevelToServoAngle(valveOpeningLevel);
-    valveServo.write(servoAngle);
-    currentValveOpeningLevel = valveOpeningLevel;
-    updateLCD();
+    static unsigned long lastUpdate = 0;
+    unsigned long now = millis();
+
+    // Only update the servo position if enough time has passed since the last update
+    if (now - lastUpdate >= SERVO_UPDATE_INTERVAL)
+    {
+        int servoAngle = mapValveOpeningLevelToServoAngle(valveOpeningLevel);
+        valveServo.write(servoAngle);
+        currentValveOpeningLevel = valveOpeningLevel;
+        updateLCD();
+
+        // Update the time of the last update
+        lastUpdate = now;
+    }
 }
 
 int WaterChannelController::mapValveOpeningLevelToServoAngle(int valveOpeningLevel)
