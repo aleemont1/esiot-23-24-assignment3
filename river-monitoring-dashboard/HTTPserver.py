@@ -26,7 +26,7 @@ thread = threading.Thread(target=httpd.serve_forever)
 thread.start()
 
 # URL del server a cui inviare i dati
-url = 'http://127.0.0.1:8050/'
+url = 'http://127.0.0.1:8050/api/systemdata'
 
 while True:
     # Genera valori casuali per wl e valveValue
