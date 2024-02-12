@@ -11,12 +11,12 @@ import json
 # Inizializza l"app Flask
 server = Flask(__name__)
 
-# Inizializza l"app Dash
+# Inizializza l'app Dash con il foglio di stile esterno
 app = dash.Dash(__name__, server=server)
 
 # Definisci la struttura della dashboard
 app.layout = html.Div([
-    html.H1("River Monitoring Dashboard"),
+    html.H1("River Monitoring Dashboard", style={"text-align": "center", "font-family": "Roboto"}),
     html.Div([
         html.Div([
             dcc.Graph(id="water-level-graph"),
@@ -30,16 +30,19 @@ app.layout = html.Div([
         interval=1*1000,  # in milliseconds
         n_intervals=0
     ),
-    html.Div(id="status-display"),
+    html.Div(id="status-display",style={"text-align": "center", "font-size": "24px", "font-family": "Roboto"}),
     html.Div([
-        dcc.Slider(
-        id='valveValue',
-        min=0,
-        max=180,
-        value=0,
-        marks={i: '{}'.format(i) for i in range(0, 181, 20)},  # Etichette ogni 20 unità
-        )], style={"width": "50%", "display": "inline-block"}),
-        html.Button("Set Valve Value", id="send-valveValue", n_clicks=0)
+        html.H3("Set Valve Value", style={"font-family": "Roboto"}),
+        html.Div([
+            dcc.Slider(
+            id='valveValue',
+            min=0,
+            max=180,
+            value=0,
+            marks={i: '{}'.format(i) for i in range(0, 181, 10)},
+            )], style={"width": "33%", "display": "inline-block", "vertical-align": "top"}),
+            html.Button("Set Valve Value", id="send-valveValue", n_clicks=0, style={"height": "2rem"})
+    ], style={"display": "flex", "justify-content": "center", "align-items": "center"})
 ])
 
 # Inizializza una coda per memorizzare i dati
@@ -84,13 +87,14 @@ def update_water_level_graph(n):
             go.Scatter(
                 x=[data["timestamp"] for data in data_queue],
                 y=[data["wl"] for data in data_queue],
-                mode="lines+markers"
+                mode="lines+markers",
+                line=dict(color="blue")
             )
         ],
         layout=go.Layout(
-            title="Livello dell\'acqua",
-            xaxis=dict(title="Timestamp"),
-            yaxis=dict(title="Livello dell\'acqua")
+            title=dict(text="Livello dell'acqua", font=dict(size=24, family="Roboto"), x=0.5),
+            xaxis=dict(title="Ora"),
+            yaxis=dict(title="Livello dell'acqua")
         )
     )
 
@@ -108,12 +112,13 @@ def update_valve_level_graph(n):
             go.Scatter(
                 x=[data["timestamp"] for data in data_queue],
                 y=[data["valveValue"] for data in data_queue],
-                mode="lines+markers"
+                mode="lines+markers",
+                line=dict(color="red")
             )
         ],
         layout=go.Layout(
-            title="Livello della valvola",
-            xaxis=dict(title="Timestamp"),
+            title=dict(text="Livello della valvola", font=dict(size=24, family="Roboto"), x=0.5),
+            xaxis=dict(title="Ora"),
             yaxis=dict(title="Livello della valvola")
         )
     )
