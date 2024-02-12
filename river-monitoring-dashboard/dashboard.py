@@ -31,15 +31,22 @@ app.layout = html.Div([
         n_intervals=0
     ),
     html.Div(id="status-display"),
-    dcc.Input(id="valveValue", type="number", min=0, max=180, value=0),
-    html.Button("Send", id="send-valveValue", n_clicks=0)
+    html.Div([
+        dcc.Slider(
+        id='valveValue',
+        min=0,
+        max=180,
+        value=0,
+        marks={i: '{}'.format(i) for i in range(0, 181, 20)},  # Etichette ogni 20 unità
+        )], style={"width": "50%", "display": "inline-block"}),
+        html.Button("Set Valve Value", id="send-valveValue", n_clicks=0)
 ])
 
 # Inizializza una coda per memorizzare i dati
 data_queue = deque(maxlen=60)
 
 # Gestisci le richieste POST al server
-@server.route("/", methods=["POST"])
+@server.route("/api/systemdata", methods=["POST"])
 def get_post_data():
     global data_queue
     data = request.get_json()
@@ -57,13 +64,13 @@ def get_post_data():
               [Input("send-valveValue", "n_clicks")],
               [State("valveValue", "value")])
 def send_valveValue(n_clicks, valveValue):
-    url = "http://localhost:8051"
+    url = "http://localhost:8051/api/postdata"
     if n_clicks > 0:
         data = {
             "valveValue": valveValue
         }
-    response = requests.post(url, data=json.dumps(data), headers={"Content-Type": "application/json"})
-    print(response.text)
+        response = requests.post(url, data=json.dumps(data), headers={"Content-Type": "application/json"})
+        print(response.text)
 
 # Aggiorna il grafico del livello dell'acqua in tempo reale
 @app.callback(Output("water-level-graph", "figure"),
