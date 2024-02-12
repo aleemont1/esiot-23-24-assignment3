@@ -16,11 +16,12 @@ while True:
 
     # Crea il payload JSON
     payload = {
-        'wl': wl,
-        'status': status,
-        'valveValue': valveValue
+    "wl": '"{}"'.format(wl),
+    "status": "{}".format(status),
+    "valveValue": '"{}"'.format(valveValue)
     }
 
+    print("Sending payload: ", payload)
     # Invia la richiesta POST
     response = requests.post(url, data=json.dumps(payload), headers={'Content-Type': 'application/json'})
 
