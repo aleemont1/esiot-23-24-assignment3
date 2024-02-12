@@ -137,27 +137,28 @@ public:
     void reading();
 
 private:
-    int servoPin;                             ///< The pin number to which the servo motor is connected.
-    int address = 0;                          ///< The I2C address of the LCD display.
-    int columns = 16;                         ///< The number of columns in the LCD display.
-    int rows = 2;                             ///< The number of rows in the LCD display.
-    Servo valveServo;                         ///< The servo motor that controls the position of the water valve.
-    int buttonPin;                            ///< The pin number to which the manual control button is connected.
-    int potentiometerPin;                     ///< The pin number to which the potentiometer for adjusting the valve opening level is connected.
-    bool manualMode;                          ///< A flag indicating whether the system is in manual control mode.
-    LiquidCrystal_I2C lcd;                    ///< The object representing the LCD display.
-    int currentValveOpeningLevel;             ///< The current level (0-100) to which the water valve is opened.
-    const int MIN_VALVE_OPENING_LEVEL = 0;    ///< The minimum valid valve opening level.
-    const int MAX_VALVE_OPENING_LEVEL = 100;  ///< The maximum valid valve opening level.
-    const int MIN_SERVO_ANGLE = 0;            ///< The minimum angle to which the servo can rotate.
-    const int MAX_SERVO_ANGLE = 180;          ///< The maximum angle to which the servo can rotate.
-    const int MIN_POTENTIOMETER_VALUE = 0;    ///< The minimum reading from the potentiometer.
-    const int MAX_POTENTIOMETER_VALUE = 1023; ///< The maximum reading from the potentiometer.
-    ValveController valveController;          ///< The valve controller object used to set the valve value based on the system state.
-    JsonProcessor jsonProcessor;              ///< The JSON processor object used to parse the JSON data received from the server.
-    State state;                              ///< The state object used to store the current state of the system.
-    const unsigned long DEBOUNCE_DELAY = 200; ///< The delay (in milliseconds) used to debounce the button input.
-    MessageReceiver messageReceiver;          ///< The message receiver object used to receive messages from the server.
+    int servoPin;                                    ///< The pin number to which the servo motor is connected.
+    int address = 0;                                 ///< The I2C address of the LCD display.
+    int columns = 16;                                ///< The number of columns in the LCD display.
+    int rows = 2;                                    ///< The number of rows in the LCD display.
+    Servo valveServo;                                ///< The servo motor that controls the position of the water valve.
+    int buttonPin;                                   ///< The pin number to which the manual control button is connected.
+    int potentiometerPin;                            ///< The pin number to which the potentiometer for adjusting the valve opening level is connected.
+    bool manualMode;                                 ///< A flag indicating whether the system is in manual control mode.
+    LiquidCrystal_I2C lcd;                           ///< The object representing the LCD display.
+    int currentValveOpeningLevel;                    ///< The current level (0-100) to which the water valve is opened.
+    const int MIN_VALVE_OPENING_LEVEL = 0;           ///< The minimum valid valve opening level.
+    const int MAX_VALVE_OPENING_LEVEL = 100;         ///< The maximum valid valve opening level.
+    const int MIN_SERVO_ANGLE = 0;                   ///< The minimum angle to which the servo can rotate.
+    const int MAX_SERVO_ANGLE = 180;                 ///< The maximum angle to which the servo can rotate.
+    const int MIN_POTENTIOMETER_VALUE = 0;           ///< The minimum reading from the potentiometer.
+    const int MAX_POTENTIOMETER_VALUE = 1023;        ///< The maximum reading from the potentiometer.
+    ValveController valveController;                 ///< The valve controller object used to set the valve value based on the system state.
+    JsonProcessor jsonProcessor;                     ///< The JSON processor object used to parse the JSON data received from the server.
+    State state;                                     ///< The state object used to store the current state of the system.
+    const unsigned long DEBOUNCE_DELAY = 200;        ///< The delay (in milliseconds) used to debounce the button input.
+    MessageReceiver messageReceiver;                 ///< The message receiver object used to receive messages from the server.
+    const unsigned long SERVO_UPDATE_INTERVAL = 500; ///< The interval (in milliseconds) between servo position updates.
 };
 
 #endif // __WATERCHANNELCONTROLLER_H__
