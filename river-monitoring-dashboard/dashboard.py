@@ -15,8 +15,14 @@ app = dash.Dash(__name__, server=server)
 # Definisci la struttura della dashboard
 app.layout = html.Div([
     html.H1('River Monitoring Dashboard'),
-    dcc.Graph(id='water-level-graph'),
-    dcc.Graph(id='valve-level-graph'),
+    html.Div([
+        html.Div([
+            dcc.Graph(id='water-level-graph'),
+        ], style={'width': '50%', 'display': 'inline-block'}),
+        html.Div([
+            dcc.Graph(id='valve-level-graph'),
+        ], style={'width': '50%', 'display': 'inline-block'})
+    ]),
     dcc.Interval(
         id='interval-component',
         interval=1*1000,  # in milliseconds
@@ -33,6 +39,10 @@ data_queue = deque(maxlen=60)
 def get_post_data():
     global data_queue
     data = request.get_json()
+    #Ottieni i valori numerici da wl e valveValue
+    data['wl'] = float(data['wl'].strip('"'))
+    data['valveValue'] = int(data['valveValue'].strip('"'))
+    # Add the current timestamp to the data
     # Aggiungi il timestamp corrente ai dati
     data['timestamp'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     # Aggiungi i dati alla coda
