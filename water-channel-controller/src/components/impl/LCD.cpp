@@ -1,6 +1,6 @@
 #include "../api/LCD.h"
 
-#include <Arduino.h>
+#include "Arduino.h"
 
 Lcd::Lcd(uint8_t lcdAddr, uint8_t lcdCols, uint8_t lcdRows)
     : lcd(new LiquidCrystal_I2C(lcdAddr, lcdCols, lcdRows)),
