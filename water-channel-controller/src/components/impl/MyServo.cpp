@@ -5,7 +5,7 @@ MyServo::MyServo(int pin) : pin(pin)
     servo.attach(pin);
 }
 
-void MyServo::write(int angle)
+void MyServo::setPosition(int angle)
 {
     servo.write(angle);
 }

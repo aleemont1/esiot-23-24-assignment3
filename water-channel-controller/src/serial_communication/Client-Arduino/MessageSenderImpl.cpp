@@ -1,4 +1,6 @@
+#define DEBUG
 #include "MessageSender.h"
+#include "system/Logger.h"
 
 MessageSender::MessageSender() {}
 
@@ -8,7 +10,7 @@ bool MessageSender::sendMessage(String message)
 {
     // Send the message to the server
     size_t bytesSent = Serial.println(message);
-
+    logger("Sent message: " + message);
     // Check if the message is sent
     return checkMessageSent(bytesSent, message);
 }
