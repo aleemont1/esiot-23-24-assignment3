@@ -50,6 +50,9 @@ public class DataService extends AbstractVerticle {
             try {
                 boolean isManual = res.getBoolean("isManual");
                 broker.getSystemController().setIsManual(isManual);
+                if (!isManual) {
+                    broker.getSystemController().setValveValueFromDashboard(-1);
+                }
             } catch (Exception ex) {
 
             }

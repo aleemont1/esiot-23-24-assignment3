@@ -59,11 +59,10 @@ public class BrokerImpl implements Broker {
 
             endpoint.publishHandler(message -> {
 
+                MessageFromSensor messageObj = new MessageFromSensor(JSONUtils.jsonToObject(message.payload().toString(), MessageFromSensor.class).getWL());
+
                 if (!this.getSystemController().getIsManual()) {
-
                     System.out.println("Received message on topic " + message.topicName() + " with payload: " + message.payload().toString());
-
-
                     if (!subscribedClients.isEmpty()) {
                         for (MqttEndpoint client : subscribedClients) {
                             client.publish(message.topicName(), message.payload(), MqttQoS.valueOf(0), false, false);
@@ -71,13 +70,8 @@ public class BrokerImpl implements Broker {
                     }
 
                     if (Objects.equals(message.topicName(), "/sensor/wl")) {
-
-                        //setta lo stato del sistema in base al valore rilevato dell acqua
-
-                        MessageFromSensor messageObj = new MessageFromSensor(JSONUtils.jsonToObject(message.payload().toString(), MessageFromSensor.class).getWL());
                         System.out.println("Value received from ESP32 (sensor): " + messageObj.getWL());
                         this.updateSystem(messageObj.getWL());
-
 
                         //pubblicare la frequenza su tutti i client in base allo stato
                         if (this.systemController.getFrequency() != 1) {
@@ -92,6 +86,7 @@ public class BrokerImpl implements Broker {
                     }
                 } else {
                     System.out.println("The Sensor has been sent the message but OPERATOR set the system in manual mode, waiting for automatic mode...");
+                    this.updateSystem(messageObj.getWL());
                 }
 
             });
