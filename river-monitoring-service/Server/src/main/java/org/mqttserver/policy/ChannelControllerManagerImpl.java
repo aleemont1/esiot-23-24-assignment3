@@ -13,10 +13,8 @@ public class ChannelControllerManagerImpl implements ChannelControllerManager {
     private SerialCommChannel serialCommChannel;
     private SerialScanner serialScanner = new SerialScannerImpl();
 
-
-
     public ChannelControllerManagerImpl(Broker broker) throws Exception {
-        //Init broker and http server
+        //Init broker
         this.broker = broker;
 
         //init serial communication

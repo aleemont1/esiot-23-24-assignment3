@@ -31,11 +31,10 @@ public class Main {
         ChannelControllerManager channelControllerManager = new ChannelControllerManagerImpl(broker);
 
         while (true) {
-
             if (!broker.getSystemController().getIsManual()) {
                 channelControllerManager.sendMessageToArduino(broker.getSystemController().getStatus()); //I send the message to arduino with state
-                //String msg = channelControllerManager.receiveDataFromArduino(); //I receive the answer from arduino
-                //broker.getSystemController().checkValveValue(msg, broker); //check valve value
+                String msg = channelControllerManager.receiveDataFromArduino(); //I receive the answer from arduino
+                broker.getSystemController().checkValveValue(msg, broker); //check valve value
             } else {
                 channelControllerManager.sendMessageToArduino(broker.getSystemController().getValveValue()); //I send the message to arduino with state
             }

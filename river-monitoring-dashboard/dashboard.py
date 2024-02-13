@@ -53,6 +53,7 @@ data_queue = deque(maxlen=60)
 def get_post_data():
     global data_queue
     data = request.get_json()
+    print(data)
     #Ottieni i valori numerici da wl e valveValue
     data["wl"] = float(data["wl"])
     data["valveValue"] = int(data["valveValue"])
@@ -67,10 +68,11 @@ def get_post_data():
               [Input("send-valveValue", "n_clicks")],
               [State("valveValue", "value")])
 def send_valveValue(n_clicks, valveValue):
-    url = "http://localhost:8051/api/postdata"
+    url = "http://127.0.0.1:8050/api/postdata"
     if n_clicks > 0:
         data = {
-            "valveValue": valveValue
+            "valveValue": valveValue,
+            "isManual": False
         }
         response = requests.post(url, data=json.dumps(data), headers={"Content-Type": "application/json"})
         print(response.text)
@@ -134,4 +136,4 @@ def update_status_display(n):
         return f'Stato del sistema: {data_queue[-1]["status"]}'
 
 if __name__ == "__main__":
-    app.run_server(debug=True, port=8050)
+    app.run_server(debug=True, port=8052)

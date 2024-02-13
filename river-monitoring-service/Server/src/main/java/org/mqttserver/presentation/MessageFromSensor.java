@@ -2,12 +2,11 @@ package org.mqttserver.presentation;
 
 
 /*
-* This class represent the message received by River monitoring service.
-*
-* The sensor just send THE WL (WaterLevel) data and an ID for the message.
-* */
+ * This class represent the message received by River monitoring service.
+ *
+ * The sensor just send THE WL (WaterLevel)
+ * */
 public class MessageFromSensor {
-
     private float WL;
 
     public MessageFromSensor(float WL) {

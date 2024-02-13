@@ -2,8 +2,8 @@ package org.mqttserver.presentation;
 
 
 /*
-* This class model the message to send to Arduino.
-* */
+ * This class model the message to send to Arduino.
+ * */
 public class MessageToArduino {
 
     private Status status;
@@ -17,6 +17,7 @@ public class MessageToArduino {
     public MessageToArduino(int valveValue) {
         this.valveValue = valveValue;
     }
+
     public Status getStatus() {
         return this.status;
     }
