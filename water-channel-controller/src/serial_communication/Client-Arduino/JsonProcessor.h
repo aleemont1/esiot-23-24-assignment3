@@ -3,7 +3,6 @@
 
 #include "Arduino.h"
 #include "ArduinoJson.h"
-#include "ValveController.h"
 
 /**
  * @brief A utility class for handling JSON-formatted messages.
@@ -84,11 +83,13 @@ public:
      */
     String getSystemState(String receivedContent);
 
-private:
     /**
-     * @brief an instance of the ValveController class.
+     * @brief Extracts the valve value from the received content.
+     *
+     * @param receivedContent A string representing the JSON-formatted message received from the server.
+     * @return int The valve value extracted from the received content.
      */
-    // ValveController valveController;
+    int getValveValue(String receivedContent);
 };
 
 #endif // __JSONPROCESSOR_H__
