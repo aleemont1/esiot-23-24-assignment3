@@ -4,7 +4,7 @@ Install requirements with:
 `pip install -r requirements.txt`
 
 Execute with:
-`python dashboard.py`
+`python river-monitoring-dashboard.py`
 
 Open a browser page and type:
 `localhost:8050`
