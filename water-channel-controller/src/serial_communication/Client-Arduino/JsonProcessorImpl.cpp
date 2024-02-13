@@ -49,3 +49,13 @@ String JsonProcessor::getSystemState(String receivedContent)
     String status = doc["status"];
     return status;
 }
+
+int JsonProcessor::getValveValue(String receivedContent)
+{
+    JsonDocument doc;
+    deserializeJson(doc, receivedContent);
+
+    String valveValue = doc["valveValue"];
+    int valveValueInt = valveValue.toInt(); // Convert string to integer
+    return valveValueInt;
+}
