@@ -54,6 +54,7 @@ app.layout = html.Div([
 def get_post_data():
     global data_queue
     data = request.get_json()
+    print(data)
     #Ottieni i valori numerici da wl e valveValue
     data["wl"] = float(data["wl"])
     data["valveValue"] = int(data["valveValue"])
@@ -69,7 +70,7 @@ def get_post_data():
         Input("send-autoMode", "n_clicks")
         ])
 def send_manualMode(n_clicks):
-    url = "http://localhost:8051/api/postdata"
+    url = "http://localhost:8050/api/postdata"
     if n_clicks is None:
         return [""]
     else:
@@ -84,11 +85,10 @@ def send_manualMode(n_clicks):
               [Input("send-valveValue", "n_clicks")],
               [State("valveValue", "value")])
 def send_valveValue(n_clicks, valveValue):
-    url = "http://localhost:8051/api/postdata"
+    url = "http://localhost:8050/api/postdata"
     if n_clicks > 0:
         data = {
-            "valveValue": valveValue,
-            "isManual": True
+            "valveValue": valveValue
         }
         response = requests.post(url, data=json.dumps(data), headers={"Content-Type": "application/json"})
         print(response.text)
@@ -151,4 +151,4 @@ def update_status_display(n):
         return f'Stato del sistema: {data_queue[-1]["status"]}'
 
 if __name__ == "__main__":
-    app.run_server(debug=True, port=8050)
+    app.run_server(debug=True, port=8052)
