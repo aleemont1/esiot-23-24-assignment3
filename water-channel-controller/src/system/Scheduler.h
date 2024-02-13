@@ -1,7 +1,7 @@
 #ifndef __SCHEDULER__
 #define __SCHEDULER__
 
-#include "task.h"
+#include "Task.h"
 
 constexpr int MAX_TASKS = 50;
 
@@ -41,9 +41,9 @@ public:
     virtual void schedule();
 
 private:
-    int basePeriod;              ///< The base period for the scheduler.
-    int nTasks{0};               ///< The number of tasks currently in the scheduler.
-    Task *taskList[MAX_TASKS]{}; ///< The list of tasks in the scheduler.
+    int basePeriod;                  ///< The base period for the scheduler.
+    int nTasks{0};                   ///< The number of tasks currently in the scheduler.
+    Task *taskList[MAX_TASKS]{};     ///< The list of tasks in the scheduler.
 };
 
 #endif // __SCHEDULER__
