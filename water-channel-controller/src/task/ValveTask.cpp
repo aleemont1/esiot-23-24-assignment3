@@ -4,29 +4,80 @@
 ValveTask::ValveTask(int period, WaterChannelController *waterChannelController, int servoPin)
     : TaskWithState(period), waterChannelController(waterChannelController), motor(new ServoMotorImpl(servoPin))
 {
-    this->motor->on();
-    this->motor->setPosition(0);
-    setState(ValveStates::Idle);
+    initializeMotor();
 }
 
 void ValveTask::tick()
 {
-    switch (this->getState())
+    switch (getState())
     {
     case ValveStates::Idle:
-        if (this->waterChannelController->posChange)
-        {
-            this->motor->setPosition(map((int)this->waterChannelController->activePosition, 0, 100, 0, 180));
-            this->waterChannelController->posChange = false;
-        }
+        handleIdleState();
         break;
     case ValveStates::Opening:
-        if (this->elapsedTimeInState() > this->timeToMove)
-        {
-            this->setState(ValveStates::Idle);
-        }
+        handleOpeningState();
         break;
     default:
         break;
     }
+}
+
+void ValveTask::initializeMotor()
+{
+    turnMotorOn();
+    setMotorToMinAngle();
+    transitionToIdleState();
+}
+
+void ValveTask::turnMotorOn()
+{
+    motor->on();
+}
+
+void ValveTask::setMotorToMinAngle()
+{
+    motor->setPosition(MIN_SERVO_ANGLE);
+}
+
+void ValveTask::transitionToIdleState()
+{
+    setState(ValveStates::Idle);
+}
+
+void ValveTask::handleIdleState()
+{
+    if (isPositionChanged())
+    {
+        updateMotorPosition();
+        resetPositionChangeFlag();
+    }
+}
+
+bool ValveTask::isPositionChanged()
+{
+    return waterChannelController->posChange;
+}
+
+void ValveTask::updateMotorPosition()
+{
+    int mappedPosition = map(static_cast<int>(waterChannelController->activePosition), MIN_POSITION_PERCENT, MAX_POSITION_PERCENT, MIN_SERVO_ANGLE, MAX_SERVO_ANGLE);
+    motor->setPosition(mappedPosition);
+}
+
+void ValveTask::resetPositionChangeFlag()
+{
+    waterChannelController->posChange = false;
+}
+
+void ValveTask::handleOpeningState()
+{
+    if (isTimeToMoveElapsed())
+    {
+        transitionToIdleState();
+    }
+}
+
+bool ValveTask::isTimeToMoveElapsed()
+{
+    return elapsedTimeInState() > timeToMove;
 }

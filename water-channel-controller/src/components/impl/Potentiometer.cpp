@@ -4,7 +4,7 @@
 
 PotentiometerImpl::PotentiometerImpl(int pin, int tolerance) : pin(pin), tolerance(tolerance), oldValue(analogRead(pin))
 {
-    // pinMode(pin, INPUT);
+    pinMode(pin, INPUT);
 }
 
 unsigned int PotentiometerImpl::position()
@@ -20,7 +20,11 @@ unsigned int PotentiometerImpl::position()
 bool PotentiometerImpl::moved()
 {
     unsigned int val = analogRead(pin);
-    bool hasMoved = !(oldValue - tolerance < val && oldValue + tolerance > val);
+    /*
+        NOTE: this ensures correct subtraction operation between oldValue and val as they are unsigned integers
+        and direct subtraction could lead to unexpected results if val is less than oldValue.
+    */
+    bool hasMoved = abs(static_cast<int>(oldValue) - static_cast<int>(val)) > tolerance;
     oldValue = val;
     return hasMoved;
 }

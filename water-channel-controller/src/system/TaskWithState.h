@@ -2,7 +2,7 @@
 #define __TASK_WITH_STATE__
 
 #include "Arduino.h"
-#include "system/task.h"
+#include "system/Task.h"
 
 /**
  * @brief A task with a state.
@@ -25,9 +25,7 @@ public:
      * @param initialState The initial state of the task.
      */
     TaskWithState(int period, T initialState = T())
-        : Task(period), state(initialState)
-    {
-    }
+        : Task(period), state(initialState), stateTimestamp(0) {}
 
 protected:
     /**
@@ -49,8 +47,9 @@ protected:
      * This method returns the current state of the task.
      *
      * @return The current state of the task.
+     * @note since this method does not modify any member variables, it is const.
      */
-    T getState()
+    T getState() const
     {
         return this->state;
     }
@@ -61,15 +60,16 @@ protected:
      * This method returns the elapsed time since the state was last set.
      *
      * @return The elapsed time in the current state.
+     * @note since this method does not modify any member variables, it is const.
      */
-    unsigned long elapsedTimeInState()
+    unsigned long elapsedTimeInState() const
     {
         return millis() - stateTimestamp;
     }
 
 private:
-    T state;                         ///< The current state of the task.
-    unsigned long stateTimestamp{0}; ///< The timestamp when the state was last set.
+    T state;                      ///< The current state of the task.
+    unsigned long stateTimestamp; ///< The timestamp when the state was last set.
 };
 
 #endif // __TASK_WITH_STATE__

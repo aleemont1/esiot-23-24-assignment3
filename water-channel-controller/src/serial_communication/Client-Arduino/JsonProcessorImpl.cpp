@@ -19,8 +19,7 @@ String JsonProcessor::createConfirmationMessage(String originalMessage)
     deserializeJson(doc, originalMessage);
 
     String status = doc["status"];
-    String valveValue = valveController.setValveValue(status);
-    doc["valveValue"] = valveValue;
+    String valveValue = doc["valveValue"];
 
     String confirmationMessage;
     serializeJson(doc, confirmationMessage);
@@ -49,4 +48,14 @@ String JsonProcessor::getSystemState(String receivedContent)
 
     String status = doc["status"];
     return status;
+}
+
+int JsonProcessor::getValveValue(String receivedContent)
+{
+    JsonDocument doc;
+    deserializeJson(doc, receivedContent);
+
+    String valveValue = doc["valveValue"];
+    int valveValueInt = valveValue.toInt(); // Convert string to integer
+    return valveValueInt;
 }

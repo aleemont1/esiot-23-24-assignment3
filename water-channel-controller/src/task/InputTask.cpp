@@ -7,6 +7,8 @@
 #include "components/api/PotentiometerImpl.h"
 #include "system/Logger.h"
 
+// #define DEBUG
+
 InputTask::InputTask(int period, WaterChannelController *WaterChannelController, int buttonPin, int potPin)
     : Task(period),
       waterChannelController(WaterChannelController),
@@ -29,12 +31,15 @@ void InputTask::tick()
 
 void InputTask::handleButtonPress()
 {
-    unsigned long currentMillis = millis();
-    if (button->isPressed() && !this->pressed && (currentMillis - lastButtonPress > DEBOUNCE_DELAY))
+    if (button->isPressed() && !pressed)
     {
-        lastButtonPress = currentMillis;
-        toggleMode();
-        waterChannelController->commChange = true;
+        unsigned long currentMillis = millis();
+        if (currentMillis - lastButtonPress > DEBOUNCE_DELAY)
+        {
+            lastButtonPress = currentMillis;
+            toggleMode();
+            waterChannelController->commChange = true;
+        }
     }
 }
 
@@ -68,11 +73,14 @@ void InputTask::handleAutomaticMode()
 {
     String receivedContent = messageReceiver.getReceivedContent();
     String systemState = jsonProcessor.getSystemState(receivedContent);
-    int valveValue = valveController.getValveValueForStateAsInt(systemState);
+    int valveValue = jsonProcessor.getValveValue(receivedContent);
     waterChannelController->activePosition = valveValue;
+    // motor->setPosition(valveValue); TODO: fix this
+    // logger("System state: " + systemState);
+    // logger("Valve value: " + String(valveValue));
 }
 
 void InputTask::updatePressedState()
 {
-    this->pressed = button->isPressed();
+    pressed = button->isPressed();
 }

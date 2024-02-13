@@ -1,10 +1,9 @@
-#ifndef __DISPLAY_CLASS__
-#define __DISPLAY_CLASS__
+#ifndef __DISPLAY__
+#define __DISPLAY__
 
 #include "Arduino.h"
 
 /**
- * @class Display
  * @brief This is an abstract base class for different types of displays.
  *
  * This class provides a common interface for different types of displays that can be used in Arduino projects.
@@ -37,4 +36,4 @@ public:
     virtual void ln() = 0;
 };
 
-#endif // __DISPLAY_CLASS__
+#endif // __DISPLAY__

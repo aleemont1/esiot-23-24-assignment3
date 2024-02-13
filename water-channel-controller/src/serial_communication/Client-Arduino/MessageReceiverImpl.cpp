@@ -7,23 +7,23 @@ MessageReceiver::~MessageReceiver() {}
 
 String MessageReceiver::getReceivedContent()
 {
-    unsigned long startTime = millis();
+    // unsigned long startTime = millis();
     String receivedContent = "";
 
-    while (millis() - startTime < WAIT_TIME)
+    // while (millis() - startTime < WAIT_TIME)
+    // {
+    if (checkMessageAvailability())
     {
-        if (checkMessageAvailability())
-        {
-            // Read the message from the serial port
-            receivedContent = Serial.readStringUntil('\n');
+        // Read the message from the serial port
+        receivedContent = Serial.readStringUntil('\n');
 
-            // After reading, send a confirmation back to the server
-            messageSender.sentMessageConfirmation(receivedContent);
+        // After reading, send a confirmation back to the server
+        messageSender.sentMessageConfirmation(receivedContent);
 
-            // Exit the loop once the message is received
-            break;
-        }
+        // Exit the loop once the message is received
+        // break;
     }
+    // }
 
     return receivedContent;
 }
