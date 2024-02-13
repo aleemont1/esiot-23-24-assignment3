@@ -46,10 +46,89 @@ public:
      */
     void tick() override;
 
+    /**
+     * @brief Initializes the servo motor.
+     *
+     * This method initializes the servo motor by turning it on and setting its position to the minimum angle.
+     */
+    void initializeMotor();
+
+    /**
+     * @brief Handles the Idle state.
+     *
+     * This method handles the Idle state by updating the position of the servo motor based on the position of the water channel.
+     */
+    void handleIdleState();
+
+    /**
+     * @brief Handles the Opening state.
+     *
+     * This method handles the Opening state by checking if the valve has been open for the specified time and then setting the state to Idle.
+     */
+    void handleOpeningState();
+
+    /**
+     * @brief Checks if the time to move has elapsed.
+     *
+     * This method checks if the time to move has elapsed by comparing the elapsed time in the current state to the time to move.
+     *
+     * @return bool True if the time to move has elapsed, false otherwise.
+     */
+    bool isTimeToMoveElapsed();
+
+    /**
+     * @brief Transitions to the Idle state.
+     *
+     * This method transitions to the Idle state by setting the state to Idle.
+     */
+    void transitionToIdleState();
+
+    /**
+     * @brief Checks if the position has changed.
+     *
+     * This method checks if the position of the water channel has changed.
+     *
+     * @return bool True if the position has changed, false otherwise.
+     */
+    bool isPositionChanged();
+
+    /**
+     * @brief Updates the position of the servo motor.
+     *
+     * This method updates the position of the servo motor based on the position of the water channel.
+     */
+
+    void updateMotorPosition();
+
+    /**
+     * @brief Resets the position change flag.
+     *
+     * This method resets the position change flag of the water channel controller.
+     */
+    void resetPositionChangeFlag();
+
+    /**
+     * @brief Turns the servo motor on.
+     *
+     * This method turns the servo motor on.
+     */
+    void turnMotorOn();
+
+    /**
+     * @brief Sets the position of the servo motor to the minimum angle.
+     *
+     * This method sets the position of the servo motor to the minimum angle.
+     */
+    void setMotorToMinAngle();
+
 private:
     WaterChannelController *waterChannelController; ///< The WaterChannelController used to control the water channel.
     ServoMotor *motor;                              ///< The ServoMotor used to control the valve.
     unsigned int timeToMove{TIME_TO_MOVE};          ///< The time it takes for the valve to move.
+    const int MIN_POSITION_PERCENT = 0;             ///< The minimum position percentage of the water channel.
+    const int MAX_POSITION_PERCENT = 100;           ///< The maximum position percentage of the water channel.
+    const int MIN_SERVO_ANGLE = 0;                  ///< The minimum angle of the servo motor.
+    const int MAX_SERVO_ANGLE = 180;                ///< The maximum angle of the servo motor.
 };
 
 #endif // __VALVE_TASK__
