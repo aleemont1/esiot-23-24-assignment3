@@ -68,15 +68,13 @@ public:
     bool updateAndCheckTime(int basePeriod)
     {
         timeElapsed += basePeriod;
-        if (timeElapsed >= myPeriod)
-        {
-            timeElapsed = 0;
-            return true;
-        }
-        else
+        if (timeElapsed < myPeriod)
         {
             return false;
         }
+
+        timeElapsed = 0;
+        return true;
     }
 
 private:

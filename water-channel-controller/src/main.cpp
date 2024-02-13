@@ -1,4 +1,3 @@
-#include "serial_communication/Client-Arduino/ValveController.h"
 #include "system/Scheduler.h"
 #include "task/InputTask.h"
 #include "task/ValveTask.h"
@@ -12,7 +11,6 @@ WaterChannelController waterChannelController;
 
 void setup()
 {
-  Serial.begin(9600);
   scheduler = new Scheduler(BASE_PERIOD);
 
   // Initialize the task and add them to the scheduler
