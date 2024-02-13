@@ -11,12 +11,7 @@
 enum class Mode
 {
     AUTOMATIC,
-    MANUAL,
-    ALARM_TOO_LOW,
-    NORMAL,
-    PRE_ALARM_TOO_HIGH,
-    ALARM_TOO_HIGH,
-    ALARM_TOO_HIGH_CRITIC
+    MANUAL
 };
 
 /**
