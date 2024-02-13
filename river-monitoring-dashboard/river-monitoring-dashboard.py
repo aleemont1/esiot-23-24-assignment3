@@ -8,15 +8,17 @@ import datetime
 import requests
 import json
 
+# Inizializza una coda per memorizzare i dati
+data_queue = deque(maxlen=60)
+
 # Inizializza l"app Flask
 server = Flask(__name__)
 
 # Inizializza l'app Dash con il foglio di stile esterno
-app = dash.Dash(__name__, server=server)
-
+app = dash.Dash(__name__, server=server, title="River Monitoring Dashboard")
 # Definisci la struttura della dashboard
 app.layout = html.Div([
-    html.H1("River Monitoring Dashboard", style={"text-align": "center", "font-family": "Roboto"}),
+    html.H1("River Monitoring Dashboard", style={"text-align": "center", "font-size": "48px"}),
     html.Div([
         html.Div([
             dcc.Graph(id="water-level-graph"),
@@ -30,23 +32,22 @@ app.layout = html.Div([
         interval=1*1000,  # in milliseconds
         n_intervals=0
     ),
-    html.Div(id="status-display",style={"text-align": "center", "font-size": "24px", "font-family": "Roboto"}),
+    html.Div(id="status-display",style={"text-align": "center", "font-size": "24px"}),
     html.Div([
-        html.H3("Set Valve Value", style={"font-family": "Roboto"}),
+        html.H3("Set Valve Value"),
         html.Div([
             dcc.Slider(
             id='valveValue',
             min=0,
-            max=180,
+            max=100,
             value=0,
-            marks={i: '{}'.format(i) for i in range(0, 181, 10)},
-            )], style={"width": "33%", "display": "inline-block", "vertical-align": "top"}),
-            html.Button("Set Valve Value", id="send-valveValue", n_clicks=0, style={"height": "2rem"})
-    ], style={"display": "flex", "justify-content": "center", "align-items": "center"})
+            marks={i: '{}%'.format(i) for i in range(0, 101, 10)},
+            )], style={"width": "33%", "display": "inline-block"}),
+            html.Button("Set Valve Value", id="send-valveValue", n_clicks=0, className="button-17", style={"margin-right": "1%"}),
+            html.Button("Set Auto-mode", id="send-autoMode", n_clicks=0, className="button-17 button-17-red")
+    ], style={"display": "flex", "justify-content": "center", "align-items": "center"}),
+    html.Div(id="dummy-output", style={"display": "none"})
 ])
-
-# Inizializza una coda per memorizzare i dati
-data_queue = deque(maxlen=60)
 
 # Gestisci le richieste POST al server
 @server.route("/api/systemdata", methods=["POST"])
@@ -64,6 +65,22 @@ def get_post_data():
     data_queue.append(data)
     return "Success", 200
 
+@app.callback([
+        Output("dummy-output", "children"),
+        Input("send-autoMode", "n_clicks")
+        ])
+def send_manualMode(n_clicks):
+    url = "http://localhost:8051/api/postdata"
+    if n_clicks is None:
+        return [""]
+    else:
+        data = {
+            "isManual": False
+        }
+        response = requests.post(url, data=json.dumps(data), headers={"Content-Type": "application/json"})
+        print(response.text)
+        return [f"Sent request with response: {response.text}"]
+
 @app.callback(Output("send-valveValue", "value"),
               [Input("send-valveValue", "n_clicks")],
               [State("valveValue", "value")])
@@ -72,11 +89,14 @@ def send_valveValue(n_clicks, valveValue):
     if n_clicks > 0:
         data = {
             "valveValue": valveValue,
+<<<<<<< HEAD:river-monitoring-dashboard/dashboard.py
             "isManual": False
+=======
+            "isManual": True
+>>>>>>> 813bc22bd155b19aea2c45c010e24b02990f1526:river-monitoring-dashboard/river-monitoring-dashboard.py
         }
         response = requests.post(url, data=json.dumps(data), headers={"Content-Type": "application/json"})
         print(response.text)
-
 # Aggiorna il grafico del livello dell'acqua in tempo reale
 @app.callback(Output("water-level-graph", "figure"),
               [Input("interval-component", "n_intervals")])
