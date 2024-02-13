@@ -5,7 +5,6 @@
 #include "Arduino.h"
 
 /**
- * @class ButtonImpl
  * @brief This class is a concrete implementation of the Button abstract class.
  *
  * The ButtonImpl class provides the specific implementation for a button in an Arduino context.
