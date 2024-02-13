@@ -43,7 +43,8 @@ public class SerialCommChannelImpl implements SerialCommChannel, SerialPortEvent
 
     @Override
     public String receiveMessageFromArduino() throws InterruptedException {
-		return  queue.take() ;
+
+		return queue.take() ;
     }
 
     @Override
