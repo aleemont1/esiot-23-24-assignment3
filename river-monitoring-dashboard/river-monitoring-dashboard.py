@@ -67,10 +67,10 @@ def get_post_data(n_intervals):
     data["valveValue"] = int(data["valveValue"])
     # Aggiungi il timestamp corrente ai dati
     data["timestamp"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print("Data:", data)
     # Aggiungi i dati alla coda
     data_queue.append(data)
-    print("Data queue:", data_queue)
+    print("Data:")
+    print(data_queue)
     return [""]
 
 @app.callback([
