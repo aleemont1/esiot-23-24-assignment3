@@ -19,8 +19,7 @@ String JsonProcessor::createConfirmationMessage(String originalMessage)
     deserializeJson(doc, originalMessage);
 
     String status = doc["status"];
-    String valveValue = valveController.setValveValue(status);
-    doc["valveValue"] = valveValue;
+    String valveValue = doc["valveValue"];
 
     String confirmationMessage;
     serializeJson(doc, confirmationMessage);
