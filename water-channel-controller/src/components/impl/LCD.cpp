@@ -2,35 +2,35 @@
 
 #include <Arduino.h>
 
-Lcd::Lcd(uint8_t lcd_Addr, uint8_t lcd_cols, uint8_t lcd_rows)
-    : lcd(new LiquidCrystal_I2C(lcd_Addr, lcd_cols, lcd_rows)),
-      total_cols(lcd_cols)
+Lcd::Lcd(uint8_t lcdAddr, uint8_t lcdCols, uint8_t lcdRows)
+    : lcd(new LiquidCrystal_I2C(lcdAddr, lcdCols, lcdRows)),
+      totalCols(lcdCols)
 {
     lcd->init();
     lcd->backlight();
 }
 void Lcd::clear()
 {
-    active_row = 0;
+    activeRow = 0;
     lcd->clear();
-    lcd->setCursor(0, active_row);
+    lcd->setCursor(0, activeRow);
 }
-void Lcd::show(String msg)
+void Lcd::show(String message)
 {
     String padding = "";
-    for (size_t i = msg.length(); i < total_cols * 2; i++)
+    for (size_t i = message.length(); i < totalCols * 2; i++)
     {
         padding = padding + " ";
     }
-    String paddedMessage = msg + padding;
-    lcd->print(paddedMessage.substring(0, total_cols));
+    String paddedMessage = message + padding;
+    lcd->print(paddedMessage.substring(0, totalCols));
     this->ln();
-    lcd->print(paddedMessage.substring(total_cols));
+    lcd->print(paddedMessage.substring(totalCols));
     lcd->setCursor(0, 0);
 }
 
 void Lcd::ln()
 {
-    active_row++;
-    lcd->setCursor(0, active_row);
+    activeRow++;
+    lcd->setCursor(0, activeRow);
 }
