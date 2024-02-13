@@ -12,7 +12,6 @@ WaterChannelController waterChannelController;
 
 void setup()
 {
-  Serial.begin(9600);
   scheduler = new Scheduler(BASE_PERIOD);
 
   // Initialize the task and add them to the scheduler
