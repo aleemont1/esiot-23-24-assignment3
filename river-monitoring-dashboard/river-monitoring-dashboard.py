@@ -15,7 +15,7 @@ data_queue = deque(maxlen=60)
 server = Flask(__name__)
 
 # Inizializza l'app Dash con il foglio di stile esterno
-app = dash.Dash(__name__, server=server)
+app = dash.Dash(__name__, server=server, title="River Monitoring Dashboard")
 # Definisci la struttura della dashboard
 app.layout = html.Div([
     html.H1("River Monitoring Dashboard", style={"text-align": "center", "font-size": "48px"}),
