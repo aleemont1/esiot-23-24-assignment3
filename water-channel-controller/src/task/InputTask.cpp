@@ -68,8 +68,8 @@ void InputTask::handleAutomaticMode()
 {
     String receivedContent = messageReceiver.getReceivedContent();
     String systemState = jsonProcessor.getSystemState(receivedContent);
-    int valveValue = valveController.getValveValueForStateAsInt(systemState);
-    waterChannelController->activePosition = valveValue;
+    // int valveValue = TODO: get valve value from system state
+    // waterChannelController->activePosition = valveValue;
 }
 
 void InputTask::updatePressedState()
