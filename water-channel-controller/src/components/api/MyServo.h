@@ -31,7 +31,7 @@ public:
      *
      * @param angle The angle to set the servo motor to, between 0 and 180 degrees.
      */
-    void write(int angle);
+    void setPosition(int angle);
 
     /**
      * @brief Detach the servo motor, stopping it from moving.
