@@ -88,7 +88,7 @@ private:
     /**
      * @brief an instance of the ValveController class.
      */
-    ValveController valveController;
+    // ValveController valveController;
 };
 
 #endif // __JSONPROCESSOR_H__
