@@ -70,7 +70,7 @@ def get_post_data():
         Input("send-autoMode", "n_clicks")
         ])
 def send_manualMode(n_clicks):
-    url = "http://localhost:8051/api/postdata"
+    url = "http://localhost:8050/api/postdata"
     if n_clicks is None:
         return [""]
     else:
@@ -85,15 +85,10 @@ def send_manualMode(n_clicks):
               [Input("send-valveValue", "n_clicks")],
               [State("valveValue", "value")])
 def send_valveValue(n_clicks, valveValue):
-    url = "http://127.0.0.1:8050/api/postdata"
+    url = "http://localhost:8050/api/postdata"
     if n_clicks > 0:
         data = {
-            "valveValue": valveValue,
-<<<<<<< HEAD:river-monitoring-dashboard/dashboard.py
-            "isManual": False
-=======
-            "isManual": True
->>>>>>> 813bc22bd155b19aea2c45c010e24b02990f1526:river-monitoring-dashboard/river-monitoring-dashboard.py
+            "valveValue": valveValue
         }
         response = requests.post(url, data=json.dumps(data), headers={"Content-Type": "application/json"})
         print(response.text)

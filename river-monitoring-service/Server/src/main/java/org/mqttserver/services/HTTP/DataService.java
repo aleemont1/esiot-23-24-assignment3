@@ -38,12 +38,22 @@ public class DataService extends AbstractVerticle {
         if (res == null) {
             sendError(400, response);
         } else {
-            int valveValue = res.getInteger("valveValue");
-            boolean isManual = res.getBoolean("isManual");
-            System.err.println("Valve value received from dashboard: " + valveValue + " and isManual: " + isManual);
+            try {
+                int valveValue = res.getInteger("valveValue");
+                broker.getSystemController().setValveValueFromDashboard(valveValue);
+                broker.getSystemController().setIsManual(true);
+                System.out.println("[OPERATOR] Valve Value set manually");
+            } catch (Exception ex) {
+
+            }
+
+            try {
+                boolean isManual = res.getBoolean("isManual");
+                broker.getSystemController().setIsManual(isManual);
+            } catch (Exception ex) {
+
+            }
             response.setStatusCode(200).end();
-            broker.getSystemController().setValveValueFromDashboard(valveValue);
-            broker.getSystemController().setIsManual(isManual);
         }
     }
 
