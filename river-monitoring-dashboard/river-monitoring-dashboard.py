@@ -7,17 +7,21 @@ from collections import deque
 import datetime
 import requests
 import json
-
+from flask import request
 # Inizializza una coda per memorizzare i dati
 data_queue = deque(maxlen=60)
 
 # Inizializza l"app Flask
 server = Flask(__name__)
-
 # Inizializza l'app Dash con il foglio di stile esterno
 app = dash.Dash(__name__, server=server, title="River Monitoring Dashboard")
 # Definisci la struttura della dashboard
 app.layout = html.Div([
+    dcc.Interval(
+        id="interval-component",
+        interval=1*1000,  # in milliseconds
+        n_intervals=0
+    ),
     html.H1("River Monitoring Dashboard", style={"text-align": "center", "font-size": "48px"}),
     html.Div([
         html.Div([
@@ -46,24 +50,28 @@ app.layout = html.Div([
             html.Button("Set Valve Value", id="send-valveValue", n_clicks=0, className="button-17", style={"margin-right": "1%"}),
             html.Button("Set Auto-mode", id="send-autoMode", n_clicks=0, className="button-17 button-17-red")
     ], style={"display": "flex", "justify-content": "center", "align-items": "center"}),
-    html.Div(id="dummy-output", style={"display": "none"})
+    html.Div(id="dummy-output", style={"display": "none"}),
+    html.Div(id="dummy-output1", style={"display": "none"})
 ])
 
-# Gestisci le richieste POST al server
-@server.route("/api/systemdata", methods=["POST"])
-def get_post_data():
+# Gestisci le richieste POST del server
+@app.callback([Output("dummy-output1", "children"),
+              Input("interval-component", "n_intervals")])
+def get_post_data(n_intervals):
+    url = "http://localhost:8050/api/systemdata"
+    response = requests.get(url)
+    data = response.json()[0]
+    # Print the data
     global data_queue
-    data = request.get_json()
-    print(data)
-    #Ottieni i valori numerici da wl e valveValue
     data["wl"] = float(data["wl"])
     data["valveValue"] = int(data["valveValue"])
-    # Add the current timestamp to the data
     # Aggiungi il timestamp corrente ai dati
     data["timestamp"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print("Data:", data)
     # Aggiungi i dati alla coda
     data_queue.append(data)
-    return "Success", 200
+    print("Data queue:", data_queue)
+    return [""]
 
 @app.callback([
         Output("dummy-output", "children"),
@@ -151,4 +159,4 @@ def update_status_display(n):
         return f'Stato del sistema: {data_queue[-1]["status"]}'
 
 if __name__ == "__main__":
-    app.run_server(debug=True, port=8052)
+    app.run_server(debug=True, port=8053)
