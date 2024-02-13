@@ -43,7 +43,7 @@ public class SerialCommChannelImpl implements SerialCommChannel, SerialPortEvent
 
     @Override
     public String receiveMessageFromArduino() throws InterruptedException {
-		return isMsgAvailable() ? queue.take() : "NO DATA received from Arduino";
+		return  queue.take() ;
     }
 
     @Override
