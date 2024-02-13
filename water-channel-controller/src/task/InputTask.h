@@ -27,7 +27,7 @@ private:
     WaterChannelController *waterChannelController;
     MessageReceiver messageReceiver;
     JsonProcessor jsonProcessor;
-    ValveController valveController;
+    // ValveController valveController;
     bool pressed;
     Button *button;
     Potentiometer *potentiometer;
