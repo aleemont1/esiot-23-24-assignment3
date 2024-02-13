@@ -38,6 +38,7 @@ public class Main {
                 broker.getSystemController().checkValveValue(msg, broker); //check valve value
             } else {
                 channelControllerManager.sendMessageToArduino(broker.getSystemController().getValveValue()); //I send the message to arduino with state
+
             }
             Thread.sleep(400);
         }

@@ -159,4 +159,4 @@ def update_status_display(n):
         return f'Stato del sistema: {data_queue[-1]["status"]}'
 
 if __name__ == "__main__":
-    app.run_server(debug=True, port=8055)
+    app.run_server(debug=True, port=8057)
