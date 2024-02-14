@@ -3,7 +3,10 @@
 
 #include <PubSubClient.h>
 #include <WiFiClient.h>
-
+/**
+ * @brief MQTTservice class.
+ * Basic MQTT service.
+*/
 class MQTTservice
 {
 protected:

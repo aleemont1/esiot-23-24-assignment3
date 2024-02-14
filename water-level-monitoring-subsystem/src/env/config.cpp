@@ -10,7 +10,7 @@ const char *ssid = "";
 const char *password = "";
 
 /* MQTT server address */
-const char *default_mqtt_server = "10.250.23.170";
+const char *default_mqtt_server = "";
 
 /* MQTT topics */
 const char *freq_topic = "/sensor/freq";

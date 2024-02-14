@@ -7,6 +7,8 @@
 /**
  * @brief WifiConnection class
  * Connect to a wifi network, with or without password.
+ * @implements IWifiConnection
+ * @extends IWifiConnection
  */
 class WifiConnection : public IWifiConnection
 {
@@ -66,7 +68,6 @@ public:
     int status() override;
 
 private:
-    const char *ssid;
     const char *password;
 };
 
