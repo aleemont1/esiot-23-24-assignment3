@@ -71,6 +71,7 @@ public class SerialCommChannelImpl implements SerialCommChannel, SerialPortEvent
      * Handle the event on serial line when a message is received.
      */
     public void serialEvent(SerialPortEvent event) {
+
         if (event.isRXCHAR()) {
             try {
                 String msg = serialPort.readString(event.getEventValue());
@@ -82,7 +83,7 @@ public class SerialCommChannelImpl implements SerialCommChannel, SerialPortEvent
                     int index = msg2.indexOf("\n");
                     if (index >= 0) {
                         queue.put(msg2.substring(0, index));
-                        currentMsg = new StringBuffer();
+                        currentMsg = new StringBuffer("");
                         if (index + 1 < msg2.length()) {
                             currentMsg.append(msg2.substring(index + 1));
                         }
@@ -91,10 +92,15 @@ public class SerialCommChannelImpl implements SerialCommChannel, SerialPortEvent
                     }
                 }
 
+
+
+
             } catch (Exception ex) {
                 ex.printStackTrace();
                 System.out.println("Error in receiving string from COM-port: " + ex);
             }
+
+
         }
     }
 }
