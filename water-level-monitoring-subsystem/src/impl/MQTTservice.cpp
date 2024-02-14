@@ -4,7 +4,7 @@ void MQTTservice::connect()
 {
     // Connect to MQTT broker
     mqttClient.setServer(mqtt_server, 1883);
-    while (!mqttClient.connected())
+    if (!mqttClient.connected())
     {
         Serial.println("Connecting to MQTT broker...");
         if (mqttClient.connect(mqtt_client_id))
@@ -15,8 +15,6 @@ void MQTTservice::connect()
         {
             Serial.print("Failed, rc=");
             Serial.print(mqttClient.state());
-            Serial.println(" Retrying in 5 seconds");
-            delay(5000);
         }
     }
 }

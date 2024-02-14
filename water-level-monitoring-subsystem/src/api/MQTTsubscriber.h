@@ -1,5 +1,10 @@
 #include "MQTTservice.h"
-
+/**
+ * @brief MQTTsubscriber class.
+ * Subscribe to topics and receive messages from an MQTT broker.
+ * @implements MQTTservice
+ * @extends MQTTservice
+ */
 class MQTTsubscriber : public MQTTservice
 {
 public:

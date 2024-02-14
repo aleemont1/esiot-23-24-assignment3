@@ -1,5 +1,11 @@
 #include "MQTTservice.h"
 
+/**
+ * @brief MQTTpublisher class.
+ * Publish messages to an MQTT broker.
+ * @implements MQTTservice
+ * @extends MQTTservice
+ */
 class MQTTpublisher : public MQTTservice
 {
 public:
