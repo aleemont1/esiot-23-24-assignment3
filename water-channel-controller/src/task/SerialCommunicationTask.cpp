@@ -14,18 +14,23 @@ SerialCommunicationTask::SerialCommunicationTask(int period, JsonProcessor jsonP
 {
     Serial.begin(BAUD_RATE);
 }
-
 void SerialCommunicationTask::serialComm()
 {
-    // ServoMotor *servoMotor;
-    String receivedContent = "";
-    JsonDocument doc;
-    deserializeJson(doc, receivedContent);
-    String status = doc["status"];
+    String receivedContent;
+    String status;
     String valveValue;
     if (Serial.available() > 0)
     {
         receivedContent = Serial.readStringUntil('\n');
+        JsonDocument doc;
+        DeserializationError error = deserializeJson(doc, receivedContent);
+        if (error)
+        {
+            Serial.println("Failed to read JSON");
+            return;
+        }
+        Serial.println(receivedContent);
+        status = doc["status"].as<String>();
 
         if (status == "ALARM_TOO_LOW")
         {
