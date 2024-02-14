@@ -63,6 +63,8 @@ public:
      */
     String getSystemStatus(String receivedMessage);
 
+    void serialComm();
+
     /**
      * @brief Overridden tick method from the Task class.
      */
