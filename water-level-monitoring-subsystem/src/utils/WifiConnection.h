@@ -66,7 +66,6 @@ public:
     int status() override;
 
 private:
-    const char *ssid;
     const char *password;
 };
 

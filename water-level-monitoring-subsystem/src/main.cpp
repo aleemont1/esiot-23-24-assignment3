@@ -99,7 +99,7 @@ void TaskPublisher(void *pvParameters)
       turnGreenLedOn();
       // Serial.println("Publishing with frequency: " + String(frequency) + "ms");
       char wl_char[SONAR_MSG_SIZE];
-      snprintf(wl_char, SONAR_MSG_SIZE, "%.2f", sonar.getDistance()); // test value
+      snprintf(wl_char, SONAR_MSG_SIZE, "%.2f", sonar.getDistance());
       // Serial.println("Publishing water level: " + String(wl_char));
       publisher.publishJSON(wl_topic, water_level_field, wl_char);
       lastMsgTime = now;
@@ -135,8 +135,12 @@ void TaskSubscriber(void *pvParameters)
 
 void TaskCheckConnection(void *pvParameters)
 {
+  TickType_t xLastWakeTime;
+  const TickType_t xFrequency = 2000; // 2 seconds
+
   for (;;)
   {
+    xLastWakeTime = xTaskGetTickCount();
     while (wifiConn.status() != WL_CONNECTED)
     {
       turnRedLedOn();
@@ -159,7 +163,7 @@ void TaskCheckConnection(void *pvParameters)
       subscriber.connect();
       vTaskDelay(3000);
     }
-    vTaskDelay(2000); // Delay between connection checks
+    vTaskDelayUntil(&xLastWakeTime, xFrequency);
   }
 }
 
