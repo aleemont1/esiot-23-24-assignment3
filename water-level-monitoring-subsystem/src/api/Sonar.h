@@ -4,7 +4,12 @@
 #include "ProximitySensor.h"
 
 #define NO_OBJ_DETECTED -1
-
+/**
+ * @brief Sonar class.
+ * Get distance from an object using an ultrasonic sensor.
+ * @implements ProximitySensor
+ * @extends ProximitySensor
+ */
 class Sonar: public ProximitySensor {
 
 public:  

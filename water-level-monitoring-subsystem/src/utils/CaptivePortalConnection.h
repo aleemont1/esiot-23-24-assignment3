@@ -7,6 +7,8 @@
 /**
  * @brief CaptivePortalConnection class.
  * Connect to a free wifi with Captive Portal authentication.
+ * @implements IWifiConnection
+ * @extends IWifiConnection
  */
 class CaptivePortalConnection : public IWifiConnection
 {
