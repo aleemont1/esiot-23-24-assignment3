@@ -8,7 +8,7 @@ public class SerialCommChannelImpl implements SerialCommChannel, SerialPortEvent
 
     private final SerialPort serialPort;
     private final BlockingQueue<String> queue;
-    private StringBuffer currentMsg = new StringBuffer();
+    private StringBuffer currentMsg = new StringBuffer("");
 
     public SerialCommChannelImpl(String port, int rate) throws Exception {
         queue = new ArrayBlockingQueue<String>(200);
@@ -43,8 +43,11 @@ public class SerialCommChannelImpl implements SerialCommChannel, SerialPortEvent
 
     @Override
     public String receiveMessageFromArduino() throws InterruptedException {
+        if (isMsgAvailable()) {
+            return queue.take() ;
+        }
+        return "Failed to retrieve data from Arduino";
 
-		return queue.take() ;
     }
 
     @Override
@@ -65,7 +68,7 @@ public class SerialCommChannelImpl implements SerialCommChannel, SerialPortEvent
 
 
     /**
-     * Handle the event on serial line
+     * Handle the event on serial line when a message is received.
      */
     public void serialEvent(SerialPortEvent event) {
         if (event.isRXCHAR()) {

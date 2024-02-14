@@ -20,12 +20,23 @@ public class SystemControllerImpl implements SystemController {
     private final int F1 = 6000; //1800ms
     private final int F2 = 2000; //1000ms
     private final int F0 = 0;
+    private Status status = null;
+    private int valveValue = 0;
+    private float wl = 0;
+    private boolean isManual = false;
+    private int frequency = 1;
+    private final int V0= 0;
+    private final int V1= 25;
+    private final int V2= 40;
+    private final int V3= 50;
+    private final int V4 = 100;
+
     private final Map<Status, Integer> statusValveValue = new HashMap<Status, Integer>() {{
-        put(Status.ALARM_TOO_LOW, 0);
-        put(Status.NORMAL, 25);
-        put(Status.PRE_ALARM_TOO_HIGH, 40);
-        put(Status.ALARM_TOO_HIGH, 50);
-        put(Status.ALARM_TOO_HIGH_CRITIC, 100);
+        put(Status.ALARM_TOO_LOW, V0);
+        put(Status.NORMAL, V1);
+        put(Status.PRE_ALARM_TOO_HIGH, V2);
+        put(Status.ALARM_TOO_HIGH, V3);
+        put(Status.ALARM_TOO_HIGH_CRITIC, V4);
     }};
     private final Map<Status, Integer> statusFreq = new HashMap<Status, Integer>() {{
         put(Status.ALARM_TOO_LOW, F2);
@@ -35,11 +46,7 @@ public class SystemControllerImpl implements SystemController {
         put(Status.ALARM_TOO_HIGH_CRITIC, F2);
         put(Status.INVALID_STATUS, F0);
     }};
-    private Status status = null;
-    private int valveValue = 0;
-    private float wl = 0;
-    private boolean isManual = false;
-    private int frequency = 1;
+
 
     public SystemControllerImpl() {
 
@@ -68,7 +75,6 @@ public class SystemControllerImpl implements SystemController {
         } else {
             this.status = Status.INVALID_STATUS;
         }
-
         System.out.println("SET SYSTEM STATUS: " + this.status.toString().toUpperCase());
     }
 
@@ -79,7 +85,6 @@ public class SystemControllerImpl implements SystemController {
         }
         return this.status;
     }
-
 
     public Map<Status, Integer> getStatusValveValue() {
         return this.statusValveValue;

@@ -10,15 +10,16 @@ import org.mqttserver.services.MQTT.Broker;
 public class ChannelControllerManagerImpl implements ChannelControllerManager {
 
     private Broker broker;
-    private SerialCommChannel serialCommChannel;
+    private final SerialCommChannel serialCommChannel;
     private SerialScanner serialScanner = new SerialScannerImpl();
+
+    private final int BAUD_RATE = 9600;
 
     public ChannelControllerManagerImpl(Broker broker) throws Exception {
         //Init broker
         this.broker = broker;
-
         //init serial communication
-        this.serialCommChannel = new SerialCommChannelImpl(this.serialScanner.getConnectedPort(), 9600 );
+        this.serialCommChannel = new SerialCommChannelImpl(this.serialScanner.getConnectedPort(), BAUD_RATE );
         System.out.println("Started CHANNEL CONTROLLER " + "\nChannel Controller Controls MQTTServer: " +
                this.broker.getMqttServer().toString() + " ON PORT: "  + this.broker.getMqttServer().actualPort());
     }
