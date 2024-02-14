@@ -19,8 +19,6 @@ public class Main {
 
         //start the httpServer and DataService (for dashboard and http server)
         Vertx vertx = Vertx.vertx();
-        //HTTPServerImpl httpServer = new HTTPServerImpl();
-        //vertx.deployVerticle(httpServer);
         DataService service = new DataService(8050, broker);
         vertx.deployVerticle(service);
 
@@ -34,7 +32,6 @@ public class Main {
                 broker.getSystemController().checkValveValue(msg, broker); //check valve value
             } else {
                 channelControllerManager.sendMessageToArduino(broker.getSystemController().getValveValue()); //I send the message to arduino with state
-
             }
             Thread.sleep(400);
         }
