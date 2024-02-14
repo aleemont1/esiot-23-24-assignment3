@@ -3,6 +3,7 @@
 
 #include "Arduino.h"
 #include "ArduinoJson.h"
+#include "serial_communication/Client-Arduino/ValveController.h"
 
 /**
  * @brief A utility class for handling JSON-formatted messages.
@@ -90,6 +91,9 @@ public:
      * @return int The valve value extracted from the received content.
      */
     int getValveValue(String receivedContent);
+
+private:
+    ValveController valveController; ///< The valve controller object used to manage the valve.
 };
 
 #endif // __JSONPROCESSOR_H__
