@@ -1,5 +1,9 @@
 package org.mqttserver.presentation;
 
+/**
+ * This class model the message received from Arduino
+ */
+
 public class MessageFromArduino {
 
     private String status = "";

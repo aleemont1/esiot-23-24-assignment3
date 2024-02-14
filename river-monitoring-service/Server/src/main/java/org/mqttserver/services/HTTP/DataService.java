@@ -9,8 +9,6 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
 import org.mqttserver.services.MQTT.Broker;
 
-import java.util.LinkedList;
-
 public class DataService extends AbstractVerticle {
 
     private final int port;
@@ -27,7 +25,6 @@ public class DataService extends AbstractVerticle {
         router.route().handler(BodyHandler.create());
         router.post("/api/postdata").handler(this::handleAddNewData);
         router.get("/api/systemdata").handler(this::handleGetData);
-
         vertx.createHttpServer().requestHandler(router).listen(port);
         System.out.println("Service ready on port: " + port);
     }
@@ -44,7 +41,7 @@ public class DataService extends AbstractVerticle {
                 broker.getSystemController().setIsManual(true);
                 System.out.println("[OPERATOR] Valve Value set manually");
             } catch (Exception ex) {
-
+                ex.printStackTrace();
             }
 
             try {
@@ -67,7 +64,6 @@ public class DataService extends AbstractVerticle {
         data.put("valveValue", broker.getSystemController().getValveValue());
         data.put("wl", broker.getSystemController().getWl());
         arr.add(data);
-
         routingContext.response()
                 .putHeader("content-type", "application/json")
                 .end(arr.encodePrettily());
