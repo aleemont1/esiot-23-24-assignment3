@@ -19,10 +19,22 @@ String JsonProcessor::createConfirmationMessage(String originalMessage)
     deserializeJson(doc, originalMessage);
 
     String status = doc["status"];
-    String valveValue = doc["valveValue"];
+    String valveValue = valveController.getValveValueForState(status);
+
+    JsonDocument confirmationDoc;
+
+    if (valveValue != "unknown state")
+    {
+        confirmationDoc["status"] = status;
+        confirmationDoc["valveValue"] = valveValue;
+    }
+    else
+    {
+        confirmationDoc["valveValue"] = "unknown state";
+    }
 
     String confirmationMessage;
-    serializeJson(doc, confirmationMessage);
+    serializeJson(confirmationDoc, confirmationMessage);
 
     return confirmationMessage;
 }

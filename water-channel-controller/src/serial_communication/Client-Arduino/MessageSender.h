@@ -105,9 +105,13 @@ private:
 
     /**
      * @brief an instance of the JsonProcessor class.
-     *
      */
     JsonProcessor jsonProcessor;
+
+    /**
+     * @brief an instance of the ValveController class.
+     */
+    ValveController valveController;
 };
 
 #endif // __MESSAGESENDER_H__

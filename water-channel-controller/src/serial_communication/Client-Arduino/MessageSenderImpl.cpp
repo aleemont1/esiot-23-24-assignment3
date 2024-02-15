@@ -1,6 +1,7 @@
 #define DEBUG
 #include "MessageSender.h"
 #include "system/Logger.h"
+#include "../Client-Arduino/ValveController.h"
 
 MessageSender::MessageSender() {}
 

@@ -20,8 +20,8 @@ public class SerialCommChannelImpl implements SerialCommChannel, SerialPortEvent
                 SerialPort.PARITY_NONE);
         serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN |
                 SerialPort.FLOWCONTROL_RTSCTS_OUT);
-        serialPort.addEventListener(this, SerialPort.MASK_RXCHAR);
-        //serialPort.addEventListener(this);
+        // serialPort.addEventListener(this, SerialPort.MASK_RXCHAR);
+        serialPort.addEventListener(this);
     }
 
     @Override
