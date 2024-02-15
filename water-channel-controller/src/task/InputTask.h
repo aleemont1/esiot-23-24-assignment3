@@ -2,8 +2,8 @@
 #define __INPUT_TASK__
 
 #include "WaterChannelController.h"
-#include "system/taskWithState.h"
-#include "system/task.h"
+#include "system/TaskWithState.h"
+#include "system/Task.h"
 #include "components/api/ServoMotor.h"
 #include "components/api/Button.h"
 #include "components/api/Potentiometer.h"

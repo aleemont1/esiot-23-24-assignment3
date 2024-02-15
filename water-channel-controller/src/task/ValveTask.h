@@ -5,7 +5,7 @@
 #include "../components/api/ServoMotor.h"
 #include "system/Task.h"
 #include "system/TaskWithState.h"
-#include "config.h"
+#include "Config.h"
 
 /**
  * @brief Enum for the states of the valve.
