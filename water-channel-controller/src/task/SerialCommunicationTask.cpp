@@ -16,41 +16,38 @@ SerialCommunicationTask::SerialCommunicationTask(int period, JsonProcessor jsonP
 }
 void SerialCommunicationTask::serialComm()
 {
+}
+
+void SerialCommunicationTask::tick()
+{
     String receivedContent;
-    String status;
     String valveValue;
-    if (Serial.available() > 0)
+    if (Serial.available())
     {
         receivedContent = Serial.readStringUntil('\n');
         JsonDocument doc;
-        DeserializationError error = deserializeJson(doc, receivedContent);
-        if (error)
-        {
-            Serial.println("Failed to read JSON");
-            return;
-        }
-        Serial.println(receivedContent);
-        status = doc["status"].as<String>();
+        deserializeJson(doc, receivedContent);
+        String status = doc["status"];
 
         if (status == "ALARM_TOO_LOW")
         {
-            valveValue = "0";
+            Serial.println("{\"status\":\"ALARM_TOO_LOW\",\"valveValue\":\"0\"}");
         }
         else if (status == "NORMAL")
         {
-            valveValue = "25";
+            Serial.println("{\"status\":\"NORMAL\",\"valveValue\":\"25\"}");
         }
         else if (status == "PRE_ALARM_TOO_HIGH")
         {
-            valveValue = "40";
+            Serial.println("{\"status\":\"PRE_ALARM_TOO_HIGH\",\"valveValue\":\"40\"}");
         }
         else if (status == "ALARM_TOO_HIGH")
         {
-            valveValue = "50";
+            Serial.println("{\"status\":\"ALARM_TOO_HIGH\",\"valveValue\":\"50\"}");
         }
         else if (status == "ALARM_TOO_HIGH_CRITIC")
         {
-            valveValue = "100";
+            Serial.println("{\"status\":\"ALARM_TOO_HIGH_CRITIC\",\"valveValue\":\"100\"}");
         }
         else
         {
@@ -58,20 +55,15 @@ void SerialCommunicationTask::serialComm()
         }
 
         // Creazione del documento JSON
-        JsonDocument jsonDoc;
-        jsonDoc["status"] = status;
-        jsonDoc["valveValue"] = valveValue;
+        // JsonDocument jsonDoc;
+        // jsonDoc["status"] = status;
+        // jsonDoc["valveValue"] = valveValue;
 
         // Serializzazione del documento JSON
-        String output;
-        serializeJson(jsonDoc, output);
+        // String output;
+        // serializeJson(jsonDoc, Serial);
 
         // Stampa il documento JSON sulla seriale
-        Serial.println(output);
+        // Serial.println(output);
     }
-}
-
-void SerialCommunicationTask::tick()
-{
-    serialComm();
 }

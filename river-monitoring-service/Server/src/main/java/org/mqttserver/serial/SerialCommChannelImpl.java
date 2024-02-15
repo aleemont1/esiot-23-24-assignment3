@@ -20,8 +20,8 @@ public class SerialCommChannelImpl implements SerialCommChannel, SerialPortEvent
                 SerialPort.PARITY_NONE);
         serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN |
                 SerialPort.FLOWCONTROL_RTSCTS_OUT);
-        serialPort.addEventListener(this, SerialPort.MASK_RXCHAR);
-        //serialPort.addEventListener(this);
+        // serialPort.addEventListener(this, SerialPort.MASK_RXCHAR);
+        serialPort.addEventListener(this);
     }
 
     @Override
@@ -43,6 +43,7 @@ public class SerialCommChannelImpl implements SerialCommChannel, SerialPortEvent
 
     @Override
     public String receiveMessageFromArduino() throws InterruptedException {
+        System.out.println("Fammi vedere se ci sono messaggi disponibili...");
         if (isMsgAvailable()) {
             return queue.take() ;
         }
